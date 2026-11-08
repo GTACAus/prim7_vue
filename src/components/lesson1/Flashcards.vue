@@ -1,0 +1,471 @@
+<script setup>
+/*
+  Lesson 1 flashcards: sort a deck of questions into two piles
+  ("Testable" / "Non-testable").
+
+  A wrong sort sends the card to the back of the deck instead of a pile, so
+  every card has to land correctly before the activity finishes. Sorting a
+  card correctly flies it into its pile.
+
+    <Flashcards id="flashcardsActivity" class="flashcard-box" />
+    <Flashcards :questions="[{ text: '...', answer: 'left' }, ...]"
+                :labels="{ left: 'Testable', right: 'Non-testable' }" />
+
+  Registers as a normal activity (data-activity + data-activity-complete), so
+  the section's Next button appears when every card has been sorted, and
+  getActivity(id) / [data-reset-trigger] keep working.
+*/
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { Activity } from '../activities/activity-base.js'
+
+const FLY_DELAY = 350 // ms for a correct card's fly-to-pile animation
+const BOUNCE_DELAY = 600 // ms a wrong card dims before returning to the deck
+
+const DEFAULT_QUESTIONS = [
+  { text: 'Does the amount of sunlight affect plant growth?', answer: 'left' },
+  { text: 'Which colour is the prettiest?', answer: 'right' },
+  { text: 'Does temperature affect how fast ice melts?', answer: 'left' },
+  { text: 'Is chocolate better than vanilla?', answer: 'right' },
+  { text: 'Do heavier objects fall faster?', answer: 'left' },
+  { text: 'What is the best sport?', answer: 'right' },
+  { text: 'Does salt change the boiling point of water?', answer: 'left' },
+  { text: 'Are cats smarter than dogs?', answer: 'right' },
+]
+
+const props = defineProps({
+  id: { type: String, default: '' },
+  // the deck: each answer is 'left' or 'right' (the pile it belongs in)
+  questions: { type: Array, default: null },
+  // optional headings above the two piles
+  labels: { type: Object, default: () => ({ left: '', right: '' }) },
+})
+
+function shuffle(list) {
+  const shuffled = list.slice()
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
+const root = ref(null)
+let activity = null
+let timer = null
+
+const deck = ref([])
+const index = ref(0)
+const piles = ref({ left: [], right: [] })
+const flying = ref('') // 'left' | 'right' | 'up' while the current card animates away
+const locked = ref(false)
+const started = ref(false)
+
+const done = computed(() => index.value >= deck.value.length)
+const currentText = computed(() => (done.value ? '' : deck.value[index.value].text))
+const progress = computed(() =>
+  done.value ? 'All sorted!' : `${index.value + 1} of ${deck.value.length}`
+)
+
+function shortText(text) {
+  return text.length > 25 ? text.slice(0, 25) + '…' : text
+}
+
+function startDeck() {
+  window.clearTimeout(timer)
+  deck.value = shuffle(props.questions || DEFAULT_QUESTIONS)
+  index.value = 0
+  piles.value = { left: [], right: [] }
+  flying.value = ''
+  locked.value = false
+  started.value = false
+}
+
+function sort(direction) {
+  if (done.value || locked.value) return
+
+  const isCorrect = deck.value[index.value].answer === direction
+  locked.value = true
+  started.value = true
+
+  if (isCorrect) {
+    flying.value = direction
+    timer = window.setTimeout(() => {
+      piles.value[direction].push(deck.value[index.value].text)
+      index.value++
+      flying.value = ''
+      locked.value = false
+    }, FLY_DELAY)
+  } else {
+    flying.value = 'up'
+    timer = window.setTimeout(() => {
+      deck.value.push(deck.value.splice(index.value, 1)[0])
+      flying.value = ''
+      locked.value = false
+    }, BOUNCE_DELAY)
+  }
+}
+
+function reset() {
+  startDeck()
+}
+
+watch(done, (isDone) => {
+  if (activity) activity.setComplete(isDone)
+})
+
+onMounted(() => {
+  startDeck()
+  activity = new Activity(root.value, {})
+  activity.reset = reset // the base class's data-reset-trigger / dependency resets call this
+  activity.setComplete(false)
+})
+
+onBeforeUnmount(() => window.clearTimeout(timer))
+
+defineExpose({ reset })
+</script>
+
+<template>
+  <div ref="root" class="flashcard-box" :id="id || null" data-activity>
+    <main class="flashcard-content">
+      <div class="layout">
+        <div class="pile-section">
+          <h2 data-flashcard-pile-label="left">{{ labels.left }}</h2>
+          <div id="left-pile" data-flashcard-pile="left" class="pile-container">
+            <div v-for="(text, i) in piles.left" :key="i" class="pile-card animate-in">{{ shortText(text) }}</div>
+          </div>
+          <p id="left-count" data-flashcard-count="left">{{ piles.left.length }}</p>
+        </div>
+
+        <div class="center-section">
+          <div id="card-area">
+            <div
+              id="current-card"
+              data-flashcard-card
+              :class="{
+                hidden: done,
+                'card-fly-left': flying === 'left',
+                'card-fly-right': flying === 'right',
+                'card-fly-up': flying === 'up',
+              }"
+              :style="{ opacity: flying === 'up' ? 0.5 : 1 }"
+            >{{ currentText }}</div>
+
+            <div id="done-message" data-flashcard-done :class="{ visible: done }">
+              <span>🎉</span>
+              <p>All Sorted!</p>
+            </div>
+          </div>
+
+          <p id="progress" data-flashcard-progress>{{ progress }}</p>
+
+          <div class="btn-row">
+            <button id="btn-investigable" type="button" class="general-button" :disabled="done" @click="sort('left')">
+              Testable
+            </button>
+            <button id="btn-uninvestigable" type="button" class="general-button" :disabled="done" @click="sort('right')">
+              Non-Testable
+            </button>
+          </div>
+
+          <button id="reset-btn" type="button" class="general-button" :class="{ hidden: !started }" @click="reset">
+            Reset
+          </button>
+        </div>
+
+        <div class="pile-section">
+          <h2 data-flashcard-pile-label="right" class="mb-3">{{ labels.right }}</h2>
+          <div id="right-pile" data-flashcard-pile="right" class="pile-container">
+            <div v-for="(text, i) in piles.right" :key="i" class="pile-card animate-in">{{ shortText(text) }}</div>
+          </div>
+          <p id="right-count" data-flashcard-count="right">{{ piles.right.length }}</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</template>
+
+<style>
+.flashcard-box {
+  padding: 12px;
+  background: var(--soft-blue);
+  border: 3px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 5px 0 var(--line);
+}
+
+.flashcard-content {
+  background-color: var(--soft-blue);
+    padding: 50px 0;
+    flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.layout {
+  width: 100%;
+  max-width: 72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2vw;
+}
+
+.pile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-height: 300px;
+}
+
+.pile-container {
+  position: relative;
+  width: 8rem;
+  height: 12rem;
+  border-radius: 0.5rem;
+  border: 2px dashed;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+
+#left-pile {
+  border-color: var(--mint);
+  background: var(--soft-green);
+}
+
+#right-pile {
+  border-color: var(--orange);
+  background: var(--soft-orange);
+}
+
+#left-count {
+  color: var(--green);
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+#right-count {
+  color: var(--orange);
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+.center-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .btn-row {
+    flex-direction: column;
+  }
+
+  
+  .layout {
+  }
+
+  
+  .center-section {
+    font-size: clamp(14px, 1vw, 18px);
+  }
+
+}
+
+#card-area {
+  position: relative;
+  width: 18rem;
+  height: 14rem;
+  margin-bottom: 1.5rem;
+}
+
+#current-card {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  border-radius: 1rem;
+  box-shadow: 0 4px 0 var(--charcoal);
+  border: 2px solid var(--line);
+  border-top: 10px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--charcoal);
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+#done-message {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#done-message.visible {
+  display: flex;
+}
+
+#done-message span {
+  font-size: 3.75rem;
+}
+
+#done-message p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+#progress {
+  font-size: 1rem;
+  color: var(--charcoal);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.btn-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+#btn-investigable {
+  background: var(--green);
+}
+
+#btn-uninvestigable {
+  background: var(--orange);
+}
+
+#btn-investigable:hover,
+#btn-uninvestigable:hover {
+  background: var(--button-hover);
+}
+
+#reset-btn {
+  /* padding: 0.5rem 1.5rem; */
+  background: var(--muted);
+  color: var(--paper);
+}
+
+#reset-btn:hover {
+  background: var(--soft-purple);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.card-fly-left {
+  animation: flyLeft 0.4s ease forwards;
+}
+
+.card-fly-right {
+  animation: flyRight 0.4s ease forwards;
+}
+
+.card-fly-up {
+  animation: flyUp 0.4s ease forwards;
+}
+
+@keyframes flyLeft {
+  to {
+    transform: translateX(-300px) rotate(-10deg);
+    opacity: 0;
+  }
+
+}
+
+@keyframes flyRight {
+  to {
+    transform: translateX(300px) rotate(10deg);
+    opacity: 0;
+  }
+
+}
+
+@keyframes flyUp {
+  to {
+    transform: translateY(-300px) rotate(10deg);
+    opacity: 0;
+  }
+
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+.animate-in {
+  animation: bounce-in 0.4s ease-out;
+}
+
+.pile-card {
+  box-shadow: 0 4px 0 var(--charcoal);
+  background: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--charcoal);
+  border: 2px solid var(--line);
+  flex-shrink: 0;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    flex-direction: column;
+    gap: 1.0vw;
+  }
+
+  @keyframes flyLeft {
+    to {
+      transform: translateY(-300px) rotate(-10deg);
+      opacity: 0;
+    }
+
+  }
+
+  @keyframes flyRight {
+    to {
+      transform: translateY(300px) rotate(10deg);
+      opacity: 0;
+    }
+
+  }
+
+  @keyframes flyUp {
+    to {
+      transform: translateX(-300px) rotate(10deg);
+      opacity: 0;
+    }
+
+  }
+
+}
+</style>
