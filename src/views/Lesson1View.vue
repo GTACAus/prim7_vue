@@ -1,6 +1,5 @@
 <script setup>
 import Page from "../components/Page.vue";
-import Modal from "../components/Modal.vue";
 import Section from "../components/Section.vue";
 import Flashcards from "../components/lesson1/Flashcards.vue";
 import QuestionWheel from "../components/lesson1/QuestionWheel.vue";
@@ -110,57 +109,46 @@ const sections = [
   {
     key: "observe",
     id: "observe-experiment",
-    label: "Observe the experiment",
     title: "Observe the Experiment",
-    last: true,
   },
   {
     key: "intro",
     id: "testable-question-intro",
-    label: "What is a testable question?",
     title: "Make a testable question",
-    locked: false,
   },
   {
     key: "flashcards",
     id: "flashcards",
-    label: "Testable or non-testable?",
     title: "Testable or Non-testable?",
-    nextButtonId: "flashcardsNextButton",
-    hideNext: true,
   },
   {
     key: "questions",
     id: "testable-questions",
-    label: "Write testable questions",
     title: "How do we write testable questions?",
-    nextButtonId: "testableQuestionsNextButton",
-    hideNext: true,
   },
   {
     key: "prediction",
     id: "reasoned-prediction",
-    label: "Writing a reasoned prediction",
     title: "Writing a Reasoned Prediction",
   },
   {
     key: "builder",
     id: "reasoned-builder",
-    label: "Build a reasoned prediction",
     title: "MAKE A REASONED PREDICTION",
-    hideNext: true,
   },
   {
     key: "testing",
     id: "testing-predictions",
-    label: "Test reasoned predictions",
     title: "HOW TO TEST REASONED PREDICTIONS",
   },
 ];
-
 </script>
 <template>
-  <Page title="Lesson 1 - Questioning and Predicting" :sections="sections" :glossary="glossary">
+  <Page
+    title="Lesson 1 - Questioning and Predicting"
+    :sections="sections"
+    :glossary="glossary"
+  >
     <template #lesson-intro>
       <LessonIntro
         label="Lesson 1"
@@ -359,7 +347,7 @@ const sections = [
       </Section>
       <!-- ---------- Flashcards ---------- -->
       <Section name="flashcards">
-        <Flashcards id="flashcardsActivity" />
+        <Flashcards />
       </Section>
       <!-- Part C: How do we write testable questions? -->
       <Section name="questions">
@@ -533,7 +521,6 @@ const sections = [
           </div>
         </div>
         <PredictionTable
-          id="reasonedPredictionActivity"
           :change-options="changeOptions"
           :measure-options="measureOptions"
           show-reset

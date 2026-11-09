@@ -1,191 +1,183 @@
 <script setup>
-/*
-  Lesson 1 flashcards: sort a deck of questions into two piles
-  ("Testable" / "Non-testable").
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import Button from "../Button.vue";
+import Activity from "../activities/Activity.vue";
 
-  A wrong sort sends the card to the back of the deck instead of a pile, so
-  every card has to land correctly before the activity finishes. Sorting a
-  card correctly flies it into its pile.
-
-    <Flashcards id="flashcardsActivity" class="flashcard-box" />
-    <Flashcards :questions="[{ text: '...', answer: 'left' }, ...]"
-                :labels="{ left: 'Testable', right: 'Non-testable' }" />
-
-  Registers as a normal activity (data-activity + data-activity-complete), so
-  the section's Next button appears when every card has been sorted, and
-  getActivity(id) / [data-reset-trigger] keep working.
-*/
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import Activity, { ActivityBase } from '../activities/Activity.vue'
-
-const FLY_DELAY = 350 // ms for a correct card's fly-to-pile animation
-const BOUNCE_DELAY = 600 // ms a wrong card dims before returning to the deck
+const FLY_DELAY = 400;
+const BOUNCE_DELAY = 600;
 
 const DEFAULT_QUESTIONS = [
-  { text: 'Does the amount of sunlight affect plant growth?', answer: 'left' },
-  { text: 'Which colour is the prettiest?', answer: 'right' },
-  { text: 'Does temperature affect how fast ice melts?', answer: 'left' },
-  { text: 'Is chocolate better than vanilla?', answer: 'right' },
-  { text: 'Do heavier objects fall faster?', answer: 'left' },
-  { text: 'What is the best sport?', answer: 'right' },
-  { text: 'Does salt change the boiling point of water?', answer: 'left' },
-  { text: 'Are cats smarter than dogs?', answer: 'right' },
-]
+  { text: "Does the amount of sunlight affect plant growth?", answer: "left" },
+  { text: "Which colour is the prettiest?", answer: "right" },
+  { text: "Does temperature affect how fast ice melts?", answer: "left" },
+  { text: "Is chocolate better than vanilla?", answer: "right" },
+  { text: "Do heavier objects fall faster?", answer: "left" },
+  { text: "What is the best sport?", answer: "right" },
+  { text: "Does salt change the boiling point of water?", answer: "left" },
+  { text: "Are cats smarter than dogs?", answer: "right" },
+];
 
 const props = defineProps({
-  id: { type: String, default: '' },
-  // the deck: each answer is 'left' or 'right' (the pile it belongs in)
   questions: { type: Array, default: null },
-  // optional headings above the two piles
-  labels: { type: Object, default: () => ({ left: '', right: '' }) },
-})
+  labels: {
+    type: Object,
+    default: () => ({ left: "Testable", right: "Non-testable" }),
+  },
+});
 
-function shuffle(list) {
-  const shuffled = list.slice()
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
   }
-  return shuffled
+  return result;
 }
 
-const root = ref(null)
-let activity = null
-let timer = null
+const deck = ref(shuffle(props.questions ?? DEFAULT_QUESTIONS));
+const piles = ref({ left: [], right: [] });
+const flying = ref("");
+const locked = ref(false);
+const started = ref(false);
+let timer = null;
 
-const deck = ref([])
-const index = ref(0)
-const piles = ref({ left: [], right: [] })
-const flying = ref('') // 'left' | 'right' | 'up' while the current card animates away
-const locked = ref(false)
-const started = ref(false)
-
-const done = computed(() => index.value >= deck.value.length)
-const currentText = computed(() => (done.value ? '' : deck.value[index.value].text))
+const total = computed(() => (props.questions ?? DEFAULT_QUESTIONS).length);
+const sortedCount = computed(
+  () => piles.value.left.length + piles.value.right.length,
+);
+const isComplete = computed(
+  () => total.value > 0 && sortedCount.value === total.value,
+);
+const done = isComplete;
+const currentText = computed(() => deck.value[0]?.text ?? "");
 const progress = computed(() =>
-  done.value ? 'All sorted!' : `${index.value + 1} of ${deck.value.length}`
-)
+  done.value ? "All sorted!" : `${sortedCount.value + 1} of ${total.value}`,
+);
 
 function shortText(text) {
-  return text.length > 25 ? text.slice(0, 25) + '…' : text
-}
-
-function startDeck() {
-  window.clearTimeout(timer)
-  deck.value = shuffle(props.questions || DEFAULT_QUESTIONS)
-  index.value = 0
-  piles.value = { left: [], right: [] }
-  flying.value = ''
-  locked.value = false
-  started.value = false
-}
-
-function sort(direction) {
-  if (done.value || locked.value) return
-
-  const isCorrect = deck.value[index.value].answer === direction
-  locked.value = true
-  started.value = true
-
-  if (isCorrect) {
-    flying.value = direction
-    timer = window.setTimeout(() => {
-      piles.value[direction].push(deck.value[index.value].text)
-      index.value++
-      flying.value = ''
-      locked.value = false
-    }, FLY_DELAY)
-  } else {
-    flying.value = 'up'
-    timer = window.setTimeout(() => {
-      deck.value.push(deck.value.splice(index.value, 1)[0])
-      flying.value = ''
-      locked.value = false
-    }, BOUNCE_DELAY)
-  }
+  return text.length > 25 ? text.slice(0, 25) + "…" : text;
 }
 
 function reset() {
-  startDeck()
+  clearTimeout(timer);
+  timer = null;
+  deck.value = shuffle(props.questions ?? DEFAULT_QUESTIONS);
+  piles.value = { left: [], right: [] };
+  flying.value = "";
+  locked.value = false;
+  started.value = false;
 }
 
-watch(done, (isDone) => {
-  if (activity) activity.setComplete(isDone)
-})
+function sort(direction) {
+  if (locked.value || done.value || !deck.value.length) return;
 
-onMounted(() => {
-  startDeck()
-  activity = new ActivityBase(root.value.$el, {})
-  activity.reset = reset // the base class's data-reset-trigger / dependency resets call this
-  activity.setComplete(false)
-})
+  const card = deck.value[0];
+  const correct = card.answer === direction;
+  locked.value = true;
+  started.value = true;
+  flying.value = correct ? direction : "up";
 
-onBeforeUnmount(() => window.clearTimeout(timer))
+  timer = setTimeout(
+    () => {
+      if (correct) {
+        piles.value[direction].push(card.text);
+        deck.value = deck.value.slice(1);
+      } else {
+        deck.value = [...deck.value.slice(1), card];
+      }
+      flying.value = "";
+      locked.value = false;
+      timer = null;
+    },
+    correct ? FLY_DELAY : BOUNCE_DELAY,
+  );
+}
 
-defineExpose({ reset })
+watch(() => props.questions, reset);
+onBeforeUnmount(() => clearTimeout(timer));
+defineExpose({ reset });
 </script>
 
 <template>
-  <Activity ref="root" class="flashcard-box" :id="id || null">
-    <main class="flashcard-content">
+  <Activity class="flashcard-box" :complete="isComplete" @reset="reset">
+    <div class="flashcard-content">
       <div class="layout">
         <div class="pile-section">
-          <h2 data-flashcard-pile-label="left">{{ labels.left }}</h2>
-          <div id="left-pile" data-flashcard-pile="left" class="pile-container">
-            <div v-for="(text, i) in piles.left" :key="i" class="pile-card animate-in">{{ shortText(text) }}</div>
+          <h2>{{ labels.left }}</h2>
+          <div class="pile-container left-pile">
+            <div
+              v-for="(text, i) in piles.left"
+              :key="i"
+              class="pile-card animate-in"
+            >
+              {{ shortText(text) }}
+            </div>
           </div>
-          <p id="left-count" data-flashcard-count="left">{{ piles.left.length }}</p>
+          <p class="left-count">{{ piles.left.length }}</p>
         </div>
 
         <div class="center-section">
-          <div id="card-area">
+          <div class="card-area">
             <div
-              id="current-card"
-              data-flashcard-card
+              v-if="!done"
+              class="current-card"
               :class="{
-                hidden: done,
                 'card-fly-left': flying === 'left',
                 'card-fly-right': flying === 'right',
                 'card-fly-up': flying === 'up',
               }"
               :style="{ opacity: flying === 'up' ? 0.5 : 1 }"
-            >{{ currentText }}</div>
+            >
+              {{ currentText }}
+            </div>
 
-            <div id="done-message" data-flashcard-done :class="{ visible: done }">
+            <div v-if="done" class="done-message visible">
               <span>🎉</span>
               <p>All Sorted!</p>
             </div>
           </div>
 
-          <p id="progress" data-flashcard-progress>{{ progress }}</p>
+          <p class="flashcard-progress">{{ progress }}</p>
 
           <div class="btn-row">
-            <button id="btn-investigable" type="button" class="general-button" :disabled="done" @click="sort('left')">
+            <Button
+              class="btn-investigable"
+              :disabled="done || locked"
+              @click="sort('left')"
+            >
               Testable
-            </button>
-            <button id="btn-uninvestigable" type="button" class="general-button" :disabled="done" @click="sort('right')">
+            </Button>
+            <Button
+              class="btn-uninvestigable"
+              :disabled="done || locked"
+              @click="sort('right')"
+            >
               Non-Testable
-            </button>
+            </Button>
           </div>
 
-          <button id="reset-btn" type="button" class="general-button" :class="{ hidden: !started }" @click="reset">
-            Reset
-          </button>
+          <Button v-if="started" class="reset-btn" @click="reset">Reset</Button>
         </div>
 
         <div class="pile-section">
-          <h2 data-flashcard-pile-label="right" class="mb-3">{{ labels.right }}</h2>
-          <div id="right-pile" data-flashcard-pile="right" class="pile-container">
-            <div v-for="(text, i) in piles.right" :key="i" class="pile-card animate-in">{{ shortText(text) }}</div>
+          <h2 class="mb-3">{{ labels.right }}</h2>
+          <div class="pile-container right-pile">
+            <div
+              v-for="(text, i) in piles.right"
+              :key="i"
+              class="pile-card animate-in"
+            >
+              {{ shortText(text) }}
+            </div>
           </div>
-          <p id="right-count" data-flashcard-count="right">{{ piles.right.length }}</p>
+          <p class="right-count">{{ piles.right.length }}</p>
         </div>
       </div>
-    </main>
+    </div>
   </Activity>
 </template>
 
-<style>
+<style scoped>
 .flashcard-box {
   padding: 12px;
   background: var(--soft-blue);
@@ -196,8 +188,8 @@ defineExpose({ reset })
 
 .flashcard-content {
   background-color: var(--soft-blue);
-    padding: 50px 0;
-    flex: 1;
+  padding: 50px 0;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -234,24 +226,24 @@ defineExpose({ reset })
   overflow-y: auto;
 }
 
-#left-pile {
+.left-pile {
   border-color: var(--mint);
   background: var(--soft-green);
 }
 
-#right-pile {
+.right-pile {
   border-color: var(--orange);
   background: var(--soft-orange);
 }
 
-#left-count {
+.left-count {
   color: var(--green);
   font-size: 0.875rem;
   margin-top: 0.75rem;
   font-weight: 600;
 }
 
-#right-count {
+.right-count {
   color: var(--orange);
   font-size: 0.875rem;
   margin-top: 0.75rem;
@@ -270,25 +262,22 @@ defineExpose({ reset })
     flex-direction: column;
   }
 
-  
   .layout {
   }
 
-  
   .center-section {
     font-size: clamp(14px, 1vw, 18px);
   }
-
 }
 
-#card-area {
+.card-area {
   position: relative;
   width: 18rem;
   height: 14rem;
   margin-bottom: 1.5rem;
 }
 
-#current-card {
+.current-card {
   position: absolute;
   inset: 0;
   background: var(--paper);
@@ -307,7 +296,7 @@ defineExpose({ reset })
   line-height: 1.6;
 }
 
-#done-message {
+.done-message {
   display: none;
   position: absolute;
   inset: 0;
@@ -317,21 +306,21 @@ defineExpose({ reset })
   gap: 1rem;
 }
 
-#done-message.visible {
+.done-message.visible {
   display: flex;
 }
 
-#done-message span {
+.done-message span {
   font-size: 3.75rem;
 }
 
-#done-message p {
+.done-message p {
   font-size: 1.5rem;
   font-weight: 700;
   color: #15803d;
 }
 
-#progress {
+.flashcard-progress {
   font-size: 1rem;
   color: var(--charcoal);
   margin-bottom: 1.5rem;
@@ -344,27 +333,19 @@ defineExpose({ reset })
   margin-bottom: 1rem;
 }
 
-#btn-investigable {
-  background: var(--green);
+.btn-investigable {
+  --background: var(--green);
 }
 
-#btn-uninvestigable {
-  background: var(--orange);
+.btn-uninvestigable {
+  --color: var(--charcoal);
+  --background: var(--yellow);
 }
 
-#btn-investigable:hover,
-#btn-uninvestigable:hover {
-  background: var(--button-hover);
-}
-
-#reset-btn {
-  /* padding: 0.5rem 1.5rem; */
-  background: var(--muted);
-  color: var(--paper);
-}
-
-#reset-btn:hover {
-  background: var(--soft-purple);
+.btn-investigable,
+.btn-uninvestigable {
+  --background-hover: var(--button-hover);
+  --color-hover: var(--paper);
 }
 
 .hidden {
@@ -388,7 +369,6 @@ defineExpose({ reset })
     transform: translateX(-300px) rotate(-10deg);
     opacity: 0;
   }
-
 }
 
 @keyframes flyRight {
@@ -396,7 +376,6 @@ defineExpose({ reset })
     transform: translateX(300px) rotate(10deg);
     opacity: 0;
   }
-
 }
 
 @keyframes flyUp {
@@ -404,7 +383,6 @@ defineExpose({ reset })
     transform: translateY(-300px) rotate(10deg);
     opacity: 0;
   }
-
 }
 
 @keyframes bounce-in {
@@ -419,7 +397,6 @@ defineExpose({ reset })
   100% {
     transform: scale(1);
   }
-
 }
 
 .animate-in {
@@ -440,7 +417,7 @@ defineExpose({ reset })
 @media (max-width: 800px) {
   .layout {
     flex-direction: column;
-    gap: 1.0vw;
+    gap: 1vw;
   }
 
   @keyframes flyLeft {
@@ -448,7 +425,6 @@ defineExpose({ reset })
       transform: translateY(-300px) rotate(-10deg);
       opacity: 0;
     }
-
   }
 
   @keyframes flyRight {
@@ -456,7 +432,6 @@ defineExpose({ reset })
       transform: translateY(300px) rotate(10deg);
       opacity: 0;
     }
-
   }
 
   @keyframes flyUp {
@@ -464,8 +439,6 @@ defineExpose({ reset })
       transform: translateX(-300px) rotate(10deg);
       opacity: 0;
     }
-
   }
-
 }
 </style>

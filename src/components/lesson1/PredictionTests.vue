@@ -1,102 +1,151 @@
 <script setup>
-/*
-  Lesson 1 "test reasoned predictions" activity: a list of experiment cards,
-  each asking whether the results support a reasoned prediction.
-
-    <PredictionTests :tests="tests" />
-
-  tests: [{ title, question, prediction, image, answer: 'true' | 'false',
-            correct, incorrect }]   (question / prediction may contain HTML)
-
-  Built on <MultipleChoice>. The "Well done" message appears once every card has
-  been answered correctly.
-*/
-import { nextTick, ref } from 'vue'
-import MultipleChoice from '../activities/MultipleChoice.vue'
+import { computed, nextTick, ref } from "vue";
+import Activity from "../activities/Activity.vue";
+import Button from "../Button.vue";
 
 const props = defineProps({
-  id: { type: String, default: 'testingPredictionsActivity' },
   tests: { type: Array, required: true },
-})
+  completionMode: { type: String, default: "sticky" },
+});
 
-const allCorrect = ref(false)
-const completion = ref(null)
+const answers = ref({});
+const correctEver = ref({});
+const completion = ref(null);
 
-function onAnswer() {
-  allCorrect.value = getActivity(props.id).isComplete()
+const isComplete = computed(
+  () =>
+    props.tests.length > 0 &&
+    props.tests.every((test, i) =>
+      props.completionMode === "live"
+        ? answers.value[i] === String(test.answer)
+        : correctEver.value[i] === true,
+    ),
+);
 
-  if (allCorrect.value) {
-    nextTick(() => completion.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
+function selectAnswer(index, value) {
+  answers.value = { ...answers.value, [index]: value };
+  if (value === String(props.tests[index].answer)) {
+    correctEver.value = { ...correctEver.value, [index]: true };
+  }
+  if (isComplete.value) {
+    nextTick(() =>
+      completion.value?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      }),
+    );
   }
 }
+
+function selected(index, value) {
+  return answers.value[index] === value;
+}
+function correct(index) {
+  return answers.value[index] === String(props.tests[index].answer);
+}
+function reset() {
+  answers.value = {};
+  correctEver.value = {};
+}
+
+defineExpose({ reset, isComplete });
 </script>
 
 <template>
-  <MultipleChoice class="prediction-test-list" :id="id" @answer="onAnswer">
-    <article
-      v-for="(test, i) in tests"
-      :key="i"
-      class="prediction-test-card"
-      :id="'predictionTest' + (i + 1)"
-      data-mc-question
-      :data-mc-answer="test.answer"
+  <Activity
+    class="prediction-tests-activity"
+    :complete="isComplete"
+    @reset="reset"
+  >
+    <div class="prediction-test-list">
+      <article
+        v-for="(test, i) in tests"
+        :key="i"
+        class="prediction-test-card"
+        :class="{ 'prediction-completed': correctEver[i] }"
+      >
+        <div class="prediction-test-heading">
+          <span class="prediction-test-number">Example {{ i + 1 }}</span>
+          <h3>{{ test.title }}</h3>
+        </div>
+
+        <div class="prediction-statement-grid">
+          <div class="prediction-statement">
+            <span class="prediction-statement-label">Testable question</span>
+            <p v-html="test.question"></p>
+          </div>
+
+          <div class="prediction-statement">
+            <span class="prediction-statement-label">Reasoned prediction</span>
+            <p v-html="test.prediction"></p>
+          </div>
+        </div>
+
+        <h4 class="prediction-results-heading">Experiment results</h4>
+
+        <div class="prediction-result-image">
+          <img :src="test.image" alt="Experiment results" />
+        </div>
+
+        <div class="prediction-choice-area">
+          <p class="prediction-choice-question">
+            Do the results support the reasoned prediction?
+          </p>
+
+          <div class="prediction-choice-buttons">
+            <Button
+              class="prediction-choice-button"
+              :class="{
+                'selected-answer': selected(i, 'true'),
+                'correct-answer': selected(i, 'true') && correct(i),
+                'incorrect-answer': selected(i, 'true') && !correct(i),
+              }"
+              :aria-pressed="selected(i, 'true')"
+              @click="selectAnswer(i, 'true')"
+            >
+              Supported
+            </Button>
+
+            <Button
+              class="prediction-choice-button"
+              :class="{
+                'selected-answer': selected(i, 'false'),
+                'correct-answer': selected(i, 'false') && correct(i),
+                'incorrect-answer': selected(i, 'false') && !correct(i),
+              }"
+              :aria-pressed="selected(i, 'false')"
+              @click="selectAnswer(i, 'false')"
+            >
+              Not supported
+            </Button>
+          </div>
+
+          <div
+            v-if="answers[i] !== undefined"
+            class="prediction-feedback"
+            :class="correct(i) ? 'feedback-correct' : 'feedback-incorrect'"
+            role="status"
+            aria-live="polite"
+          >
+            {{ correct(i) ? test.correct : test.incorrect }}
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div
+      ref="completion"
+      class="prediction-test-completion"
+      v-show="isComplete"
     >
-      <div class="prediction-test-heading">
-        <span class="prediction-test-number">Example {{ i + 1 }}</span>
-        <h3>{{ test.title }}</h3>
-      </div>
-
-      <div class="prediction-statement-grid">
-        <div class="prediction-statement">
-          <span class="prediction-statement-label">Testable question</span>
-          <p v-html="test.question"></p>
-        </div>
-
-        <div class="prediction-statement">
-          <span class="prediction-statement-label">Reasoned prediction</span>
-          <p v-html="test.prediction"></p>
-        </div>
-      </div>
-
-      <h4 class="prediction-results-heading">Experiment results</h4>
-
-      <div class="prediction-result-image">
-        <img :src="test.image" alt="Experiment results" />
-      </div>
-
-      <div class="prediction-choice-area">
-        <p class="prediction-choice-question">Do the results support the reasoned prediction?</p>
-
-        <div class="prediction-choice-buttons" data-mc-choices>
-          <button type="button" class="general-button prediction-choice-button" data-mc-choice="true">
-            Supported
-          </button>
-
-          <button type="button" class="general-button prediction-choice-button" data-mc-choice="false">
-            Not supported
-          </button>
-        </div>
-
-        <div
-          class="prediction-feedback"
-          data-mc-feedback
-          :data-correct-text="test.correct"
-          :data-incorrect-text="test.incorrect"
-          role="status"
-          aria-live="polite"
-          hidden
-        ></div>
-      </div>
-    </article>
-  </MultipleChoice>
-
-  <div ref="completion" class="prediction-test-completion" id="predictionTestCompletion" :hidden="!allCorrect">
-    <strong>Well done! You practiced:</strong>
-    <ol>
-      <li>Writing a testable question</li>
-      <li>Making a prediction and giving a reason for your choice</li>
-    </ol>
-  </div>
+      <strong>Well done! You practiced:</strong>
+      <ol>
+        <li>Writing a testable question</li>
+        <li>Making a prediction and giving a reason for your choice</li>
+      </ol>
+    </div>
+    <button type="button" class="general-button" @click="reset">Reset</button>
+  </Activity>
 </template>
 
 <style>
@@ -383,7 +432,6 @@ function onAnswer() {
   .prediction-choice-button {
     width: 100%;
   }
-
 }
 
 .feedback-correct {

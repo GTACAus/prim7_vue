@@ -534,7 +534,8 @@ input[type="checkbox"]:active {
 /* ---------- Wheel and question builder layout ---------- */
 
 .reset-btn {
-  background: var(--orange) !important;
+  --background: var(--orange);
+  --background-hover: var(--button-hover);
 }
 
 .reset-button-container {

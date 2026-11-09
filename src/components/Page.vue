@@ -1,68 +1,172 @@
 <script setup>
-import { provide, onMounted, watchEffect } from "vue";
+import {
+  computed,
+  provide,
+  reactive,
+  ref,
+  nextTick,
+  watchEffect,
+  onMounted,
+  onUnmounted,
+} from "vue";
 import Button from "./Button.vue";
-import Modal, { initialiseTeacherMenu } from "./Modal.vue";
+import Modal from "./Modal.vue";
 
-/*
-  One lesson page: the shared modal (glossary + hidden teacher menu), the
-  lesson intro and the sections.
-
-    <Page title="Lesson 1 - ..." :sections="sections" :glossary="glossary">
-
-  Provides the sections list to the <Section name="..."> elements inside it.
-  Each Section looks up its id, title, next-id, locked etc. by key, and
-  tracks its own activities / Next button. The same list (id + label) feeds
-  the teacher menu.
-
-  Once mounted it loads common_functions.js (activities wait for it), sets
-  up the teacher menu and replays DOMContentLoaded for the plain scripts.
-*/
 const props = defineProps({
   title: { type: String, required: true },
   sections: { type: Array, required: true },
-  // { word: description } terms for the vocabulary modal
   glossary: { type: Object, default: null },
-});
-provide("pageSections", props.sections);
-
-// browser tab title
-watchEffect(() => {
-  document.title = props.title;
+  backLink: { type: Object, default: null },
 });
 
-// plain scripts declare globals, so never load one twice (e.g. on hot reload)
-function loadScript(src) {
-  if (document.querySelector(`script[src="${src}"]`)) return Promise.resolve();
-  return new Promise((resolve) => {
-    const el = document.createElement("script");
-    el.src = src;
-    el.onload = el.onerror = resolve;
-    document.body.appendChild(el);
-  });
+// Support both { key, id, title } and { name, label } configurations.
+const sections = computed(() =>
+  props.sections.map((s, index) => {
+    const section = typeof s === "string" ? { id: s } : s;
+    return {
+      ...section,
+      id: section.id || section.name || section.key || String(index),
+      name: section.key || section.name || section.id || String(index),
+      label:
+        section.label ||
+        section.title ||
+        section.id ||
+        section.name ||
+        section.key ||
+        String(index),
+    };
+  }),
+);
+const unlockedIndex = ref(0);
+const showEverything = ref(false);
+const completed = reactive(new Set());
+const mountedSections = new Map();
+const backLink = computed(() => props.backLink);
+const modalRef = ref(null);
+let teacherClicks = 0;
+let teacherTimer = null;
+
+function indexOfSection(name) {
+  return sections.value.findIndex((s) => s.id === name || s.name === name);
 }
-
-onMounted(async () => {
-  await loadScript("../scripts/common_functions.js");
-  initialiseTeacherMenu(props.sections);
-  // the original scripts wait for DOMContentLoaded, which has already fired
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  window.dispatchEvent(new Event("DOMContentLoaded"));
+function isLocked(name) {
+  const i = indexOfSection(name);
+  return i < 0 || (!showEverything.value && i > unlockedIndex.value);
+}
+function isCompleted(name) {
+  const i = indexOfSection(name);
+  return i >= 0 && completed.has(sections.value[i].id);
+}
+function isLast(name) {
+  return indexOfSection(name) === sections.value.length - 1;
+}
+function registerSection(name, controller) {
+  mountedSections.set(name, controller);
+}
+function unregisterSection(name) {
+  mountedSections.delete(name);
+}
+function getController(name) {
+  const s = sections.value[indexOfSection(name)];
+  return s && (mountedSections.get(s.id) || mountedSections.get(s.name));
+}
+function completeSection(name) {
+  const i = indexOfSection(name);
+  if (i < 0 || isLocked(name)) return;
+  completed.add(sections.value[i].id);
+  unlockedIndex.value = Math.max(
+    unlockedIndex.value,
+    Math.min(i + 1, sections.value.length - 1),
+  );
+  scrollToSection(sections.value[i + 1]?.id);
+}
+async function scrollToSection(name) {
+  if (!name) return;
+  await nextTick();
+  getController(name)?.scrollTo();
+}
+function teacherJump(name) {
+  const i = indexOfSection(name);
+  if (i < 0) return;
+  // Teacher navigation changes availability, never marks answers complete.
+  unlockedIndex.value = Math.max(unlockedIndex.value, i);
+  scrollToSection(name);
+}
+function teacherShowAll() {
+  showEverything.value = true;
+}
+async function teacherResetView() {
+  completed.clear();
+  showEverything.value = false;
+  unlockedIndex.value = 0;
+  for (const controller of mountedSections.values()) controller.reset();
+  await nextTick();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function handleTeacherClick(event) {
+  // Works with the existing id="teacherTrigger" without querying the DOM.
+  // Alternatively bind @click="..." directly to a teacher trigger in a lesson view.
+  if (!event.composedPath().some((node) => node?.id === "teacherTrigger"))
+    return;
+  teacherClicks++;
+  clearTimeout(teacherTimer);
+  if (teacherClicks >= 5) {
+    teacherClicks = 0;
+    modalRef.value?.open("teacher", {}, event.target);
+  } else {
+    teacherTimer = setTimeout(() => {
+      teacherClicks = 0;
+    }, 1800);
+  }
+}
+function openTeacherMenu(trigger) {
+  modalRef.value?.open("teacher", {}, trigger);
+}
+provide("lessonPage", {
+  sections,
+  backLink,
+  isLocked,
+  isCompleted,
+  isLast,
+  registerSection,
+  unregisterSection,
+  completeSection,
+  teacherJump,
+  teacherShowAll,
+  teacherResetView,
+});
+// Leave this small config provider for existing sections during the migration.
+provide("pageSections", props.sections);
+watchEffect(() => {
+  if (typeof document !== "undefined") document.title = props.title;
+});
+onMounted(() => document.addEventListener("click", handleTeacherClick, true));
+onUnmounted(() => {
+  clearTimeout(teacherTimer);
+  document.removeEventListener("click", handleTeacherClick, true);
+});
+defineExpose({
+  teacherJump,
+  teacherShowAll,
+  teacherResetView,
+  openTeacherMenu,
 });
 </script>
 
 <template>
-  <Modal :label="title || ''" :glossary="glossary" />
-
+  <Modal
+    ref="modalRef"
+    :label="title"
+    :glossary="glossary"
+    :back-link="backLink"
+  />
   <main class="page">
     <slot name="lesson-intro" />
-    <div class="page-sections">
-      <slot name="sections" />
-    </div>
-
+    <div class="page-sections"><slot name="sections" /></div>
     <div class="return-to-top">
-      <Button class="return-to-top-button" href="#" symbol="↑">
-        Return to Top
-      </Button>
+      <Button class="return-to-top-button" href="#" symbol="↑"
+        >Return to Top</Button
+      >
     </div>
   </main>
 </template>
@@ -76,12 +180,10 @@ onMounted(async () => {
   margin: 0 auto;
   padding: 38px 0 60px;
 }
-
 .return-to-top {
   display: grid;
   place-items: center;
 }
-
 .return-to-top-button {
   display: inline-block;
   width: 15rem;
@@ -89,7 +191,6 @@ onMounted(async () => {
   text-align: center;
   --color: var(--text);
   --background: var(--paper);
-
   --background-hover: var(--soft-green);
 }
 </style>

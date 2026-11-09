@@ -4,70 +4,104 @@
   fill in the two blanks (what is changed, what is measured), tick the
   testable-question checklist and save the question.
 
-    <QuestionWheel next-button-id="testableQuestionsNextButton" />
+    <QuestionWheel />
 
-  next-button-id is the Section's Next button; it appears once two different
-  starters have been saved.
+  Completion is reactive once two different starters have been saved.
 */
-import { computed, nextTick, onBeforeUnmount, reactive, ref } from 'vue'
-import { useClassroomLanguageFilter } from '../../composables/useClassroomLanguageFilter.js'
+import { computed, nextTick, onBeforeUnmount, reactive, ref } from "vue";
+import Activity from "../activities/Activity.vue";
+import Button from "../Button.vue";
+import { useClassroomLanguageFilter } from "../../composables/useClassroomLanguageFilter.js";
 
-const props = defineProps({
-  nextButtonId: { type: String, default: '' },
-})
-
-const { ready, loading, containsProfanity, showBlockedLanguageFeedback } = useClassroomLanguageFilter()
+const { ready, loading, containsProfanity, showBlockedLanguageFeedback } =
+  useClassroomLanguageFilter();
 
 /* One entry per segment of the wheel. destination = the wheel angle (deg) that
    brings that segment under the pointer. */
 const structures = [
-  { word: 'What', cls: 'what', before: 'will changing', between: 'do to', destination: 0 },
-  { word: 'How', cls: 'how', before: 'does changing', between: 'affect', destination: 90 },
-  { word: 'Does', cls: 'does', before: 'changing', between: 'affect', destination: 270 },
-  { word: 'If', cls: 'if', before: 'we change', between: ', how does it affect', destination: 180 },
-]
+  {
+    word: "What",
+    cls: "what",
+    before: "will changing",
+    between: "do to",
+    destination: 0,
+  },
+  {
+    word: "How",
+    cls: "how",
+    before: "does changing",
+    between: "affect",
+    destination: 90,
+  },
+  {
+    word: "Does",
+    cls: "does",
+    before: "changing",
+    between: "affect",
+    destination: 270,
+  },
+  {
+    word: "If",
+    cls: "if",
+    before: "we change",
+    between: ", how does it affect",
+    destination: 180,
+  },
+];
 
-const SPIN_MS = 3250
-const START_TEXT = 'Your question structures will appear here.'
-const RESET_TEXT = 'Spin the wheel to generate a question starter.'
+const SPIN_MS = 3250;
+const START_TEXT = "Your question structures will appear here.";
+const RESET_TEXT = "Spin the wheel to generate a question starter.";
 
-const rotation = ref(0)
-const spinning = ref(false)
-const instant = ref(false) // switch the wheel's transition off while it jumps back to 0
-const result = ref('Spin the wheel to receive a <strong>question</strong> structure.')
-const resultColor = ref('')
-const placeholder = ref(START_TEXT)
-const cards = ref([])
-const usedWords = ref([])
-let spinTimer = null
-let nextCardId = 1
+const rotation = ref(0);
+const spinning = ref(false);
+const instant = ref(false); // switch the wheel's transition off while it jumps back to 0
+const result = ref(
+  "Spin the wheel to receive a <strong>question</strong> structure.",
+);
+const resultColor = ref("");
+const placeholder = ref(START_TEXT);
+const cards = ref([]);
+const usedWords = ref([]);
+let spinTimer = null;
+let nextCardId = 1;
 
-const allUsed = computed(() => usedWords.value.length === structures.length)
-const spinDisabled = computed(() => spinning.value || allUsed.value)
+const isComplete = computed(() => usedWords.value.length >= 2);
+const cardInputs = new Map();
+function setCardInput(id, part, el) {
+  const key = `${id}:${part}`;
+  if (el) cardInputs.set(key, el);
+  else cardInputs.delete(key);
+}
+
+const allUsed = computed(() => usedWords.value.length === structures.length);
+const spinDisabled = computed(() => spinning.value || allUsed.value);
 
 const wheelStyle = computed(() => ({
   transform: `rotate(${rotation.value}deg)`,
-  transition: instant.value ? 'none' : undefined,
-}))
+  transition: instant.value ? "none" : undefined,
+}));
 const labelStyle = computed(() => ({
   transform: `translate(-50%, -50%) rotate(${-rotation.value}deg)`,
-  transition: instant.value ? 'none' : undefined,
-}))
+  transition: instant.value ? "none" : undefined,
+}));
 
 /* ---------- cards ---------- */
 
 function newPart() {
-  return { value: '', text: '', submitted: false }
+  return { value: "", text: "", submitted: false };
 }
 
 function hasContent(card) {
-  return Object.values(card.parts).some((part) => part.submitted || part.value.trim() !== '')
+  return Object.values(card.parts).some(
+    (part) => part.submitted || part.value.trim() !== "",
+  );
 }
 
 function clearMessage(card) {
-  card.message.visible = false
-  card.message.success = false
-  card.message.text = ''
+  card.message.visible = false;
+  card.message.success = false;
+  card.message.text = "";
 }
 
 function addCard(structure) {
@@ -77,170 +111,176 @@ function addCard(structure) {
     structure,
     parts: { changed: newPart(), measured: newPart() },
     checks: { changed: false, measured: false },
-    message: { text: '', visible: false, success: false },
+    message: { text: "", visible: false, success: false },
     saved: false,
-  })
-  cards.value.push(card)
+  });
+  cards.value.push(card);
 
   nextTick(() => {
-    const el = document.querySelector(`[data-card-id="${card.id}"]`)
-    if (!el) return
-    const first = el.querySelector('.question-template-input')
-    if (first) first.focus()
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  })
+    const first = cardInputs.get(`${card.id}:changed`);
+    first?.focus();
+    first?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
 }
 
 /* Enter or leaving the box submits it as an answer chip. */
 function submitPart(card, partName, event) {
-  const part = card.parts[partName]
-  const input = event.target
+  const part = card.parts[partName];
+  const input = event.target;
 
-  if (card.saved || part.submitted || !input.isConnected || part.value.trim() === '') return
+  if (
+    card.saved ||
+    part.submitted ||
+    !input.isConnected ||
+    part.value.trim() === ""
+  )
+    return;
 
-  const answer = part.value.trim()
+  const answer = part.value.trim();
 
   // refused until the word list has loaded, and if it holds a blocked word
   if (!ready.value) {
-    input.focus()
-    return
+    input.focus();
+    return;
   }
 
   if (containsProfanity(answer)) {
-    showBlockedLanguageFeedback(input)
-    part.value = ''
-    return
+    showBlockedLanguageFeedback(input);
+    part.value = "";
+    return;
   }
 
-  part.text = answer
-  part.submitted = true
-  clearMessage(card)
+  part.text = answer;
+  part.submitted = true;
+  clearMessage(card);
 }
 
 function deletePart(card, partName) {
-  const part = card.parts[partName]
-  part.submitted = false
-  part.text = ''
-  part.value = ''
-  clearMessage(card)
+  const part = card.parts[partName];
+  part.submitted = false;
+  part.text = "";
+  part.value = "";
+  clearMessage(card);
 
   nextTick(() => {
-    const el = document.querySelector(`[data-card-id="${card.id}"] [data-question-part="${partName}"]`)
-    if (el) el.focus()
-  })
+    cardInputs.get(`${card.id}:${partName}`)?.focus();
+  });
 }
 
 function canSave(card) {
-  return card.parts.changed.submitted && card.parts.measured.submitted
+  return card.parts.changed.submitted && card.parts.measured.submitted;
 }
 
 function showMessage(card, text) {
-  card.message.success = false
-  card.message.text = text
-  card.message.visible = true
+  card.message.success = false;
+  card.message.text = text;
+  card.message.visible = true;
 }
 
 function saveCard(card) {
   if (!canSave(card)) {
-    showMessage(card, 'Press Enter after completing both sentence blanks.')
-    return
+    showMessage(card, "Press Enter after completing both sentence blanks.");
+    return;
   }
 
   if (!card.checks.changed || !card.checks.measured) {
-    showMessage(card, 'Check both boxes before saving your question.')
-    return
+    showMessage(card, "Check both boxes before saving your question.");
+    return;
   }
 
-  card.saved = true
-  card.message.text = 'Question saved.'
-  card.message.success = true
-  card.message.visible = true
+  card.saved = true;
+  card.message.text = "Question saved.";
+  card.message.success = true;
+  card.message.visible = true;
 
-  if (!usedWords.value.includes(card.structure.word)) usedWords.value.push(card.structure.word)
+  if (!usedWords.value.includes(card.structure.word))
+    usedWords.value.push(card.structure.word);
 
-  if (usedWords.value.length >= 2 && props.nextButtonId) {
-    const nextButton = document.getElementById(props.nextButtonId)
-    if (nextButton) nextButton.hidden = false
-  }
-
-  if (allUsed.value) result.value = 'You have used all four question starters!'
+  if (allUsed.value) result.value = "You have used all four question starters!";
 }
 
 /* ---------- wheel ---------- */
 
 function spin() {
-  resultColor.value = 'var(--soft-purple)'
-  if (spinning.value) return
+  resultColor.value = "var(--soft-purple)";
+  if (spinning.value) return;
 
-  spinning.value = true
-  result.value = 'The wheel is spinning...'
+  spinning.value = true;
+  result.value = "The wheel is spinning...";
 
-  const chosen = structures[Math.floor(Math.random() * structures.length)]
+  const chosen = structures[Math.floor(Math.random() * structures.length)];
 
-  const position = ((rotation.value % 360) + 360) % 360
-  const toDestination = (chosen.destination - position + 360) % 360
-  rotation.value += 5 * 360 + toDestination
+  const position = ((rotation.value % 360) + 360) % 360;
+  const toDestination = (chosen.destination - position + 360) % 360;
+  rotation.value += 5 * 360 + toDestination;
 
-  spinTimer = window.setTimeout(() => finishSpin(chosen), SPIN_MS)
+  spinTimer = window.setTimeout(() => finishSpin(chosen), SPIN_MS);
 }
 
 function finishSpin(chosen) {
-  spinTimer = null
-  const unsaved = cards.value.filter((card) => !card.saved)
+  spinTimer = null;
+  const unsaved = cards.value.filter((card) => !card.saved);
 
-  const alreadySaved = usedWords.value.includes(chosen.word)
-  const alreadyBeingWritten = unsaved.some((card) => card.structure.word === chosen.word && hasContent(card))
+  const alreadySaved = usedWords.value.includes(chosen.word);
+  const alreadyBeingWritten = unsaved.some(
+    (card) => card.structure.word === chosen.word && hasContent(card),
+  );
 
   if (alreadySaved || alreadyBeingWritten) {
-    result.value = `<strong>${chosen.word}</strong> has already been used.<br>Spin again to choose a different question starter.`
-    resultColor.value = 'var(--orange)'
-    spinning.value = false
-    return
+    result.value = `<strong>${chosen.word}</strong> has already been used.<br>Spin again to choose a different question starter.`;
+    resultColor.value = "var(--orange)";
+    spinning.value = false;
+    return;
   }
 
-  result.value = `You landed on <strong>${chosen.word}</strong>.`
+  result.value = `You landed on <strong>${chosen.word}</strong>.`;
 
   // a different starter: drop the earlier question the student never started
-  cards.value = cards.value.filter((card) => card.saved || hasContent(card))
+  cards.value = cards.value.filter((card) => card.saved || hasContent(card));
 
-  addCard(chosen)
-  spinning.value = false
+  addCard(chosen);
+  spinning.value = false;
 }
 
 function reset() {
-  window.clearTimeout(spinTimer)
-  spinTimer = null
-  spinning.value = false
-  usedWords.value = []
-  cards.value = []
+  window.clearTimeout(spinTimer);
+  spinTimer = null;
+  spinning.value = false;
+  usedWords.value = [];
+  cards.value = [];
 
   // jump back to 0 without spinning backwards
-  instant.value = true
-  rotation.value = 0
+  instant.value = true;
+  rotation.value = 0;
   nextTick(() => {
-    document.getElementById('questionWheel')?.offsetWidth // force a reflow
-    instant.value = false
-  })
+    requestAnimationFrame(() => {
+      instant.value = false;
+    });
+  });
 
-  placeholder.value = RESET_TEXT
-  result.value = 'Spin the wheel to receive a question structure.'
-  resultColor.value = ''
+  placeholder.value = RESET_TEXT;
+  result.value = "Spin the wheel to receive a question structure.";
+  resultColor.value = "";
 }
 
-onBeforeUnmount(() => window.clearTimeout(spinTimer))
+onBeforeUnmount(() => window.clearTimeout(spinTimer));
 
-defineExpose({ reset })
+defineExpose({ reset });
 </script>
 
 <template>
-  <div class="testable-question-activity">
+  <Activity
+    class="testable-question-activity"
+    :complete="isComplete"
+    @reset="reset"
+  >
     <div class="activity-heading">
       <p class="activity-eyebrow">Your turn</p>
       <h3>Create a testable question</h3>
       <p>
         Think back to what you were curious about during the
-        <strong>See, Think, Wonder</strong> activity.
-        Spin the wheel to choose a <strong>question</strong> structure.
+        <strong>See, Think, Wonder</strong> activity. Spin the wheel to choose a
+        <strong>question</strong> structure.
       </p>
     </div>
 
@@ -248,69 +288,111 @@ defineExpose({ reset })
       <!-- Wheel side -->
       <div class="wheel-panel">
         <div class="question-wheel-wrapper">
-          <div class="question-wheel" id="questionWheel" aria-label="Question starter wheel" :style="wheelStyle">
+          <div
+            class="question-wheel"
+            aria-label="Question starter wheel"
+            :style="wheelStyle"
+          >
             <span
               v-for="structure in structures"
               :key="structure.word"
               class="wheel-label"
               :class="'wheel-label-' + structure.cls"
               :style="labelStyle"
-            >{{ structure.word }}</span>
+              >{{ structure.word }}</span
+            >
           </div>
           <div class="wheel-pointer" aria-hidden="true"></div>
         </div>
 
-        <button type="button" class="general-button spin-wheel-button" id="spinQuestionWheel" :disabled="spinDisabled" @click="spin">
+        <Button
+          class="spin-wheel-button"
+          :disabled="spinDisabled"
+          @click="spin"
+        >
           Spin the wheel
-        </button>
+        </Button>
 
-        <p class="wheel-result" id="wheelResult" aria-live="polite" :style="{ backgroundColor: resultColor }" v-html="result"></p>
+        <p
+          class="wheel-result"
+          aria-live="polite"
+          :style="{ backgroundColor: resultColor }"
+          v-html="result"
+        ></p>
       </div>
 
       <!-- Question-writing side -->
       <div class="question-builder-panel">
         <h4>Your question structures</h4>
 
-        <div class="selected-question-template" id="selectedQuestionTemplate" aria-live="polite">
-          <p v-if="!cards.length" class="template-placeholder">{{ placeholder }}</p>
+        <div class="selected-question-template" aria-live="polite">
+          <p v-if="!cards.length" class="template-placeholder">
+            {{ placeholder }}
+          </p>
 
           <div
             v-for="card in cards"
             :key="card.id"
             class="wheel-question-card"
             :class="{ saved: card.saved }"
-            :data-card-id="card.id"
-            :data-question-starter="card.structure.word"
           >
             <div class="wheel-question-card-header">
-              <span class="wheel-question-number">Question {{ card.number }}</span>
+              <span class="wheel-question-number"
+                >Question {{ card.number }}</span
+              >
             </div>
 
             <!-- saved: the finished sentence -->
             <div v-if="card.saved" class="question-template-sentence">
-              <span class="sentence-starter" :class="'starter-' + card.structure.cls">{{ card.structure.word }}</span>
+              <span
+                class="sentence-starter"
+                :class="'starter-' + card.structure.cls"
+                >{{ card.structure.word }}</span
+              >
               <span>
                 {{ card.structure.before }}
-                <span class="submitted-variable">{{ card.parts.changed.text }}</span>{{ card.structure.between.startsWith(',') ? '' : ' ' }}{{ card.structure.between }}
-                <span class="submitted-variable">{{ card.parts.measured.text }}</span>?
+                <span class="submitted-variable">{{
+                  card.parts.changed.text
+                }}</span
+                >{{ card.structure.between.startsWith(",") ? "" : " "
+                }}{{ card.structure.between }}
+                <span class="submitted-variable">{{
+                  card.parts.measured.text
+                }}</span
+                >?
               </span>
             </div>
 
             <!-- editing: the sentence with its two blanks -->
             <div v-else class="question-template-sentence">
-              <span class="sentence-starter" :class="'starter-' + card.structure.cls">{{ card.structure.word }}</span>
+              <span
+                class="sentence-starter"
+                :class="'starter-' + card.structure.cls"
+                >{{ card.structure.word }}</span
+              >
               <span>{{ card.structure.before }}</span>
 
-              <span v-if="card.parts.changed.submitted" class="submitted-variable submitted-question-part" data-question-part="changed">
-                <span class="submitted-question-part-text">{{ card.parts.changed.text }}</span>
-                <button type="button" class="delete-answer submitted-part-delete" :aria-label="'Delete ' + card.parts.changed.text" @click="deletePart(card, 'changed')">×</button>
+              <span
+                v-if="card.parts.changed.submitted"
+                class="submitted-variable submitted-question-part"
+              >
+                <span class="submitted-question-part-text">{{
+                  card.parts.changed.text
+                }}</span>
+                <Button
+                  class="submitted-part-delete"
+                  :aria-label="'Delete ' + card.parts.changed.text"
+                  @click="deletePart(card, 'changed')"
+                >
+                  ×
+                </button>
               </span>
               <input
                 v-else
+                :ref="(el) => setCardInput(card.id, 'changed', el)"
                 v-model="card.parts.changed.value"
                 type="text"
                 class="question-template-input"
-                data-question-part="changed"
                 placeholder="what you will change"
                 :disabled="loading"
                 @keydown.enter.prevent="submitPart(card, 'changed', $event)"
@@ -319,16 +401,27 @@ defineExpose({ reset })
 
               <span>{{ card.structure.between }}</span>
 
-              <span v-if="card.parts.measured.submitted" class="submitted-variable submitted-question-part" data-question-part="measured">
-                <span class="submitted-question-part-text">{{ card.parts.measured.text }}</span>
-                <button type="button" class="delete-answer submitted-part-delete" :aria-label="'Delete ' + card.parts.measured.text" @click="deletePart(card, 'measured')">×</button>
+              <span
+                v-if="card.parts.measured.submitted"
+                class="submitted-variable submitted-question-part"
+              >
+                <span class="submitted-question-part-text">{{
+                  card.parts.measured.text
+                }}</span>
+                <Button
+                  class="submitted-part-delete"
+                  :aria-label="'Delete ' + card.parts.measured.text"
+                  @click="deletePart(card, 'measured')"
+                >
+                  ×
+                </Button>
               </span>
               <input
                 v-else
+                :ref="(el) => setCardInput(card.id, 'measured', el)"
                 v-model="card.parts.measured.value"
                 type="text"
                 class="question-template-input"
-                data-question-part="measured"
                 placeholder="what you will measure"
                 :disabled="loading"
                 @keydown.enter.prevent="submitPart(card, 'measured', $event)"
@@ -342,7 +435,7 @@ defineExpose({ reset })
               <h5>Check whether your question is testable</h5>
 
               <label class="check-item">
-                <input v-model="card.checks.changed" type="checkbox" data-check="changed" />
+                <input v-model="card.checks.changed" type="checkbox" />
                 <span>
                   <strong>Is something being changed?</strong>
                   <small>What are you changing?</small>
@@ -350,7 +443,7 @@ defineExpose({ reset })
               </label>
 
               <label class="check-item">
-                <input v-model="card.checks.measured" type="checkbox" data-check="measured" />
+                <input v-model="card.checks.measured" type="checkbox" />
                 <span>
                   <strong>Can the effect be measured?</strong>
                   <small>What will you observe or measure?</small>
@@ -360,26 +453,32 @@ defineExpose({ reset })
 
             <p
               class="wheel-question-message"
-              :class="{ visible: card.message.visible, success: card.message.success }"
+              :class="{
+                visible: card.message.visible,
+                success: card.message.success,
+              }"
               aria-live="polite"
-            >{{ card.message.text }}</p>
+            >
+              {{ card.message.text }}
+            </p>
 
-            <button
+            <Button
               v-if="!card.saved"
-              type="button"
-              class="general-button wheel-save-button"
+              class="wheel-save-button"
               :disabled="!canSave(card)"
               @click="saveCard(card)"
-            >Save my question</button>
+            >
+              Save my question
+          </Button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="reset-button-container">
-      <button type="button" class="general-button reset-btn" @click="reset">Reset</button>
+      <Button class="reset-btn" @click="reset">Reset</Button>
     </div>
-  </div>
+  </Activity>
 </template>
 
 <style>
@@ -735,13 +834,11 @@ defineExpose({ reset })
 
   font-size: 0.85rem;
   line-height: 1;
-}
 
-.wheel-save-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 4px 0 var(--charcoal);
+  --background: var(--orange);
+  --box-shadow: none;
+
+  --box-shadow-hover: var(--shadow-small);
 }
 
 .wheel-question-checklist {
@@ -783,7 +880,6 @@ defineExpose({ reset })
   .question-wheel-wrapper {
     width: 25vw;
   }
-
 }
 
 @media (max-width: 800px) {
@@ -807,7 +903,6 @@ defineExpose({ reset })
   .question-template-sentence > span:not(.sentence-starter) {
     align-self: center;
   }
-
 }
 
 /* One card is created after every spin */
@@ -821,11 +916,6 @@ defineExpose({ reset })
 
 .wheel-question-message.visible {
   display: block;
-}
-
-.spin-wheel-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .check-item {
