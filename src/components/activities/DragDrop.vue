@@ -1,453 +1,228 @@
-<script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
+<script setup>
+/*
+  DRAG AND DROP
+  Items are dragged from a tray into drop slots. The layout around them is
+  entirely up to the page: <DropSlot>s and <DragItem>s can sit anywhere inside.
 
-/* ==================================================
-   GENERIC DRAG AND DROP ACTIVITY
-   Pair with styles/lesson5_styles/drag_and_drop.css and
-   activity-base.js.
+    <DragDrop id="myActivity" strict v-slot="{ done, trayEmpty }" @change="...">
+      <p>The <DropSlot name="a" answer="beaker" /> holds the water.</p>
+      <DropSlot name="b" answer="flask jug">Drop label</DropSlot>   <!-- content shows while empty -->
 
-   Markup contract (everything is found by data attribute, so the layout
-   around it is entirely up to the page):
+      <div data-dd-tray v-show="!trayEmpty">
+        <DragItem name="beaker">...any content...</DragItem>
+        <DragItem name="flask" tag="span">flask</DragItem>
+        <DragItem name="water" reusable>water</DragItem>
+      </div>
 
-     <div id="myActivity" data-activity>
-       <div data-dd-slot="slot-a" data-dd-answer="beaker"></div>   <!-- drop target; data-dd-answer is optional -->
-       <div data-dd-slot="slot-b" data-dd-answer="flask jug"></div> <!-- space-separated: any one of these items -->
-       <div data-dd-slot="slot-c"></div>
-       <div data-dd-tray data-dd-tray-heading="Word Bank">          <!-- where unplaced items live; heading is optional -->
-         <div data-dd-item="beaker">...any content...</div>
-         <div data-dd-item="flask">...any content...</div>
-         <div data-dd-item="water" data-dd-reusable>water</div>     <!-- see data-dd-reusable below -->
-       </div>
-       <button data-reset-trigger>Start over</button>
-     </div>
+      <p v-if="done">Well done!</p>
+      <button data-reset-trigger>Start over</button>
+    </DragDrop>
 
-   Usage:
+  State lives here: which item is in which slot (placements). A <DragItem>
+  renders where it is written (the tray) until it is placed, then teleports
+  into its slot; nothing moves DOM nodes by hand.
 
-     const activity = new DragDropActivity(document.getElementById("myActivity"), {
-       strictSlots: true,                       // optional, see below
-       onChange: function(placements) { ... },  // placements = { slotId: itemId }
-       onIncorrect: function(itemId, slotId) { ... }   // only fires with strictSlots
-     });
+  Slots and answers (<DropSlot answer="...">):
+    - answer is a space-separated list (or array) of item names, any one of
+      which the slot accepts. No answer = accepts anything.
+    - Slots with the exact same multi-value answer form a group: the same item
+      can't correctly fill two of them ("sunlight water oxygen" on three slots
+      means each word once, in any order).
+  Items:
+    - reusable: never used up; placing it puts a copy in the slot and leaves it
+      in the tray. Dragging a copy out of its slot discards it.
+  strict: dropping an item on a slot whose answer doesn't accept it sends it
+    back (the slot gets .dd-rejected briefly) and emits "incorrect".
 
-   API (beyond the shared Activity API - isComplete/setAvailable/reset/...):
-     activity.getPlacements()      -> { slotId: itemId }
-     activity.setPlacements(map)   -> restore a saved layout
-     activity.isCorrect()          -> every slot with a data-dd-answer holds one of its listed items
-     root event "dd:change"        -> same as onChange (detail.placements)
-     root event "dd:incorrect"     -> same as onIncorrect (detail.itemId, detail.slotId)
+  Complete (for the section's Next button) once every slot is filled and every
+  answer is correct.
 
-   The activity marks itself data-activity-complete once every slot is
-   filled AND (when any slot has data-dd-answer) every answer is correct.
+  Slot props: { done, filled, correct, trayEmpty, placements, reset }.
+  Events: change(placements), incorrect({ item, slot }). A "dd:change" DOM event
+  also fires on the root for the plain save scripts (lesson_progress.js).
+  getActivity(id) adds getPlacements() / setPlacements(map) / isCorrect().
 
-   data-dd-answer is a space-separated list of item ids, any one of which
-   the slot accepts - a single id behaves exactly as before ("this slot
-   wants exactly this item"); several ids means "any one of these items
-   belongs here". Slots that share the exact same multi-value answer form a
-   permutation group: the same item can't correctly fill two of them at
-   once, so "sunlight water oxygen" on three slots means each of those three
-   words is used exactly once across the three, in any order.
+  Interaction: drag with mouse/touch/pen, or click/tap an item then a slot, or
+  keyboard (Enter/Space to pick up and drop, Delete/Backspace sends a placed
+  item back, Escape cancels). Dropping on an occupied slot swaps; dropping
+  anywhere else returns the item to the tray.
+*/
+import { computed, nextTick, provide, reactive, ref } from 'vue'
+import Activity from './Activity.vue'
 
-   data-dd-reusable on a tray item means that item is never "used up": dropping
-   it on a slot leaves it sitting in the tray and places a clone into the slot
-   instead, so the same word/value can fill more than one slot at once. Only
-   meaningful on an item still in the tray - dragging the clone back out just
-   removes that clone (the source is already in the tray, nothing to return).
+const props = defineProps({
+  tag: { type: String, default: 'div' },
+  // send items dropped on the wrong slot straight back
+  strict: { type: Boolean, default: false },
+})
 
-   options.strictSlots: when true, dropping an item on a slot whose
-   data-dd-answer doesn't include it sends the item straight back to the
-   tray instead of letting it sit there wrong (the slot also gets a brief
-   .dd-rejected class for a reject animation). Slots with no data-dd-answer
-   always accept any item. Default false: any item may sit in any slot, and
-   isCorrect()/completion are the only thing that reflects right vs wrong -
-   the original behaviour, unchanged for every activity that doesn't opt in.
+const emit = defineEmits(['change', 'incorrect'])
 
-   Interaction: drag with mouse/touch/pen (pointer events), or click/tap an
-   item then click/tap a slot, or use the keyboard (Enter/Space to pick up
-   an item and again on a slot to drop it, Delete/Backspace to send a placed
-   item back to the tray). Dropping on an occupied slot swaps the items;
-   dropping anywhere else returns the item to the tray.
-   ================================================== */
+const DRAG_THRESHOLD = 5 // px of movement before a press becomes a drag
 
+/* ---------- state ---------- */
 
-const DRAG_THRESHOLD = 5; /* px of movement before a press becomes a drag */
+const placements = reactive({}) // slot name -> item name
+const slots = reactive(new Map()) // slot name -> { answers, el }
+const items = reactive(new Map()) // item name -> { reusable }
 
-function DragDropActivity(root, options) {
-  Activity.call(this, root, options);
+/* A "piece" is one rendered item: { item, from } where from is the slot it
+   sits in, or null for the tray. A reusable item has one piece in the tray
+   plus one copy per slot holding it. */
+const selected = ref(null)
+const dragging = ref(null)
+const hoverSlot = ref(null)
+const rejectedSlot = ref(null)
 
-  this.tray = root.querySelector("[data-dd-tray]");
-  const trayHeading = this.tray && this.tray.getAttribute("data-dd-tray-heading");
-  if (trayHeading) {
-    const heading = document.createElement("p");
-    heading.className = "dd-tray-heading";
-    heading.textContent = trayHeading;
-    this.tray.insertBefore(heading, this.tray.firstChild);
+const activity = ref(null)
+
+/* ---------- derived ---------- */
+
+function isReusable(item) {
+  return Boolean(items.get(item)?.reusable)
+}
+
+function slotOf(item) {
+  return Object.keys(placements).find((slot) => placements[slot] === item) ?? null
+}
+
+function slotsHolding(item) {
+  return Object.keys(placements).filter((slot) => placements[slot] === item)
+}
+
+function accepts(slot, item) {
+  const answers = slots.get(slot)?.answers ?? []
+  return answers.length === 0 || answers.includes(item)
+}
+
+// another slot with the same multi-value answer already holds this item
+// (ignoring `leaving`, the slot the item is being moved out of)
+function isDuplicateInGroup(slot, item, leaving = null) {
+  const group = slots.get(slot)?.answers.join(' ')
+  return [...slots.keys()].some(
+    (other) =>
+      other !== slot &&
+      other !== leaving &&
+      slots.get(other).answers.join(' ') === group &&
+      placements[other] === item
+  )
+}
+
+const filled = computed(() => slots.size > 0 && [...slots.keys()].every((slot) => placements[slot]))
+
+const correct = computed(() =>
+  [...slots.keys()].every((slot) => {
+    if (!slots.get(slot).answers.length) return true
+    const item = placements[slot]
+    return Boolean(item) && accepts(slot, item) && !isDuplicateInGroup(slot, item)
+  })
+)
+
+const done = computed(() => filled.value && correct.value)
+
+const trayEmpty = computed(() =>
+  [...items.keys()].every((item) => !isReusable(item) && slotOf(item))
+)
+
+/* ---------- placing ---------- */
+
+function changed() {
+  const snapshot = { ...placements }
+  emit('change', snapshot)
+
+  // after the re-render, so plain scripts reading getActivity(id).isComplete() see the new state
+  nextTick(() =>
+    activity.value?.$el.dispatchEvent(
+      new CustomEvent('dd:change', { detail: { placements: snapshot }, bubbles: true })
+    )
+  )
+}
+
+function rejects(slot, item, from) {
+  if (!props.strict || !slots.get(slot)?.answers.length) return false
+  return !accepts(slot, item) || isDuplicateInGroup(slot, item, from)
+}
+
+let rejectTimer = null
+function reject(item, slot) {
+  // off for a frame, so a repeated wrong drop restarts the animation
+  rejectedSlot.value = null
+  clearTimeout(rejectTimer)
+  requestAnimationFrame(() => {
+    rejectedSlot.value = slot
+    rejectTimer = setTimeout(() => (rejectedSlot.value = null), 500)
+  })
+  emit('incorrect', { item, slot })
+}
+
+// move a piece to a slot (null = back to the tray)
+function place({ item, from }, target) {
+  if (target && rejects(target, item, from)) {
+    reject(item, target)
+    return
   }
+  if (target === from) return
 
-  this.slots = Array.prototype.slice.call(root.querySelectorAll("[data-dd-slot]"));
-  this.items = {};
-  this.selectedItem = null;
-  this.drag = null;
-
-  /* lets lesson_progress.js find every activity on the page to save/restore its placements */
-  DragDropActivity.instances.push(this);
-
-  var self = this;
-
-  Array.prototype.forEach.call(root.querySelectorAll("[data-dd-item]"), function (item) {
-    self.items[item.dataset.ddItem] = item;
-    item.tabIndex = 0;
-    item.setAttribute("role", "button");
-    item.setAttribute("aria-pressed", "false");
-    item.addEventListener("pointerdown", function (event) { self._onPointerDown(event, item); });
-    item.addEventListener("keydown", function (event) { self._onItemKey(event, item); });
-    item.addEventListener("dragstart", function (event) { event.preventDefault(); }); /* native image/text drag would cancel the pointer drag */
-  });
-
-  this.slots.forEach(function (slot) {
-    slot.tabIndex = 0;
-    slot.addEventListener("click", function () { self._onSlotActivate(slot); });
-    slot.addEventListener("keydown", function (event) {
-      if (event.target !== slot) return;
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        self._onSlotActivate(slot);
-      }
-    });
-  });
-
-  /* remember each slot's original content so it can be restored when emptied */
-  this.placeholders = new Map();
-  this.slots.forEach(function (slot) {
-    var nodes = Array.prototype.filter.call(slot.childNodes, function (node) {
-      return !(node.nodeType === 1 && node.hasAttribute("data-dd-item"));
-    });
-    if (nodes.some(function (node) { return node.nodeType === 1 || node.textContent.trim(); })) {
-      self.placeholders.set(slot, { nodes: nodes, hidden: false });
-    }
-  });
-  this._refreshFilled();
-
-  this.setComplete(this.isComplete() && this.isCorrect());
-}
-
-DragDropActivity.instances = [];
-
-DragDropActivity.prototype = Object.create(Activity.prototype);
-DragDropActivity.prototype.constructor = DragDropActivity;
-
-/* ---------- public API ---------- */
-
-DragDropActivity.prototype.getPlacements = function () {
-  let result = {};
-  this.slots.forEach(function (slot) {
-    const item = slot.querySelector("[data-dd-item]");
-    if (item) result[slot.dataset.ddSlot] = item.dataset.ddItem;
-  });
-  return result;
-};
-
-DragDropActivity.prototype.setPlacements = function (placements) {
-  var self = this;
-  this._returnAllToTray();
-  Object.keys(placements || {}).forEach(function (slotId) {
-    var slot = self._slotById(slotId);
-    var item = self.items[placements[slotId]];
-    if (slot && item && !self._itemIn(slot)) self._applyPlacement(item, slot);
-  });
-  this._refreshFilled();
-  this._clearSelection();
-  this.setComplete(this.isComplete() && this.isCorrect());
-};
-
-/* Returns every item to the tray - the natural "start over" for this
-   activity, so it's what the shared [data-reset-trigger] button runs. */
-DragDropActivity.prototype.reset = function () {
-  this._returnAllToTray();
-  this._clearSelection();
-  this._changed();
-};
-
-DragDropActivity.prototype.isComplete = function () {
-  /* Activity's constructor can call this (via the depends-on recheck) before this.slots exists */
-  if (!this.slots) return false;
-  var self = this;
-  return this.slots.every(function (slot) { return Boolean(self._itemIn(slot)); });
-};
-
-DragDropActivity.prototype.isCorrect = function () {
-  if (!this.slots) return false;
-  var self = this;
-  return this.slots.every(function (slot) {
-    if (!slot.dataset.ddAnswer) return true;
-    var item = self._itemIn(slot);
-    return Boolean(item) && self._slotAccepts(slot, item.dataset.ddItem) && !self._isDuplicateInGroup(slot, item);
-  });
-};
-
-DragDropActivity.prototype.getTrayItemCount = function() {
-  return this.tray.children.length;
-}
-
-/* ---------- internals ---------- */
-
-DragDropActivity.prototype._slotById = function (id) {
-  return this.slots.filter(function (slot) { return slot.dataset.ddSlot === id; })[0] || null;
-};
-
-DragDropActivity.prototype._itemIn = function (slot) {
-  return slot.querySelector("[data-dd-item]");
-};
-
-DragDropActivity.prototype._slotOf = function (item) {
-  var parent = item.parentElement;
-  return parent && parent.hasAttribute("data-dd-slot") ? parent : null;
-};
-
-DragDropActivity.prototype._put = function (item, slot) {
-  // let style = item.style;
-  // style = "";
-  // style.color = "inherit";
-  (slot || this.tray).appendChild(item);
-  item.classList.toggle("dd-placed", Boolean(slot));
-  this._refreshFilled();
-};
-
-/* Slots may carry their own content (e.g. "Drop label"). That content is
-   swapped out while the slot holds an item and put back once it's empty. */
-DragDropActivity.prototype._refreshFilled = function () {
-  var self = this;
-  this.slots.forEach(function (slot) {
-    var filled = Boolean(slot.querySelector("[data-dd-item]"));
-    slot.classList.toggle("dd-filled", filled);
-
-    var placeholder = self.placeholders.get(slot);
-    if (!placeholder) return;
-    if (filled && !placeholder.hidden) {
-      placeholder.nodes.forEach(function (node) { if (node.parentNode === slot) slot.removeChild(node); });
-      placeholder.hidden = true;
-    } else if (!filled && placeholder.hidden) {
-      placeholder.nodes.forEach(function (node) { slot.appendChild(node); });
-      placeholder.hidden = false;
-    }
-  });
-};
-
-DragDropActivity.prototype._returnAllToTray = function () {
-  var self = this;
-  this.tray.hidden = false; // Unhide tray incase it was hidden
-  Object.keys(this.items).forEach(function (id) { self._put(self.items[id], null); });
-  Array.prototype.forEach.call(this.root.querySelectorAll(".dd-clone"), function (clone) { clone.remove(); });
-  this._refreshFilled();
-};
-
-DragDropActivity.prototype._isClone = function (item) {
-  return item.classList.contains("dd-clone");
-};
-
-/* A tray item marked data-dd-reusable is never consumed: placing it spawns
-   a clone for the slot instead of moving the original out of the tray. */
-DragDropActivity.prototype._isReusableSource = function (item) {
-  return item.hasAttribute("data-dd-reusable") && !this._isClone(item);
-};
-
-DragDropActivity.prototype._spawnClone = function (sourceItem) {
-  var clone = sourceItem.cloneNode(true);
-  clone.classList.add("dd-clone");
-  clone.removeAttribute("data-dd-reusable");
-  clone.tabIndex = 0;
-  clone.setAttribute("role", "button");
-  clone.setAttribute("aria-pressed", "false");
-
-  var self = this;
-  clone.addEventListener("pointerdown", function (event) { self._onPointerDown(event, clone); });
-  clone.addEventListener("keydown", function (event) { self._onItemKey(event, clone); });
-  clone.addEventListener("dragstart", function (event) { event.preventDefault(); });
-
-  return clone;
-};
-
-/* Empties a slot the way appropriate to whatever is currently in it: a
-   clone is simply discarded (its source is already in the tray), a
-   regular item is returned to the tray. */
-DragDropActivity.prototype._vacate = function (slot) {
-  var occupant = this._itemIn(slot);
-  if (!occupant) return;
-  if (this._isClone(occupant)) {
-    occupant.remove();
+  if (isReusable(item)) {
+    if (from) delete placements[from] // a copy leaves its slot (or is discarded)
+    if (target) placements[target] = item // the tray source stays; a copy goes in
   } else {
-    occupant.classList.remove("dd-placed");
-    this.tray.appendChild(occupant);
-  }
-};
-
-/* The DOM move itself, with no rejection check and no change event - used
-   both by interactive placement and by the quiet bulk restore in
-   setPlacements(). */
-DragDropActivity.prototype._applyPlacement = function (item, slot) {
-  if (this._isReusableSource(item)) {
-    this._vacate(slot);
-    var clone = this._spawnClone(item);
-    slot.appendChild(clone);
-    clone.classList.add("dd-placed");
-    return;
-  }
-
-  if (this._isClone(item)) {
-    this._vacate(slot);
-    slot.appendChild(item);
-    item.classList.add("dd-placed");
-    return;
-  }
-
-  this._put(item, slot);
-};
-
-/* Place item in slot (null = tray). An occupied target swaps with the item's old slot, or sends the occupant to the tray. */
-DragDropActivity.prototype._place = function (item, slot) {
-  if (slot && this._rejects(slot, item)) {
-    this._onReject(item, slot);
-    return;
-  }
-
-  if (this._isReusableSource(item)) {
-    if (!slot) return; /* already "in the tray" - nothing to do */
-    this._applyPlacement(item, slot);
-    this._refreshFilled();
-    this._changed();
-    return;
-  }
-
-  if (this._isClone(item)) {
-    var itsSlot = this._slotOf(item);
-    if (slot === itsSlot) return;
-    if (!slot) {
-      item.remove(); /* the source is already in the tray; discard this instance */
-    } else {
-      this._applyPlacement(item, slot);
+    // an occupant swaps into the slot this item came from, or goes to the tray
+    const occupant = target ? placements[target] : null
+    if (from) {
+      if (occupant) placements[from] = occupant
+      else delete placements[from]
     }
-    this._refreshFilled();
-    this._changed();
-    return;
+    if (target) placements[target] = item
   }
 
-  var previousSlot = this._slotOf(item);
-  if (slot === previousSlot) return;
+  changed()
+}
 
-  var occupant = slot ? this._itemIn(slot) : null;
-  if (occupant) this._put(occupant, previousSlot);
-  this._put(item, slot);
-  this._changed();
-};
+/* ---------- click / keyboard ---------- */
 
-/* data-dd-answer is a space-separated list of item ids the slot accepts. */
-DragDropActivity.prototype._slotAccepts = function (slot, itemId) {
-  var answer = slot.dataset.ddAnswer;
-  if (!answer) return true;
-  return answer.split(/\s+/).indexOf(itemId) !== -1;
-};
+function isSelected(piece) {
+  return selected.value?.item === piece.item && selected.value?.from === piece.from
+}
 
-/* Slots that share the exact same (multi-value) data-dd-answer form a
-   permutation group - "any one of these words, each used once across the
-   group" - so the same item can't correctly fill two of them at once.
-   Single-answer slots never collide this way unless two of them were
-   deliberately given the identical one-item answer. */
-DragDropActivity.prototype._isDuplicateInGroup = function (slot, item) {
-  var answer = slot.dataset.ddAnswer;
-  var itemId = item.dataset.ddItem;
-  var self = this;
-  return this.slots.some(function (other) {
-    if (other === slot || other.dataset.ddAnswer !== answer) return false;
-    var occupant = self._itemIn(other);
-    return Boolean(occupant) && occupant.dataset.ddItem === itemId;
-  });
-};
+function toggleSelect(piece) {
+  selected.value = isSelected(piece) ? null : piece
+}
 
-/* With strictSlots on, a slot that names an answer refuses any other item,
-   and refuses an otherwise-correct item that's already used elsewhere in
-   its permutation group. */
-DragDropActivity.prototype._rejects = function (slot, item) {
-  if (!this.options.strictSlots) return false;
-  if (!slot.dataset.ddAnswer) return false;
-  if (!this._slotAccepts(slot, item.dataset.ddItem)) return true;
-  return this._isDuplicateInGroup(slot, item);
-};
+function slotActivate(event, slot) {
+  if (!selected.value) return
+  if (event.target.closest('[data-dd-item]')) return // a click on an item inside is its own
+  const piece = selected.value
+  selected.value = null
+  place(piece, slot)
+}
 
-DragDropActivity.prototype._onReject = function (item, slot) {
-  slot.classList.remove("dd-rejected");
-  void slot.offsetWidth; /* restarts the reject animation on repeated wrong drops */
-  slot.classList.add("dd-rejected");
-  window.setTimeout(function () { slot.classList.remove("dd-rejected"); }, 500);
-
-  var itemId = item.dataset.ddItem;
-  var slotId = slot.dataset.ddSlot;
-
-  if (typeof this.options.onIncorrect === "function") this.options.onIncorrect(itemId, slotId);
-  this.root.dispatchEvent(new CustomEvent("dd:incorrect", {
-    detail: { itemId: itemId, slotId: slotId },
-    bubbles: true
-  }));
-};
-
-DragDropActivity.prototype._changed = function () {
-  var placements = this.getPlacements();
-  if (typeof this.options.onChange === "function") this.options.onChange(placements);
-  this.root.dispatchEvent(new CustomEvent("dd:change", { detail: { placements: placements }, bubbles: true }));
-  this.setComplete(this.isComplete() && this.isCorrect());
-};
-
-/* ----- click / keyboard pick-up-and-drop ----- */
-
-DragDropActivity.prototype._select = function (item) {
-  this._clearSelection();
-  this.selectedItem = item;
-  item.classList.add("dd-selected");
-  item.setAttribute("aria-pressed", "true");
-  this.root.classList.add("dd-has-selection");
-};
-
-DragDropActivity.prototype._clearSelection = function () {
-  if (this.selectedItem) {
-    this.selectedItem.classList.remove("dd-selected");
-    this.selectedItem.setAttribute("aria-pressed", "false");
+function itemKey(event, piece) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    toggleSelect(piece)
+  } else if ((event.key === 'Delete' || event.key === 'Backspace') && piece.from) {
+    event.preventDefault()
+    selected.value = null
+    place(piece, null)
+  } else if (event.key === 'Escape') {
+    selected.value = null
   }
-  this.selectedItem = null;
-  this.root.classList.remove("dd-has-selection");
-};
+}
 
-DragDropActivity.prototype._toggleSelect = function (item) {
-  if (this.selectedItem === item) this._clearSelection();
-  else this._select(item);
-};
+/* ---------- pointer dragging ---------- */
 
-DragDropActivity.prototype._onSlotActivate = function (slot) {
-  if (!this.selectedItem) return;
-  var item = this.selectedItem;
-  this._clearSelection();
-  this._place(item, slot);
-};
+let drag = null
 
-DragDropActivity.prototype._onItemKey = function (event, item) {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    this._toggleSelect(item);
-  } else if ((event.key === "Delete" || event.key === "Backspace") && this._slotOf(item)) {
-    event.preventDefault();
-    this._clearSelection();
-    this._place(item, null);
-  } else if (event.key === "Escape") {
-    this._clearSelection();
-  }
-};
+function pointerDown(event, piece) {
+  if (event.button !== undefined && event.button !== 0) return
+  if (drag) return
 
-/* ----- pointer dragging ----- */
-
-DragDropActivity.prototype._onPointerDown = function (event, item) {
-  if (event.button !== undefined && event.button !== 0) return;
-  if (this.drag) return;
-
-  var rect = item.getBoundingClientRect();
-  this.drag = {
-    item: item,
+  const el = event.currentTarget
+  const rect = el.getBoundingClientRect()
+  drag = {
+    piece,
+    el,
     pointerId: event.pointerId,
     startX: event.clientX,
     startY: event.clientY,
@@ -457,144 +232,157 @@ DragDropActivity.prototype._onPointerDown = function (event, item) {
     height: rect.height,
     moved: false,
     ghost: null,
-    hoverSlot: null
-  };
-
-  var self = this;
-  this._move = function (e) { self._onPointerMove(e); };
-  this._up = function (e) { self._onPointerUp(e); };
-  document.addEventListener("pointermove", this._move);
-  document.addEventListener("pointerup", this._up);
-  document.addEventListener("pointercancel", this._up);
-};
-
-DragDropActivity.prototype._onPointerMove = function (event) {
-  var drag = this.drag;
-  if (!drag || event.pointerId !== drag.pointerId) return;
-
-  if (!drag.moved) {
-    if (Math.abs(event.clientX - drag.startX) + Math.abs(event.clientY - drag.startY) < DRAG_THRESHOLD) return;
-    drag.moved = true;
-    this._clearSelection();
-    this._startGhost(drag);
   }
 
-  event.preventDefault();
-  drag.ghost.style.left = (event.clientX - drag.offsetX) + "px";
-  drag.ghost.style.top = (event.clientY - drag.offsetY) + "px";
-  this._setHoverSlot(this._slotAt(event.clientX, event.clientY));
-};
+  document.addEventListener('pointermove', pointerMove)
+  document.addEventListener('pointerup', pointerUp)
+  document.addEventListener('pointercancel', pointerUp)
+}
 
-DragDropActivity.prototype._onPointerUp = function (event) {
-  var drag = this.drag;
-  if (!drag || event.pointerId !== drag.pointerId) return;
-
-  document.removeEventListener("pointermove", this._move);
-  document.removeEventListener("pointerup", this._up);
-  document.removeEventListener("pointercancel", this._up);
-  this.drag = null;
+function pointerMove(event) {
+  if (!drag || event.pointerId !== drag.pointerId) return
 
   if (!drag.moved) {
-    this._toggleSelect(drag.item); /* plain click / tap */
-    return;
+    if (Math.abs(event.clientX - drag.startX) + Math.abs(event.clientY - drag.startY) < DRAG_THRESHOLD) return
+    drag.moved = true
+    selected.value = null
+    dragging.value = drag.piece
+    startGhost()
   }
 
-  var cancelled = event.type === "pointercancel";
-  var target = cancelled ? null : this._slotAt(event.clientX, event.clientY);
+  event.preventDefault()
+  drag.ghost.style.left = event.clientX - drag.offsetX + 'px'
+  drag.ghost.style.top = event.clientY - drag.offsetY + 'px'
+  hoverSlot.value = slotAt(event.clientX, event.clientY)
+  drag.ghost.classList.toggle('dd-ghost-hover', Boolean(hoverSlot.value))
+}
 
-  drag.ghost.remove();
-  drag.item.classList.remove("dd-dragging");
-  this.root.classList.remove("dd-is-dragging");
-  this._setHoverSlot(null, drag);
+function pointerUp(event) {
+  if (!drag || event.pointerId !== drag.pointerId) return
 
-  this._place(drag.item, target);
-};
+  document.removeEventListener('pointermove', pointerMove)
+  document.removeEventListener('pointerup', pointerUp)
+  document.removeEventListener('pointercancel', pointerUp)
+  const finished = drag
+  drag = null
 
-DragDropActivity.prototype._startGhost = function (drag) {
-  var ghost = drag.item.cloneNode(true);
-  ghost.removeAttribute("tabindex"); /* keeps data-dd-item so item styling applies; it lives on <body>, outside the root, so lookups never see it */
-  ghost.classList.remove("dd-selected", "dd-placed");
-  ghost.classList.add("dd-ghost");
-  /* A placed item is sized to its slot, so measuring it would give a ghost unlike
-     the one dragged from the tray. Let the ghost take its natural size instead and
-     hold it by its centre. */
-  var wasPlaced = drag.item.classList.contains("dd-placed");
+  if (!finished.moved) {
+    toggleSelect(finished.piece) // plain click / tap
+    return
+  }
+
+  const target = event.type === 'pointercancel' ? null : slotAt(event.clientX, event.clientY)
+  finished.ghost.remove()
+  dragging.value = null
+  hoverSlot.value = null
+  place(finished.piece, target)
+}
+
+/* The ghost following the pointer is a throwaway copy of the item's element,
+   outside the Vue tree (on <body>, or the fullscreen element, which is the only
+   thing rendered in fullscreen). It keeps data-dd-item so item styles apply. */
+function startGhost() {
+  const ghost = drag.el.cloneNode(true)
+  ghost.removeAttribute('tabindex')
+  ghost.classList.remove('dd-selected', 'dd-placed', 'dd-dragging')
+  ghost.classList.add('dd-ghost')
+
+  // a placed item is sized to its slot: let the ghost take its natural size, held by its centre
+  const wasPlaced = Boolean(drag.piece.from)
   if (!wasPlaced) {
-    ghost.style.width = drag.width + "px";
-    ghost.style.height = drag.height + "px";
+    ghost.style.width = drag.width + 'px'
+    ghost.style.height = drag.height + 'px'
   }
-  /* In fullscreen only the fullscreen element's subtree is rendered, so a ghost on <body> would be invisible. */
-  (document.fullscreenElement || document.webkitFullscreenElement || document.body).appendChild(ghost);
+  ;(document.fullscreenElement || document.webkitFullscreenElement || document.body).appendChild(ghost)
   if (wasPlaced) {
-    var ghostRect = ghost.getBoundingClientRect();
-    drag.offsetX = ghostRect.width / 2;
-    drag.offsetY = ghostRect.height / 2;
+    const rect = ghost.getBoundingClientRect()
+    drag.offsetX = rect.width / 2
+    drag.offsetY = rect.height / 2
   }
 
-  drag.ghost = ghost;
-  drag.item.classList.add("dd-dragging");
-  this.root.classList.add("dd-is-dragging");
-};
+  drag.ghost = ghost
+}
 
-/* Slot under the pointer (the ghost has pointer-events: none so it never blocks this). */
-DragDropActivity.prototype._slotAt = function (x, y) {
-  var el = document.elementFromPoint(x, y);
-  var slot = el && el.closest("[data-dd-slot]");
-  return slot && this.root.contains(slot) ? slot : null;
-};
+// slot under the pointer (the ghost has pointer-events: none)
+function slotAt(x, y) {
+  const slot = document.elementFromPoint(x, y)?.closest('[data-dd-slot]')
+  return slot && activity.value?.$el.contains(slot) ? slot.dataset.ddSlot : null
+}
 
-DragDropActivity.prototype._setHoverSlot = function (slot, dragOverride) {
-  var drag = dragOverride || this.drag;
-  if (!drag || drag.hoverSlot === slot) return;
-  if (drag.hoverSlot) drag.hoverSlot.classList.remove("dd-hover");
-  if (slot) slot.classList.add("dd-hover");
-  drag.hoverSlot = slot;
-  /* the ghost bobs while over a slot (styled in drag_and_drop_base.css) */
-  if (drag.ghost) drag.ghost.classList.toggle("dd-ghost-hover", Boolean(slot));
-};
-</script>
+/* ---------- reset / save ---------- */
 
-<script setup>
-/*
-  <DragDrop> wraps the markup of one activity (the data-* contract described
-  above) and starts DragDropActivity on it once mounted.
+function clear() {
+  Object.keys(placements).forEach((slot) => delete placements[slot])
+}
 
-    <DragDrop id="myActivity" :options="{ ... }">
-      ...markup...
-    </DragDrop>
+function reset() {
+  clear()
+  selected.value = null
+  changed()
+}
 
-  - id, class and any data-* attributes fall through to the root element
-    (tag="section" etc. changes the element; default is div).
-  - options is the options object of DragDropActivity. Callbacks (onChange, ...) are
-    read when they fire, so a page script can attach one after mount:
-      getActivity("myActivity").options.onChange = function () { ... }
-  - the activity instance is also reachable from the page as getActivity(id).
-*/
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+function getPlacements() {
+  return { ...placements }
+}
 
-const props = defineProps({
-  tag: { type: String, default: 'div' },
-  options: { type: Object, default: () => ({}) },
-})
-
-const root = ref(null)
-let activity = null
-
-onMounted(() => {
-  whenCommonFunctionsReady(() => {
-    activity = new DragDropActivity(root.value, { ...props.options })
+// restore a saved layout (no change event)
+function setPlacements(saved) {
+  clear()
+  selected.value = null
+  Object.entries(saved || {}).forEach(([slot, item]) => {
+    if (!slots.has(slot) || !items.has(item)) return
+    if (!isReusable(item)) {
+      const previous = slotOf(item)
+      if (previous) delete placements[previous]
+    }
+    placements[slot] = item
   })
+}
+
+/* ---------- for <DropSlot> / <DragItem> ---------- */
+
+provide('dragDrop', {
+  placements,
+  registerSlot: (name, slot) => slots.set(name, slot),
+  unregisterSlot: (name) => {
+    slots.delete(name)
+    delete placements[name]
+  },
+  registerItem: (name, item) => items.set(name, item),
+  unregisterItem: (name) => items.delete(name),
+  slotEl: (name) => slots.get(name)?.el ?? null,
+  slotOf,
+  slotsHolding,
+  isSelected,
+  isDragging: (piece) => dragging.value?.item === piece.item && dragging.value?.from === piece.from,
+  isHover: (slot) => hoverSlot.value === slot,
+  isRejected: (slot) => rejectedSlot.value === slot,
+  pointerDown,
+  itemKey,
+  slotActivate,
 })
 
-onBeforeUnmount(() => {
-  activity = null
-})
+const api = { getPlacements, setPlacements, isCorrect: () => correct.value }
 
-defineExpose({ getActivity: () => activity })
+defineExpose({ ...api, reset, done })
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
-    <slot />
-  </component>
+  <Activity
+    ref="activity"
+    :tag="tag"
+    :complete="done"
+    :api="api"
+    :class="{ 'dd-has-selection': selected, 'dd-is-dragging': dragging }"
+    @reset="reset"
+  >
+    <slot
+      :done="done"
+      :filled="filled"
+      :correct="correct"
+      :trayEmpty="trayEmpty"
+      :placements="placements"
+      :reset="reset"
+    />
+  </Activity>
 </template>

@@ -1,11 +1,11 @@
 <script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
+import { ActivityBase, whenCommonFunctionsReady } from './Activity.vue'
 
 /* ==================================================
    REASONED PREDICTION TABLE
    A graphic-organiser activity: pick a cause/effect relationship between
    a testable question's two variables, then write a reason, to build one
-   full "reasoned prediction" sentence. Pair with activity-base.js and
+   full "reasoned prediction" sentence. Pair with Activity.vue and
    styles/reasoned_prediction_builder.css.
 
    Markup contract:
@@ -87,7 +87,7 @@ var EFFECT_PHRASES = {
 };
 
 function PredictionTableActivity(root, options) {
-  Activity.call(this, root, options);
+  ActivityBase.call(this, root, options);
 
   this.causeOptions = this.options.causeOptions || DEFAULT_CAUSE_OPTIONS;
 
@@ -117,7 +117,7 @@ function PredictionTableActivity(root, options) {
   this._renderCauseButtons();
 }
 
-PredictionTableActivity.prototype = Object.create(Activity.prototype);
+PredictionTableActivity.prototype = Object.create(ActivityBase.prototype);
 PredictionTableActivity.prototype.constructor = PredictionTableActivity;
 
 /* ---------- public API ---------- */
@@ -380,6 +380,7 @@ PredictionTableActivity.prototype._getCauseActionPhrase = function (change) {
   - the activity instance is also reachable from the page as getActivity(id).
 */
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import Activity from './Activity.vue'
 import StudentEntry from '../StudentEntry.vue'
 
 const props = defineProps({
@@ -403,7 +404,7 @@ let activity = null
 
 onMounted(() => {
   whenCommonFunctionsReady(() => {
-    activity = new PredictionTableActivity(root.value, { ...props.options })
+    activity = new PredictionTableActivity(root.value?.$el, { ...props.options })
   })
 })
 
@@ -415,7 +416,7 @@ defineExpose({ getActivity: () => activity })
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
+  <Activity :tag="tag" ref="root">
     <!-- anything that sits above the organiser, e.g. a heading -->
     <slot name="before" />
 
@@ -553,7 +554,7 @@ defineExpose({ getActivity: () => activity })
 
     <!-- anything that sits below the organiser -->
     <slot />
-  </component>
+  </Activity>
 </template>
 
 <style>

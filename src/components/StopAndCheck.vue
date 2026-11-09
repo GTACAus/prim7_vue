@@ -3,16 +3,21 @@ import ButtonReveal from './activities/ButtonReveal.vue';
 </script>
 
 <template>
-  <ButtonReveal class="stop-and-check">
+  <ButtonReveal class="stop-and-check" v-slot="{ pressed, press }">
     <div class="stop-and-check-content">
       <slot name="content" />
       <p>Click the button below to check your answer.</p>
     </div>
 
-    <div  class="stop-and-check-answer" data-button-reveal hidden>
+    <div v-if="pressed" class="stop-and-check-answer">
       <slot name="answer" />
     </div>
-    <button class="stop-and-check-button general-button" data-button-trigger>
+    <button
+      v-else
+      type="button"
+      class="stop-and-check-button general-button"
+      @click="press"
+    >
       <p>Check Your Answer</p>
       <p class="bounce-symbol">✅</p>
     </button>

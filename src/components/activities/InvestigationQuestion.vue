@@ -1,11 +1,11 @@
 <script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
+import { ActivityBase, whenCommonFunctionsReady } from './Activity.vue'
 
 /* ==================================================
    INVESTIGATION (TESTABLE) QUESTION BUILDER
    Pick a question structure ("If I change the ___, what happens to the
    ___?"), then fill in its two blanks from a list of variables, to build
-   one testable question. Pair with activity-base.js.
+   one testable question. Pair with Activity.vue.
 
    Markup contract:
 
@@ -81,7 +81,7 @@ var DEFAULT_TEMPLATES = {
 };
 
 function InvestigationQuestionActivity(root, options) {
-  Activity.call(this, root, options);
+  ActivityBase.call(this, root, options);
 
   this.templates = this.options.templates || DEFAULT_TEMPLATES;
   this.variableOptions = this.options.variableOptions || [];
@@ -103,7 +103,7 @@ function InvestigationQuestionActivity(root, options) {
   this.setComplete(false);
 }
 
-InvestigationQuestionActivity.prototype = Object.create(Activity.prototype);
+InvestigationQuestionActivity.prototype = Object.create(ActivityBase.prototype);
 InvestigationQuestionActivity.prototype.constructor = InvestigationQuestionActivity;
 
 /* ---------- public API ---------- */
@@ -323,6 +323,7 @@ InvestigationQuestionActivity.prototype._notify = function () {
   - the activity instance is also reachable from the page as getActivity(id).
 */
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import Activity from './Activity.vue'
 
 const props = defineProps({
   tag: { type: String, default: 'div' },
@@ -344,7 +345,7 @@ let activity = null
 
 onMounted(() => {
   whenCommonFunctionsReady(() => {
-    activity = new InvestigationQuestionActivity(root.value, {
+    activity = new InvestigationQuestionActivity(root.value?.$el, {
       ...props.options,
       onChange(state) {
         if (props.options.onChange) props.options.onChange(state)
@@ -372,7 +373,7 @@ defineExpose({ getActivity: () => activity })
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
+  <Activity :tag="tag" ref="root">
     <div class="question-structure-grid" id="questionStructureGrid">
       <button
         v-for="structure in structures"
@@ -392,7 +393,7 @@ defineExpose({ getActivity: () => activity })
     </div>
 
     <slot />
-  </component>
+  </Activity>
 </template>
 
 <style>

@@ -1,23 +1,12 @@
 <template>
-  <!-- ==================================================
-       FIXED PAGE CONTROLS
-       Update worksheet link later when the PDF exists.
-       ================================================== -->
-
-  <!-- ==================================================
-       VOCABULARY MODAL
-       Placeholder definitions can be refined later.
-       ================================================== -->
-  <Modal
+  <!-- Page renders the vocabulary modal and the hidden teacher menu
+       (opened by clicking the lesson title five times). -->
+  <Page
+    title="Lesson 2 - Planning a Fair Test Experiment"
     label="Lesson 2: Planning a Fair Test Experiment"
+    :sections="sections"
     :glossary="glossary"
-  />
-
-  <!-- ==================================================
-       HIDDEN TEACHER MENU
-       Opened by clicking the lesson title five times.
-       ================================================== -->
-  <Page :sections="sections">
+  >
     <!-- ==================================================
          LESSON INTRODUCTION
          ================================================== -->
@@ -491,9 +480,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import Page from "../components/Page.vue";
-import Modal from "../components/Modal.vue";
 import Section from "../components/Section.vue";
 import StopAndCheck from "../components/StopAndCheck.vue";
 import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
@@ -502,7 +490,6 @@ import MultipleChoice from "../components/activities/MultipleChoice.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 import VariableSort from "../components/activities/VariableSort.vue";
 import FairTestBuilder from "../components/lesson2/FairTestBuilder.vue";
-import { initSectionActivitiesIn } from "../components/activities/activity-sections.js";
 
 // Options passed to the activity components
 const sortVariablesOneActivityOptions = {
@@ -677,7 +664,6 @@ const sections = [
     title: "Build Your Fair Test Plan",
   },
 ];
-const sectionIds = sections.map(({ id, label }) => ({ id, label })); // teacher menu
 
 // Called by the shared PDF function in common_functions.js.
 // Add localStorage saving here when Lesson 2 interactions are built.
@@ -685,22 +671,4 @@ window.saveCurrentPageData = () => {
   console.log("Lesson 2 skeleton: no saved activity data yet.");
 };
 
-function loadScript(src) {
-  return new Promise((resolve) => {
-    const el = document.createElement("script");
-    el.src = src;
-    el.onload = el.onerror = resolve;
-    document.body.appendChild(el);
-  });
-}
-
-onMounted(async () => {
-  document.title = "Lesson 2 - Planning a Fair Test Experiment";
-  await loadScript("../scripts/common_functions.js");
-  initialiseTeacherMenu(sectionIds);
-  initSectionActivitiesIn(document);
-  // the shared scripts wait for DOMContentLoaded, which has already fired
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  window.dispatchEvent(new Event("DOMContentLoaded"));
-});
 </script>

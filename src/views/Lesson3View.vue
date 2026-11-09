@@ -718,28 +718,28 @@
 
             </div>
           </div>
-        <DragDrop id="yeastActivity" class="diagram-activity" :options="yeastActivityOptions">
+        <DragDrop id="yeastActivity" class="diagram-activity" strict>
           
           <div
           class="label-bank table-label-bank"
           id="yeastLabelBank"
           data-dd-tray
-          data-dd-tray-heading="Label Bank"
           aria-label="Labels to place in the yeast experiment table"
           >
-            <button class="general-button drag-label" data-dd-item="yeast-dv">
+            <p class="dd-tray-heading">Label Bank</p>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-dv">
               Circumference of balloon (cm)
-            </button>
-            <button class="general-button drag-label" data-dd-item="yeast-iv">
+            </DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-iv">
               Temperature (°C)
-            </button>
-            <button class="general-button drag-label" data-dd-item="yeast-test-1">Test 1</button>
-            <button class="general-button drag-label" data-dd-item="yeast-test-2">Test 2</button>
-            <button class="general-button drag-label" data-dd-item="yeast-test-3">Test 3</button>
-            <button class="general-button drag-label" data-dd-item="yeast-temp-2">2</button>
-            <button class="general-button drag-label" data-dd-item="yeast-temp-22">22</button>
-            <button class="general-button drag-label" data-dd-item="yeast-temp-37">37</button>
-            <button class="general-button drag-label" data-dd-item="yeast-temp-80">80</button>
+            </DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-test-1">Test 1</DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-test-2">Test 2</DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-test-3">Test 3</DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-temp-2">2</DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-temp-22">22</DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-temp-37">37</DragItem>
+            <DragItem tag="button" class="general-button drag-label" name="yeast-temp-80">80</DragItem>
           </div>
           <div class="data-table-card yeast-table-card">
             <div class="experiment-table-scroll">
@@ -747,28 +747,28 @@
                 <thead>
                   <tr>
                     <th class="independent-heading" rowspan="2">
-                      <span class="label-drop-zone" data-dd-slot="yeast-iv" data-dd-answer="yeast-iv">
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-iv" answer="yeast-iv">
                         Drop label
-                      </span>
+                      </DropSlot>
                     </th>
                     <th class="dependent-heading drop-heading" colspan="4">
-                      <span class="label-drop-zone" data-dd-slot="yeast-dv" data-dd-answer="yeast-dv">
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-dv" answer="yeast-dv">
                         Drop label
-                      </span>
+                      </DropSlot>
                     </th>
                   </tr>
 
                   <tr>
                     <th class="test-heading">
-                      <span class="label-drop-zone" data-dd-slot="yeast-test-1" data-dd-answer="yeast-test-1">Drop label</span>
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-test-1" answer="yeast-test-1">Drop label</DropSlot>
                     </th>
 
                     <th class="test-heading">
-                      <span class="label-drop-zone" data-dd-slot="yeast-test-2" data-dd-answer="yeast-test-2">Drop label</span>
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-test-2" answer="yeast-test-2">Drop label</DropSlot>
                     </th>
 
                     <th class="test-heading">
-                      <span class="label-drop-zone" data-dd-slot="yeast-test-3" data-dd-answer="yeast-test-3">Drop label</span>
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-test-3" answer="yeast-test-3">Drop label</DropSlot>
                     </th>
 
                     <th class="average-heading">
@@ -780,9 +780,9 @@
                 <InputResponse tag="tbody" id="yeastResultsActivity" data-activity-depends-on="yeastActivity">
                   <tr data-input-average-row>
                     <th class="independent-value">
-                      <span class="label-drop-zone" data-dd-slot="yeast-temp-2" data-dd-answer="yeast-temp-2">
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-temp-2" answer="yeast-temp-2">
                         Drop label
-                      </span>
+                      </DropSlot>
                     </th>
                     <ResponseBox tag="td" group-key="yeast-result-1" :min="1" :max="1" answer="0" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 1" list-class="table-result-list" />
                     <ResponseBox tag="td" group-key="yeast-result-2" :min="1" :max="1" answer="0" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 2" list-class="table-result-list" />
@@ -796,9 +796,9 @@
 
                   <tr data-input-average-row>
                     <th class="independent-value">
-                      <span class="label-drop-zone" data-dd-slot="yeast-temp-22" data-dd-answer="yeast-temp-22">
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-temp-22" answer="yeast-temp-22">
   Drop label
-</span>
+</DropSlot>
                     </th>
                     <ResponseBox tag="td" group-key="yeast-result-4" :min="1" :max="1" answer="15" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 4" list-class="table-result-list" />
                     <ResponseBox tag="td" group-key="yeast-result-5" :min="1" :max="1" answer="16" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 5" list-class="table-result-list" />
@@ -812,9 +812,9 @@
 
                   <tr data-input-average-row>
                     <th class="independent-value">
-                      <span class="label-drop-zone" data-dd-slot="yeast-temp-37" data-dd-answer="yeast-temp-37">
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-temp-37" answer="yeast-temp-37">
   Drop label
-</span>
+</DropSlot>
                     </th>
                     <ResponseBox tag="td" group-key="yeast-result-7" :min="1" :max="1" answer="19" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 7" list-class="table-result-list" />
                     <ResponseBox tag="td" group-key="yeast-result-8" :min="1" :max="1" answer="17" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 8" list-class="table-result-list" />
@@ -828,9 +828,9 @@
 
                   <tr data-input-average-row>
                     <th class="independent-value">
-                      <span class="label-drop-zone" data-dd-slot="yeast-temp-80" data-dd-answer="yeast-temp-80">
+                      <DropSlot tag="span" class="label-drop-zone" name="yeast-temp-80" answer="yeast-temp-80">
   Drop label
-</span>
+</DropSlot>
                     </th>
                     <ResponseBox tag="td" group-key="yeast-result-10" :min="1" :max="1" answer="3" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 10" list-class="table-result-list" />
                     <ResponseBox tag="td" group-key="yeast-result-11" :min="1" :max="1" answer="0" type="number" input-class="table-number-input" :input-props="numberInputProps" aria-label="Drop Temperature test 11" list-class="table-result-list" />
@@ -988,6 +988,8 @@ import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
 import Section from '../components/Section.vue'
 import DragDrop from '../components/activities/DragDrop.vue'
+import DropSlot from '../components/activities/DropSlot.vue'
+import DragItem from '../components/activities/DragItem.vue'
 import InputResponse from '../components/activities/InputResponse.vue'
 import ResponseBox from '../components/activities/ResponseBox.vue'
 import MultipleChoice from '../components/activities/MultipleChoice.vue'
@@ -1009,7 +1011,6 @@ const sortVariablesOneActivityOptions = { answers: {
             ]
           } }
 
-const yeastActivityOptions = { strictSlots: true }
 
 const yeastPredictionCheckOptions = { classes: { selected: "mc-picked" } }
 import LessonIntro from '../components/LessonIntro.vue'
@@ -1060,7 +1061,7 @@ const scripts = [
       closeButton.addEventListener('click', () => {
           modal.classList.remove('is-open');
       });` },
-  { type: "module", code: String.raw`      import { initSectionActivitiesIn } from "../scripts/activities/activity-sections.js";
+  { type: "module", code: String.raw`
 
       /* ==================================================
        YEAST TEST VIDEOS
@@ -1105,9 +1106,7 @@ const scripts = [
         if (!root) return;
 
         yeastDragDropActivity = getActivity("yeastActivity");
-Object.assign(yeastDragDropActivity.options, {
-          onChange: updateYeastActivityComplete
-});
+        root.addEventListener("dd:change", updateYeastActivityComplete);
       }
 
       function yeastLabelsComplete() {
@@ -1374,7 +1373,6 @@ Object.assign(yeastResultsActivity.options, {
         initialiseYeastPrediction();
         initialiseYeastVariables();
 
-        initSectionActivitiesIn(document);
       });
 
       /* Called from inline handlers / shared scripts, which cannot see module scope. */

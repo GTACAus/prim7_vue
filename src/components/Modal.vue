@@ -368,6 +368,8 @@ if (!window.__modalBehaviourInstalled) {
     }
   });
 }
+
+export { openModal, closeModal, initialiseTeacherMenu };
 </script>
 
 <script setup>

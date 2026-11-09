@@ -24,93 +24,116 @@
     restore(map)  reset()  isCorrect()
     options.onChange(answers) and the "ir:change" event fire whenever answers change.
 */
-import { computed, onBeforeUnmount, onMounted, provide, reactive, ref, useAttrs, watch } from 'vue'
-import { Activity } from './activity-base.js'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+  useAttrs,
+  watch,
+} from "vue";
+import Activity, { ActivityBase } from "./Activity.vue";
+import ResponseBox from "./ResponseBox.vue";
 
 const props = defineProps({
-  tag: { type: String, default: 'div' },
+  tag: { type: String, default: "div" },
   options: { type: Object, default: () => ({}) },
-})
+});
 
-const attrs = useAttrs()
-const root = ref(null)
-const groups = reactive([])
-let activity = null
-let ready = false
+const attrs = useAttrs();
+const root = ref(null);
+const groups = reactive([]);
+let activity = null;
+let ready = false;
 
-provide('inputResponse', {
+provide("inputResponse", {
   register: (group) => groups.push(group),
   unregister: (group) => {
-    const i = groups.indexOf(group)
-    if (i >= 0) groups.splice(i, 1)
+    const i = groups.indexOf(group);
+    if (i >= 0) groups.splice(i, 1);
   },
-})
+});
 
 function matches(group, answer) {
-  if (!group.answer) return false
+  if (!group.answer) return false;
 
-  const isNumber = group.type === 'number'
+  const isNumber = group.type === "number";
 
-  return group.answer.split('|').some((accepted) => {
-    accepted = accepted.trim()
-    if (isNumber) return answer.trim() !== '' && Number(answer) === Number(accepted)
-    return answer.trim().toLowerCase() === accepted.toLowerCase()
-  })
+  return group.answer.split("|").some((accepted) => {
+    accepted = accepted.trim();
+    if (isNumber)
+      return answer.trim() !== "" && Number(answer) === Number(accepted);
+    return answer.trim().toLowerCase() === accepted.toLowerCase();
+  });
 }
 
 const allCorrect = computed(() =>
-  groups.every((group) => !group.answer || (group.answers.length > 0 && matches(group, group.answers[0])))
-)
+  groups.every(
+    (group) =>
+      !group.answer ||
+      (group.answers.length > 0 && matches(group, group.answers[0])),
+  ),
+);
 
 const complete = computed(() => {
-  const minTotal = parseInt(attrs['data-tr-min-total'] || '0', 10)
-  let enough
+  const minTotal = parseInt(attrs["data-tr-min-total"] || "0", 10);
+  let enough;
 
   if (minTotal > 0) {
-    enough = groups.reduce((sum, group) => sum + group.answers.length, 0) >= minTotal
+    enough =
+      groups.reduce((sum, group) => sum + group.answers.length, 0) >= minTotal;
   } else {
-    const anyMinSet = groups.some((group) => group.min > 0)
-    enough = !anyMinSet || groups.every((group) => group.min === 0 || group.answers.length >= group.min)
+    const anyMinSet = groups.some((group) => group.min > 0);
+    enough =
+      !anyMinSet ||
+      groups.every(
+        (group) => group.min === 0 || group.answers.length >= group.min,
+      );
   }
 
-  return enough && allCorrect.value
-})
+  return enough && allCorrect.value;
+});
 
 function getAnswers() {
-  const result = {}
+  const result = {};
   groups.forEach((group) => {
-    if (group.key) result[group.key] = [...group.answers]
-  })
-  return result
+    if (group.key) result[group.key] = [...group.answers];
+  });
+  return result;
 }
 
 function restore(saved) {
-  saved = saved || {}
+  saved = saved || {};
   groups.forEach((group) => {
-    group.answers = [...((group.key && saved[group.key]) || [])]
-  })
+    group.answers = [...((group.key && saved[group.key]) || [])];
+  });
 }
 
 function reset() {
-  groups.forEach((group) => group.clear())
+  groups.forEach((group) => group.clear());
 }
 
-watch(complete, (isComplete) => activity?.setComplete(isComplete))
+watch(complete, (isComplete) => activity?.setComplete(isComplete));
 
 // answers changed (typed, deleted, restored or reset)
 watch(
-  () => groups.map((group) => group.answers.join('\u0001')).join('\u0002'),
+  () => groups.map((group) => group.answers.join("\u0001")).join("\u0002"),
   () => {
-    if (!ready) return
+    if (!ready) return;
 
-    const answers = getAnswers()
-    if (typeof activity.options.onChange === 'function') activity.options.onChange(answers)
-    root.value.dispatchEvent(new CustomEvent('ir:change', { detail: { answers }, bubbles: true }))
-  }
-)
+    const answers = getAnswers();
+    if (typeof activity.options.onChange === "function")
+      activity.options.onChange(answers);
+    root.value?.$el.dispatchEvent(
+      new CustomEvent("ir:change", { detail: { answers }, bubbles: true }),
+    );
+  },
+);
 
 onMounted(() => {
-  activity = new Activity(root.value, { ...props.options })
+  activity = new ActivityBase(root.value?.$el, { ...props.options });
 
   Object.assign(activity, {
     getAnswers,
@@ -118,21 +141,21 @@ onMounted(() => {
     restore,
     reset,
     isCorrect: () => allCorrect.value,
-  })
+  });
 
-  activity.setComplete(complete.value)
-  ready = true
-})
+  activity.setComplete(complete.value);
+  ready = true;
+});
 
 onBeforeUnmount(() => {
-  activity = null
-})
+  activity = null;
+});
 
-defineExpose({ getActivity: () => activity })
+defineExpose({ getActivity: () => activity });
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
+  <Activity :tag="tag" ref="root">
     <slot />
-  </component>
+  </Activity>
 </template>

@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted } from "vue";
 import Page from "../components/Page.vue";
 import Modal from "../components/Modal.vue";
 import Section from "../components/Section.vue";
@@ -7,7 +6,6 @@ import Flashcards from "../components/lesson1/Flashcards.vue";
 import QuestionWheel from "../components/lesson1/QuestionWheel.vue";
 import PredictionTests from "../components/lesson1/PredictionTests.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
-import { initSectionActivitiesIn } from "../components/activities/activity-sections.js";
 import LessonIntro from "../components/LessonIntro.vue";
 
 // Learning objective and success criteria shown in the lesson intro
@@ -159,34 +157,10 @@ const sections = [
     title: "HOW TO TEST REASONED PREDICTIONS",
   },
 ];
-const sectionIds = sections.map(({ id, label }) => ({ id, label })); // teacher menu
 
-function loadScript(def) {
-  return new Promise((resolve) => {
-    const el = document.createElement("script");
-    if (def.type) el.type = def.type;
-    if (def.src) {
-      el.src = def.src;
-      el.onload = el.onerror = resolve;
-      document.body.appendChild(el);
-    } else {
-      if (def.type === "module") {
-        // inline module scripts run async: wait until this one has finished
-        window.__inlineScriptDone = resolve;
-        el.onerror = resolve;
-        el.textContent = def.code + "\n;window.__inlineScriptDone()";
-        document.body.appendChild(el);
-      } else {
-        el.textContent = def.code;
-        document.body.appendChild(el);
-        resolve();
-      }
-    }
-  });
-}
 </script>
 <template>
-  <Page title="Lesson 1 - Questioning and Predicting" :sections="sections">
+  <Page title="Lesson 1 - Questioning and Predicting" :sections="sections" :glossary="glossary">
     <template #lesson-intro>
       <LessonIntro
         label="Lesson 1"

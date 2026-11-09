@@ -1,85 +1,84 @@
 <script setup>
-import { computed, useAttrs } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, useAttrs } from "vue";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
-	symbol: String,
-	content: String,
-	// route to go to, e.g. to="/lesson2". Renders a real link to that route.
-	to: String,
+  symbol: String,
+  content: String,
+  // route to go to, e.g. to="/lesson2". Renders a real link to that route.
+  to: String,
 });
 
-const attrs = useAttrs()
-const router = useRouter()
+const attrs = useAttrs();
+const router = useRouter();
 
 // A real <a href> (not client-side routing) is deliberate: pages inject their own
 // stylesheets and scripts, so moving between them needs a full page load.
 const href = computed(() => {
-	if (props.to) return router ? router.resolve(props.to).href : props.to
-	return attrs.href ?? null
-})
+  if (props.to) return router ? router.resolve(props.to).href : props.to;
+  return attrs.href ?? null;
+});
 
 // An element that goes somewhere is a link; anything else is a button.
-const isLink = computed(() => href.value !== null && href.value !== undefined)
+const isLink = computed(() => href.value !== null && href.value !== undefined);
 </script>
 
 <template>
-	<component
-		:is="isLink ? 'a' : 'button'"
-		:href="isLink ? href : undefined"
-		:type="isLink ? undefined : 'button'"
-	>
-		<p v-if="symbol" class="bounce-symbol">{{ symbol }}</p>
-		<slot>{{ content }}</slot>
-	</component>
+  <component
+    :is="isLink ? 'a' : 'button'"
+    :href="isLink ? href : undefined"
+    :type="isLink ? undefined : 'button'"
+  >
+    <p v-if="symbol" class="bounce-symbol">{{ symbol }}</p>
+    <slot>{{ content }}</slot>
+  </component>
 </template>
 
 <style scoped>
 :where(button, a) {
-	--padding: 12px 20px;
-	--background: var(--green);
-	--color: white;
-	--border: 2px solid var(--charcoal);
-	--border-radius: var(--radius-small);
-	--box-shadow: var(--shadow-small);
-	--font-weight: 700;
+  --padding: 12px 20px;
+  --background: var(--green);
+  --color: white;
+  --border: 2px solid var(--charcoal);
+  --border-radius: var(--radius-small);
+  --box-shadow: var(--shadow-small);
+  --font-weight: 700;
 
-	--background-hover: var(--purple);
-	--color-hover: white;
-	--translate-amount-hover: -2px;
-	--box-shadow-hover: var(--shadow-medium);
+  --background-hover: var(--purple);
+  --color-hover: var(--color);
+  --translate-amount-hover: -2px;
+  --box-shadow-hover: var(--shadow-medium);
 
-	--background-active: var(--mint);
-	--color-active: white;
-	--translate-amount-active: 3px;
-	--box-shadow-active: none;	
-	--animation: pop-fade-in 0.5s ease;
+  --background-active: var(--mint);
+  --color-active: var(--color);
+  --translate-amount-active: 3px;
+  --box-shadow-active: none;
+  --animation: pop-fade-in 0.5s ease;
 
-	padding: var(--padding);	
-	background: var(--background);
-	color: var(--color);	
-	border: var(--border);
-	border-radius: var(--border-radius);	
-	box-shadow: var(--box-shadow);	
-	font-weight: var(--font-weight);
-	text-decoration: none;	
-	cursor: pointer;	
-	animation: var(--animation);
+  padding: var(--padding);
+  background: var(--background);
+  color: var(--color);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  font-weight: var(--font-weight);
+  text-decoration: none;
+  cursor: pointer;
+  animation: var(--animation);
 
-	transition:
-	    color 0.15s ease,
-	    transform 0.15s ease,
-	    box-shadow 0.15s ease,
-	    background 0.15s ease;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 :where(button:disabled, a[aria-disabled="true"]) {
-	opacity: 0.5;
-	cursor: not-allowed;
-	transform: none;
-	box-shadow: var(--shadow-small);
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-small);
 }
-
 
 :is(button, a):hover {
   background: var(--background-hover);
@@ -121,5 +120,4 @@ const isLink = computed(() => href.value !== null && href.value !== undefined)
     transform: translateY(0);
   }
 }
-
 </style>

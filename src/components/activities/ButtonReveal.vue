@@ -1,149 +1,69 @@
-<script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
-
-/* ==================================================
-   BUTTON REVEAL
-   The simplest activity: press a button, something appears (an answer,
-   another section, anything) and optionally something else happens too.
-   Covers the "stop and check" pattern (and similar "click to reveal")
-   generically. Pair with activity-base.js.
-
-   Markup contract:
-
-     <div id="myCheck" data-activity>
-       <p>Why does X happen?</p>
-
-       <div data-button-reveal hidden>
-         Because of Y.
-       </div>
-
-       <button type="button" data-button-trigger>
-         Check Your Answer
-       </button>
-     </div>
-
-   Usage:
-
-     const activity = new ButtonActivity(document.getElementById("myCheck"), {
-       hideTrigger: true,     // optional, default true - see below
-       onPress: function() { ... }   // do anything else the page needs
-     });
-
-   Pressing the trigger reveals every [data-button-reveal] element inside
-   the root (clears their hidden attribute), then calls onPress and fires
-   "button:press" on the root (bubbles) - use either to do more than the
-   built-in reveal, e.g. open a popup or update something elsewhere on the
-   page. A section's Next button needs nothing extra: once this activity
-   reports data-activity-complete, activity-sections.js shows it on its own.
-
-   options.hideTrigger: true (default) hides the button itself once
-   pressed, matching a one-shot "check my answer" button. Pass false to
-   leave it visible/clickable (e.g. a button that can be pressed again).
-
-   data-reveals="#otherId, .some-class" on the root also reveals (and on
-   reset hides again) matching elements anywhere on the page - for content
-   that can't sit inside the root.
-
-   The activity is data-activity-complete as soon as it's been pressed
-   once. A [data-reset-trigger] button inside the root - or calling
-   reset() directly - hides the revealed content and brings the trigger
-   back.
-   ================================================== */
-
-
-function ButtonActivity(root, options) {
-  Activity.call(this, root, options);
-
-  this.hideTrigger = this.options.hideTrigger !== false;
-  this.trigger = root.querySelector("[data-button-trigger]");
-  this.targets = root.querySelectorAll("[data-button-reveal]");
-
-  var self = this;
-  if (this.trigger) {
-    this.trigger.addEventListener("click", function () { self._press(); });
-  }
-
-  this.setComplete(false);
-}
-
-ButtonActivity.prototype = Object.create(Activity.prototype);
-ButtonActivity.prototype.constructor = ButtonActivity;
-
-/* ---------- public API ---------- */
-
-ButtonActivity.prototype.reset = function () {
-  Array.prototype.forEach.call(this.targets, function (target) { target.hidden = true; });
-  this._setRevealed(false);
-  if (this.trigger) this.trigger.hidden = false;
-  this.setComplete(false);
-};
-
-/* ---------- internals ---------- */
-
-/* data-reveals="#a, .b" on the root: elements ANYWHERE on the page (found
-   with that CSS selector each time, so ones created later are included)
-   that are shown when the button is pressed and hidden again on reset. */
-ButtonActivity.prototype._setRevealed = function (revealed) {
-  var selector = this.root.dataset.reveals;
-  if (!selector) return;
-  Array.prototype.forEach.call(document.querySelectorAll(selector), function (element) {
-    element.hidden = !revealed;
-  });
-};
-
-ButtonActivity.prototype._press = function () {
-  Array.prototype.forEach.call(this.targets, function (target) { target.hidden = false; });
-  this._setRevealed(true);
-  if (this.hideTrigger && this.trigger) this.trigger.hidden = true;
-
-  if (typeof this.options.onPress === "function") this.options.onPress();
-  this.root.dispatchEvent(new CustomEvent("button:press", { bubbles: true }));
-
-  this.setComplete(true);
-};
-</script>
-
 <script setup>
 /*
-  <ButtonReveal> wraps the markup of one activity (the data-* contract described
-  above) and starts ButtonActivity on it once mounted.
+  BUTTON REVEAL
+  The simplest activity: press a button, something appears (an answer,
+  another section, anything). Covers the "stop and check" pattern and
+  similar "click to reveal" buttons.
 
-    <ButtonReveal id="myActivity" :options="{ ... }">
-      ...markup...
+    <ButtonReveal id="myCheck" v-slot="{ pressed, press }" @press="...">
+      <p>Why does X happen?</p>
+
+      <div v-if="pressed">Because of Y.</div>
+
+      <button v-if="!pressed" type="button" @click="press">
+        Check Your Answer
+      </button>
     </ButtonReveal>
 
-  - id, class and any data-* attributes fall through to the root element
-    (tag="section" etc. changes the element; default is div).
-  - options is the options object of ButtonActivity. Callbacks (onChange, ...) are
-    read when they fire, so a page script can attach one after mount:
-      getActivity("myActivity").options.onChange = function () { ... }
-  - the activity instance is also reachable from the page as getActivity(id).
+  The slot gets { pressed, press, reset }; the markup decides what to show
+  before and after the press (leave the button out of the v-if for one that
+  stays clickable). The activity is complete as soon as it has been pressed,
+  so the section's Next button appears on its own.
+
+  - reveals="#otherId, .some-class": elements anywhere on the page, for content
+    that can't sit inside the slot, shown on press and hidden again on reset.
+  - @press fires on every press, to do anything else the page needs.
+  - reset (a [data-reset-trigger] inside it, a section-wide reset button, its
+    depends-on activity being reset, or reset() through a template ref) un-presses it.
+  - id, class and data-* attributes fall through to the root element
+    (tag="section" etc. changes the element; default is div). With an id, plain
+    page scripts reach it as getActivity(id).
 */
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
+import Activity from './Activity.vue'
 
 const props = defineProps({
   tag: { type: String, default: 'div' },
-  options: { type: Object, default: () => ({}) },
+  // CSS selector for elements outside the slot to show on press
+  reveals: { type: String, default: '' },
 })
 
-const root = ref(null)
-let activity = null
+const emit = defineEmits(['press'])
 
-onMounted(() => {
-  whenCommonFunctionsReady(() => {
-    activity = new ButtonActivity(root.value, { ...props.options })
+const pressed = ref(false)
+
+function press() {
+  pressed.value = true
+  emit('press')
+}
+
+function reset() {
+  pressed.value = false
+}
+
+// found by selector each time, so elements created later are included
+watch(pressed, (isPressed) => {
+  if (!props.reveals) return
+  document.querySelectorAll(props.reveals).forEach((element) => {
+    element.hidden = !isPressed
   })
 })
 
-onBeforeUnmount(() => {
-  activity = null
-})
-
-defineExpose({ getActivity: () => activity })
+defineExpose({ pressed, press, reset })
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
-    <slot />
-  </component>
+  <Activity :tag="tag" :complete="pressed" @reset="reset">
+    <slot :pressed="pressed" :press="press" :reset="reset" />
+  </Activity>
 </template>

@@ -1,10 +1,10 @@
 <script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
+import { ActivityBase, whenCommonFunctionsReady } from './Activity.vue'
 
 /* ==================================================
    GENERIC ITEM MATCH ACTIVITY
    Pair with styles/lesson5_styles/drag_and_drop.css (.item-match-* rules)
-   and activity-base.js. The root needs the data-activity attribute; the
+   and Activity.vue. The root needs the data-activity attribute; the
    activity is data-activity-complete once every round has been matched.
 
    Two modes, chosen by which options you pass in:
@@ -117,7 +117,7 @@ function setHidden(element, hidden) {
 }
 
 function ItemMatchActivity(root, options) {
-  Activity.call(this, root, options);
+  ActivityBase.call(this, root, options);
 
   this.mode = Array.isArray(this.options.rounds) ? "sets" : "legacy";
   this.index = 0;
@@ -132,7 +132,7 @@ function ItemMatchActivity(root, options) {
   this.setComplete(this.isComplete());
 }
 
-ItemMatchActivity.prototype = Object.create(Activity.prototype);
+ItemMatchActivity.prototype = Object.create(ActivityBase.prototype);
 ItemMatchActivity.prototype.constructor = ItemMatchActivity;
 
 /* ---------- shared public API ---------- */
@@ -509,6 +509,7 @@ ItemMatchActivity.prototype._renderDiagram = function () {
   - the activity instance is also reachable from the page as getActivity(id).
 */
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import Activity from './Activity.vue'
 
 const props = defineProps({
   tag: { type: String, default: 'div' },
@@ -520,7 +521,7 @@ let activity = null
 
 onMounted(() => {
   whenCommonFunctionsReady(() => {
-    activity = new ItemMatchActivity(root.value, { ...props.options })
+    activity = new ItemMatchActivity(root.value?.$el, { ...props.options })
   })
 })
 
@@ -532,7 +533,7 @@ defineExpose({ getActivity: () => activity })
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
+  <Activity :tag="tag" ref="root">
     <slot />
-  </component>
+  </Activity>
 </template>

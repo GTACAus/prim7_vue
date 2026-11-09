@@ -1,4 +1,9 @@
 <script>
+import { changeTick, getActivityContext } from "./activities/Activity.vue";
+
+/* section element -> the <Section> that rendered it */
+const controllers = new WeakMap();
+
 /*
   Unlock the section after the current one.
 
@@ -6,41 +11,61 @@
   nextSectionId is optional: pass null/undefined to unlock whichever
   .section follows the current one in the page.
 
-  Put on window because the activity scripts (activity-sections.js,
-  lesson_progress.js, lesson scripts) and some page markup call it directly.
+  A <Section> updates its own state; plain .section markup (pages not
+  converted yet) gets its classes toggled directly. Put on window because
+  the lesson scripts and some page markup call it directly.
 */
 function unlockSection(nextSectionId, currentSectionId) {
-  const currentSection = typeof currentSectionId === 'string'
-    ? document.getElementById(currentSectionId)
-    : currentSectionId
+  const currentSection =
+    typeof currentSectionId === "string"
+      ? document.getElementById(currentSectionId)
+      : currentSectionId;
 
-  let nextSection
+  let nextSection;
   if (nextSectionId) {
-    nextSection = document.getElementById(nextSectionId)
+    nextSection = document.getElementById(nextSectionId);
   } else if (currentSection) {
-    const sections = Array.from(document.querySelectorAll('.section'))
-    nextSection = sections[sections.indexOf(currentSection) + 1]
+    const sections = Array.from(document.querySelectorAll(".section"));
+    nextSection = sections[sections.indexOf(currentSection) + 1];
   }
 
-  if (currentSection) currentSection.classList.add('completed')
-  if (!nextSection) return
+  if (currentSection) {
+    const current = controllers.get(currentSection);
+    if (current) current.markCompleted();
+    else currentSection.classList.add("completed");
+  }
 
-  nextSection.classList.remove('locked')
+  if (!nextSection) return;
+
+  const next = controllers.get(nextSection);
+  if (next) next.unlock();
+  else nextSection.classList.remove("locked");
 
   setTimeout(() => {
     nextSection.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    })
-  }, 100)
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 100);
 }
 
-window.unlockSection = unlockSection
+window.unlockSection = unlockSection;
+
+export { unlockSection };
 </script>
 
 <script setup>
-import { computed, inject } from 'vue';
-import Button from './Button.vue';
+import {
+  computed,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  ref,
+  shallowReactive,
+  watch,
+} from "vue";
+import Button from "./Button.vue";
 /*
   One lesson section: heading, content and a Next button.
 
@@ -53,50 +78,198 @@ import Button from './Button.vue';
   the page's sections list, with next-id/locked/last defaulting from its order.
   Props passed directly on <Section> override the list.
 
-  Unlocking / completing is driven by the DOM classes .locked and .completed
-  (the activity scripts toggle them too), so those are not reactive state.
+  Activities (every activity component renders an <Activity> wrapper) register
+  with the section they are in. If a section has any, its Next button stays
+  hidden until all of them are complete, and "complete" is emitted. Plain
+  [data-activity] markup inside the section (pages not converted yet) counts
+  too, by its data-activity-complete attribute. A section without activities
+  shows its Next button unless hide-next is set.
+
+  A [data-reset-trigger] button in the section that is not inside an activity
+  resets every activity in the section (or in the element its attribute value
+  selects, e.g. data-reset-trigger="#partB").
+
+  Locked / completed are this component's state, reflected as the .locked /
+  .completed classes. Plain scripts that still toggle those classes directly
+  (teacher menu, saved-progress restore) are picked up too.
   Any other attribute (class, data-*, aria-*) falls through to the <section>.
 */
 const props = defineProps({
   // key of this section in the parent <Page>'s sections list
-  name: { type: String, default: '' },
-  id: { type: String, default: '' },
+  name: { type: String, default: "" },
+  id: { type: String, default: "" },
   // plain-text title; use the #title slot if it needs markup
-  title: { type: String, default: '' },
+  title: { type: String, default: "" },
   // section to unlock on Next; omit to unlock whichever section follows
-  nextId: { type: String, default: '' },
+  nextId: { type: String, default: "" },
   // id for the Next button, for scripts that reveal it (e.g. flashcardsNextButton)
-  nextButtonId: { type: String, default: '' },
-  // hidden until the activity inside is finished
+  nextButtonId: { type: String, default: "" },
+  // hidden until the section before it is finished
   locked: { type: Boolean, default: false },
+  // hide the Next button in a section without activities (a script reveals it)
   hideNext: { type: Boolean, default: false },
   // last section of a lesson: no Next button or completion note
   last: { type: Boolean, default: false },
-})
+});
 
-const pageSections = inject('pageSections', [])
-const index = computed(() => pageSections.findIndex((s) => s.key === props.name))
-const cfg = computed(() => pageSections[index.value] ?? {})
+const emit = defineEmits(["complete", "unlock"]);
+
+const pageSections = inject("pageSections", []);
+const index = computed(() =>
+  pageSections.findIndex((s) => s.key === props.name),
+);
+const cfg = computed(() => pageSections[index.value] ?? {});
 
 // explicit props win; then the Page's config; then defaults from order
-const sectionId = computed(() => props.id || cfg.value.id)
-const sectionTitle = computed(() => props.title || cfg.value.title || '')
+const sectionId = computed(() => props.id || cfg.value.id);
+const sectionTitle = computed(() => props.title || cfg.value.title || "");
 const sectionNextId = computed(
-  () => props.nextId || cfg.value.nextId || pageSections[index.value + 1]?.id || ''
-)
-const sectionNextButtonId = computed(() => props.nextButtonId || cfg.value.nextButtonId || '')
+  () =>
+    props.nextId || cfg.value.nextId || pageSections[index.value + 1]?.id || "",
+);
+const sectionNextButtonId = computed(
+  () => props.nextButtonId || cfg.value.nextButtonId || "",
+);
 const sectionLocked = computed(
-  () => props.locked || (cfg.value.locked ?? (index.value > 0))
-)
-const sectionHideNext = computed(() => props.hideNext || !!cfg.value.hideNext)
+  () => props.locked || (cfg.value.locked ?? index.value > 0),
+);
+const sectionHideNext = computed(() => props.hideNext || !!cfg.value.hideNext);
 const sectionLast = computed(
-  () => props.last || (cfg.value.last ?? (index.value === pageSections.length - 1 && index.value >= 0))
-)
+  () =>
+    props.last ||
+    (cfg.value.last ??
+      (index.value === pageSections.length - 1 && index.value >= 0)),
+);
+
+const el = ref(null);
+const mounted = ref(false);
+
+/* ---------- locked / completed ---------- */
+
+const isLocked = ref(sectionLocked.value);
+const isCompleted = ref(false);
+
+/* The classes are rendered once and then toggled directly, so a re-render
+   never undoes a class a plain script put on the section. */
+const initialClass = { locked: isLocked.value };
+
+watch(isLocked, (locked) => {
+  el.value?.classList.toggle("locked", locked);
+  if (!locked) emit("unlock");
+});
+watch(isCompleted, (completed) =>
+  el.value?.classList.toggle("completed", completed),
+);
+
+const controller = {
+  unlock: () => (isLocked.value = false),
+  markCompleted: () => (isCompleted.value = true),
+};
+
+function next() {
+  unlockSection(sectionNextId.value || null, el.value);
+}
+
+// classes changed by plain scripts -> state
+let classObserver = null;
+function syncFromClasses() {
+  isLocked.value = el.value.classList.contains("locked");
+  isCompleted.value = el.value.classList.contains("completed");
+}
+
+/* ---------- activities ---------- */
+
+// <Activity> contexts in this section
+const activities = shallowReactive(new Set());
+
+provide("section", {
+  register: (activity) => activities.add(activity),
+  unregister: (activity) => activities.delete(activity),
+});
+
+// [data-activity] elements in the section not rendered by an <Activity>
+const plainActivities = computed(() => {
+  changeTick.value; // re-read on every activity:change
+  if (!mounted.value) return [];
+
+  const roots = Array.from(el.value.querySelectorAll("[data-activity]"));
+  if (el.value.matches("[data-activity]")) roots.push(el.value);
+  return roots.filter((root) => !getActivityContext(root));
+});
+
+const hasActivities = computed(
+  () => activities.size > 0 || plainActivities.value.length > 0,
+);
+
+const complete = computed(
+  () =>
+    hasActivities.value &&
+    [...activities].every((activity) => activity.complete.value) &&
+    plainActivities.value.every(
+      (root) => root.dataset.activityComplete === "true",
+    ),
+);
+
+watch(complete, (isComplete) => {
+  if (isComplete) emit("complete");
+});
+
+const nextHidden = computed(() =>
+  hasActivities.value ? !complete.value : sectionHideNext.value,
+);
+
+/* ---------- section-wide reset buttons ---------- */
+
+function onClick(event) {
+  const button = event.target.closest("[data-reset-trigger]");
+  if (!button || button.closest("[data-activity]")) return; // an activity's own button
+  if (button.closest(".section") !== el.value) return;
+
+  const scope =
+    (button.dataset.resetTrigger &&
+      document.querySelector(button.dataset.resetTrigger)) ||
+    el.value;
+
+  // plain-script activities are reset by their own (legacy) activity-base.js
+  scope.querySelectorAll("[data-activity]").forEach((root) => {
+    getActivityContext(root)?.reset();
+  });
+}
+
+/* ---------- lifecycle ---------- */
+
+onMounted(() => {
+  controllers.set(el.value, controller);
+  classObserver = new MutationObserver(syncFromClasses);
+  classObserver.observe(el.value, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  mounted.value = true;
+});
+
+onBeforeUnmount(() => classObserver?.disconnect());
+
+defineExpose({
+  locked: isLocked,
+  completed: isCompleted,
+  complete,
+  unlock: controller.unlock,
+  next,
+});
 </script>
 
 <template>
-  <section class="section" :class="{ locked: sectionLocked }" :id="sectionId">
-    <h2 class="section-title"><slot name="title">{{ sectionTitle }}</slot></h2>
+  <section
+    ref="el"
+    class="section"
+    :class="initialClass"
+    :id="sectionId"
+    @click="onClick"
+  >
+    <h2 class="section-title">
+      <slot name="title">{{ sectionTitle }}</slot>
+    </h2>
 
     <slot />
 
@@ -104,8 +277,8 @@ const sectionLast = computed(
       <Button
         class="next-button"
         :id="sectionNextButtonId || null"
-        :hidden="sectionHideNext"
-        @click="unlockSection(sectionNextId || null, sectionId)"
+        :hidden="nextHidden"
+        @click="next"
       >
         Next
       </Button>
@@ -180,11 +353,11 @@ const sectionLast = computed(
 
 .next-button {
   --padding: 12px 22px;
-	--background: var(--orange);
+  --background: var(--orange);
 
-	--background-hover: var(--purple);
+  --background-hover: var(--purple);
 
-	--background-active: var(--purple);
+  --background-active: var(--purple);
 
   margin-top: 20px;
   width: fit-content;

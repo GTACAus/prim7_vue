@@ -1,16 +1,27 @@
 <script setup>
-import { provide, onMounted, ref, watchEffect } from "vue";
-import { initSectionActivitiesIn } from "./activities/activity-sections.js";
-import { whenCommonFunctionsReady } from "./activities/activity-base.js";
+import { provide, onMounted, watchEffect } from "vue";
 import Button from "./Button.vue";
+import Modal, { initialiseTeacherMenu } from "./Modal.vue";
 
 /*
+  One lesson page: the shared modal (glossary + hidden teacher menu), the
+  lesson intro and the sections.
+
+    <Page title="Lesson 1 - ..." :sections="sections" :glossary="glossary">
+
   Provides the sections list to the <Section name="..."> elements inside it.
-  Each Section looks up its id, title, next-id, locked etc. by key.
+  Each Section looks up its id, title, next-id, locked etc. by key, and
+  tracks its own activities / Next button. The same list (id + label) feeds
+  the teacher menu.
+
+  Once mounted it loads common_functions.js (activities wait for it), sets
+  up the teacher menu and replays DOMContentLoaded for the plain scripts.
 */
 const props = defineProps({
   title: { type: String, required: true },
   sections: { type: Array, required: true },
+  // { word: description } terms for the vocabulary modal
+  glossary: { type: Object, default: null },
 });
 provide("pageSections", props.sections);
 
@@ -19,14 +30,16 @@ watchEffect(() => {
   document.title = props.title;
 });
 
-// wrapper around <slot name="sections">, so init is scoped to this page's sections
-const sectionsEl = ref(null);
-
-onMounted(() => {
-  // Activities build themselves once common_functions.js is ready; the sections
-  // must be initialised after that so data-activity-complete already exists.
-  whenCommonFunctionsReady(() => initSectionActivitiesIn(sectionsEl.value));
-});
+// plain scripts declare globals, so never load one twice (e.g. on hot reload)
+function loadScript(src) {
+  if (document.querySelector(`script[src="${src}"]`)) return Promise.resolve();
+  return new Promise((resolve) => {
+    const el = document.createElement("script");
+    el.src = src;
+    el.onload = el.onerror = resolve;
+    document.body.appendChild(el);
+  });
+}
 
 onMounted(async () => {
   await loadScript("../scripts/common_functions.js");
@@ -38,24 +51,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Modal :label="title" :glossary="glossary" />
-  <!-- // glossary: small eyebrow line, title and { word: description } terms.
-  // Descriptions may contain HTML (<strong>).
-  label: { type: String, default: "" },
-  title: { type: String, default: "Glossary Terms" },
-  glossary: { type: Object, default: null },
-  // pdf: small eyebrow line above the title
-  pdfLabel: { type: String, default: "" },
-  // teacher menu: footnote under the buttons
-  note: {
-    type: String,
-    default:
-      "Teacher mode changes navigation only. Student answers are not deleted.",
-  }, -->
+  <Modal :label="title || ''" :glossary="glossary" />
 
   <main class="page">
     <slot name="lesson-intro" />
-    <div ref="sectionsEl" class="page-sections">
+    <div class="page-sections">
       <slot name="sections" />
     </div>
 
@@ -87,11 +87,9 @@ onMounted(async () => {
   width: 15rem;
   text-decoration: none;
   text-align: center;
-  color: var(--text) !important;
-  background: var(--paper) !important;
-}
+  --color: var(--text);
+  --background: var(--paper);
 
-.return-to-top-button:hover {
-  background: var(--soft-green) !important;
+  --background-hover: var(--soft-green);
 }
 </style>

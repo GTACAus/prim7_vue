@@ -16,7 +16,7 @@
   getActivity(id) / [data-reset-trigger] keep working.
 */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { Activity } from '../activities/activity-base.js'
+import Activity, { ActivityBase } from '../activities/Activity.vue'
 
 const FLY_DELAY = 350 // ms for a correct card's fly-to-pile animation
 const BOUNCE_DELAY = 600 // ms a wrong card dims before returning to the deck
@@ -115,7 +115,7 @@ watch(done, (isDone) => {
 
 onMounted(() => {
   startDeck()
-  activity = new Activity(root.value, {})
+  activity = new ActivityBase(root.value.$el, {})
   activity.reset = reset // the base class's data-reset-trigger / dependency resets call this
   activity.setComplete(false)
 })
@@ -126,7 +126,7 @@ defineExpose({ reset })
 </script>
 
 <template>
-  <div ref="root" class="flashcard-box" :id="id || null" data-activity>
+  <Activity ref="root" class="flashcard-box" :id="id || null">
     <main class="flashcard-content">
       <div class="layout">
         <div class="pile-section">
@@ -182,7 +182,7 @@ defineExpose({ reset })
         </div>
       </div>
     </main>
-  </div>
+  </Activity>
 </template>
 
 <style>

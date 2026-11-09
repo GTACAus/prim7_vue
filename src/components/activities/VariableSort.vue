@@ -1,11 +1,11 @@
 <script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
+import { ActivityBase, whenCommonFunctionsReady } from './Activity.vue'
 
 /* ==================================================
    VARIABLE SORT
    Pick a role (independent / dependent / controlled), then classify
    tiles into it - either against a fixed answer key, or against an
-   open set of valid variables for each role. Pair with activity-base.js.
+   open set of valid variables for each role. Pair with Activity.vue.
 
    Markup contract:
 
@@ -85,7 +85,7 @@ var DEFAULT_MESSAGES = {
 };
 
 function VariableSortActivity(root, options) {
-  Activity.call(this, root, options);
+  ActivityBase.call(this, root, options);
 
   this.answers = this.options.answers || null;
   this.openOptions = this.options.options || null;
@@ -117,7 +117,7 @@ function VariableSortActivity(root, options) {
   this.setComplete(false);
 }
 
-VariableSortActivity.prototype = Object.create(Activity.prototype);
+VariableSortActivity.prototype = Object.create(ActivityBase.prototype);
 VariableSortActivity.prototype.constructor = VariableSortActivity;
 
 /* ---------- public API ---------- */
@@ -334,6 +334,7 @@ VariableSortActivity.prototype._checkComplete = function () {
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref, nextTick, computed } from 'vue'
+import Activity from './Activity.vue'
 
 const props = defineProps({
   tag: { type: String, default: 'div' },
@@ -374,10 +375,10 @@ onMounted(async () => {
   await nextTick()
 
   whenCommonFunctionsReady(() => {
-    if (!root.value) return
+    if (!root.value?.$el) return
 
     activity = new VariableSortActivity(
-      root.value,
+      root.value?.$el,
       { ...props.options }
     )
   })
@@ -398,11 +399,10 @@ defineExpose({
 </script>
 
 <template>
-  <component
-    :is="tag"
+  <Activity
+    :tag="tag"
     ref="root"
     class="variable-activity"
-    data-activity
   >
     <div v-if="$slots.autofillTestableQuestion" class="variable-question floating-title">
       <slot name="autofillTestableQuestion" />
@@ -468,7 +468,7 @@ defineExpose({
         Reset
       </button>
     </div>
-  </component>
+  </Activity>
 </template>
 
 <style scoped>

@@ -1,10 +1,10 @@
 <script>
-import { Activity, whenCommonFunctionsReady } from './activity-base.js'
+import { ActivityBase, whenCommonFunctionsReady } from './Activity.vue'
 
 /* ==================================================
    MULTIPLE CHOICE
    One or more questions, each with its own set of choice buttons. Pair
-   with activity-base.js.
+   with Activity.vue.
 
    Markup contract:
 
@@ -108,7 +108,7 @@ var DEFAULT_CLASSES = {
 };
 
 function MultipleChoiceActivity(root, options) {
-  Activity.call(this, root, options);
+  ActivityBase.call(this, root, options);
 
   var self = this;
   this.classes = Object.assign({}, DEFAULT_CLASSES, this.options.classes || {});
@@ -142,7 +142,7 @@ function MultipleChoiceActivity(root, options) {
   this.setComplete(this.isComplete());
 }
 
-MultipleChoiceActivity.prototype = Object.create(Activity.prototype);
+MultipleChoiceActivity.prototype = Object.create(ActivityBase.prototype);
 MultipleChoiceActivity.prototype.constructor = MultipleChoiceActivity;
 
 /* ---------- public API ---------- */
@@ -299,6 +299,7 @@ MultipleChoiceActivity.prototype._selectChoice = function (question, choice) {
   - the activity instance is also reachable from the page as getActivity(id).
 */
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import Activity from './Activity.vue'
 
 const props = defineProps({
   tag: { type: String, default: 'div' },
@@ -312,7 +313,7 @@ let activity = null
 
 onMounted(() => {
   whenCommonFunctionsReady(() => {
-    activity = new MultipleChoiceActivity(root.value, {
+    activity = new MultipleChoiceActivity(root.value?.$el, {
       ...props.options,
       onAnswer(detail) {
         if (props.options.onAnswer) props.options.onAnswer(detail)
@@ -330,7 +331,7 @@ defineExpose({ getActivity: () => activity })
 </script>
 
 <template>
-  <component :is="tag" ref="root" data-activity>
+  <Activity :tag="tag" ref="root">
     <slot />
-  </component>
+  </Activity>
 </template>
