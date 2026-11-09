@@ -1,11 +1,14 @@
 <script setup>
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
+import Button from "../components/Button.vue";
 import Flashcards from "../components/lesson1/Flashcards.vue";
 import QuestionWheel from "../components/lesson1/QuestionWheel.vue";
 import PredictionTests from "../components/lesson1/PredictionTests.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 import LessonIntro from "../components/LessonIntro.vue";
+
+import { openVideo } from "../composables/useModal.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -494,30 +497,26 @@ const sections = [
             videos below to learn how to do this.
           </p>
           <div class="video-help-buttons">
-            <button
-              type="button"
-              class="general-button"
+            <Button
               @click="
-                openModal('video', {
-                  src: '../videos/lesson1/reasoned-prediction-v2.mp4',
-                  title: 'Video guide 1',
-                })
+                openVideo(
+                  '../videos/lesson1/reasoned-prediction-v2.mp4',
+                  'Video guide 1',
+                )
               "
             >
               ▶ How to use the reasoned prediction builder
-            </button>
-            <button
-              type="button"
-              class="general-button"
+            </Button>
+            <Button
               @click="
-                openModal('video', {
-                  src: '../videos/lesson1/reasoned-prediction-example-v2.mp4',
-                  title: 'Video guide 2',
-                })
+                openVideo(
+                  '../videos/lesson1/reasoned-prediction-example-v2.mp4',
+                  'Video guide 2',
+                )
               "
             >
               ▶ Worked example
-            </button>
+            </Button>
           </div>
         </div>
         <PredictionTable

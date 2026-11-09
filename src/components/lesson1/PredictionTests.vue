@@ -96,9 +96,9 @@ defineExpose({ reset, isComplete });
             <Button
               class="prediction-choice-button"
               :class="{
-                'selected-answer': selected(i, 'true'),
-                'correct-answer': selected(i, 'true') && correct(i),
-                'incorrect-answer': selected(i, 'true') && !correct(i),
+                selected: selected(i, 'true'),
+                correct: selected(i, 'true') && correct(i),
+                incorrect: selected(i, 'true') && !correct(i),
               }"
               :aria-pressed="selected(i, 'true')"
               @click="selectAnswer(i, 'true')"
@@ -109,9 +109,9 @@ defineExpose({ reset, isComplete });
             <Button
               class="prediction-choice-button"
               :class="{
-                'selected-answer': selected(i, 'false'),
-                'correct-answer': selected(i, 'false') && correct(i),
-                'incorrect-answer': selected(i, 'false') && !correct(i),
+                selected: selected(i, 'false'),
+                correct: selected(i, 'false') && correct(i),
+                incorrect: selected(i, 'false') && !correct(i),
               }"
               :aria-pressed="selected(i, 'false')"
               @click="selectAnswer(i, 'false')"
@@ -144,7 +144,9 @@ defineExpose({ reset, isComplete });
         <li>Making a prediction and giving a reason for your choice</li>
       </ol>
     </div>
-    <button type="button" class="general-button" @click="reset">Reset</button>
+    <div class="reset-button-container">
+      <Button class="reset-btn" @click="reset">Reset</Button>
+    </div>
   </Activity>
 </template>
 
@@ -340,21 +342,20 @@ defineExpose({ reset, isComplete });
 
 .prediction-choice-button {
   min-width: 150px;
-
-  border: 2px solid var(--line);
 }
 
-.prediction-choice-button.selected-answer {
+.prediction-choice-button.selected {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--line);
+  --box-shadow: none;
 }
 
-.prediction-choice-button.correct-answer {
-  background: var(--green);
+.prediction-choice-button.correct {
+  --background: var(--mint) !important;
+  --color: var(--charcoal);
 }
 
-.prediction-choice-button.incorrect-answer {
-  background: var(--orange);
+.prediction-choice-button.incorrect {
+  background: var(--orange) !important;
 }
 
 .prediction-feedback {

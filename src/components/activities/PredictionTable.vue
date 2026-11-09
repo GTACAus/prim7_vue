@@ -1,6 +1,7 @@
 <script setup>
 import { computed, reactive, ref, watch } from "vue";
 import Activity from "../activities/Activity.vue";
+import Button from "../Button.vue";
 
 const props = defineProps({
   tag: { type: String, default: "div" },
@@ -432,9 +433,7 @@ defineExpose({ reset, setContext, isComplete });
       </div>
 
       <div v-if="showReset" class="reset-button-container">
-        <button type="button" class="reset-btn general-button" @click="reset">
-          Reset
-        </button>
+        <Button class="reset-btn" @click="reset">Reset</Button>
       </div>
     </div>
 

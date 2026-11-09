@@ -1,5 +1,7 @@
 <script setup>
 import Button from "./Button.vue";
+import { openGlossary } from "../composables/useModal.js";
+
 defineProps({
   // show "Save my work" instead of "Home" (pretask)
   save: { type: Boolean, default: false },
@@ -34,10 +36,7 @@ defineProps({
         {{ backLabel }}
       </Button>
 
-      <Button
-        class="glossary-button"
-        onclick="openModal('glossary')"
-        symbol="📖"
+      <Button class="glossary-button" @click="openGlossary" symbol="📖"
         >Vocabulary</Button
       >
     </header>

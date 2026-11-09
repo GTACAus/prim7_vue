@@ -39,7 +39,7 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
   --padding: 12px 20px;
   --background: var(--green);
   --color: white;
-  --border: 2px solid var(--charcoal);
+  --border: var(--border-medium);
   --border-radius: var(--radius-small);
   --box-shadow: var(--shadow-small);
   --font-weight: 700;
@@ -73,18 +73,19 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
     background 0.15s ease;
 }
 
-:where(button:disabled, a[aria-disabled="true"]) {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: var(--shadow-small);
-}
-
 :is(button, a):hover {
   background: var(--background-hover);
   color: var(--color-hover);
   transform: translateY(var(--translate-amount-hover));
   box-shadow: var(--box-shadow-hover);
+}
+
+:where(button:disabled, a[aria-disabled="true"]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: var(--shadow-small);
 }
 
 :is(button, a):active,
@@ -95,6 +96,11 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
   color: var(--color-active);
   transform: translateY(var(--translate-amount-active));
   box-shadow: var(--box-shadow-active);
+}
+
+.reset-btn {
+  --background: var(--orange);
+  --background-hover: var(--button-hover);
 }
 
 .bounce-symbol {

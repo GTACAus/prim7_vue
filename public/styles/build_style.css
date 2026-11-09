@@ -50,6 +50,10 @@
   --shadow-medium: 0 6px 0 var(--charcoal);
   --shadow: rgb(0 0 0 / 0.05);
 
+  --border-small: 1px solid var(--line);
+  --border-medium: 2px solid var(--line);
+  --border-large: 4px solid var(--line);
+
   touch-action: pan-x pan-y;
   height: 100%;
 }
@@ -532,11 +536,6 @@ input[type="checkbox"]:active {
 }
 
 /* ---------- Wheel and question builder layout ---------- */
-
-.reset-btn {
-  --background: var(--orange);
-  --background-hover: var(--button-hover);
-}
 
 .reset-button-container {
   display: flex;
