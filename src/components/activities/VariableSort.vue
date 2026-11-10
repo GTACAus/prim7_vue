@@ -1,5 +1,5 @@
 <script>
-import { ActivityBase, whenCommonFunctionsReady } from './Activity.vue'
+import { ActivityBase, whenCommonFunctionsReady } from './legacyActivity.js'
 
 /* ==================================================
    VARIABLE SORT

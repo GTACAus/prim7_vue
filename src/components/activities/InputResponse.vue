@@ -34,7 +34,8 @@ import {
   useAttrs,
   watch,
 } from "vue";
-import Activity, { ActivityBase } from "./Activity.vue";
+import Activity from "./Activity.vue";
+import { ActivityBase } from "./legacyActivity.js";
 import ResponseBox from "./ResponseBox.vue";
 
 const props = defineProps({
