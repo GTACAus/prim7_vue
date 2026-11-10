@@ -5,11 +5,11 @@ import {
   reactive,
   ref,
   nextTick,
+  watch,
   watchEffect,
   onMounted,
   onUnmounted,
 } from "vue";
-import { saveActivity } from "../composables/useLessonProgress.js";
 import Button from "./Button.vue";
 import Modal from "./Modal.vue";
 
@@ -40,16 +40,71 @@ const sections = computed(() =>
   }),
 );
 
-// Save page progress
+const emit = defineEmits(["restore"]);
+
+/*
+  Saving / restoring progress
+
+  The whole lesson is stored under one localStorage key:
+    { page: { unlockedIndex, showEverything, completed },
+      sections: { [sectionId]: { activities: { [activityKey]: {...} } } } }
+
+  Saving flows up:   Activity -> section.save() -> page.saveSection()
+  Restoring flows down: Page loads the data here, each Section asks for its
+  slice when it's created, and each Activity asks its Section. Every level
+  emits @restore with the data it got back.
+*/
+const storageKey = `prim7:${props.lessonId}`;
+
+function load() {
+  try {
+    return JSON.parse(localStorage.getItem(storageKey)) ?? {};
+  } catch (error) {
+    console.warn("Could not restore lesson progress:", error);
+    return {};
+  }
+}
+
+const saved = load();
+const savedSections = { ...saved.sections };
+
 const progress = reactive({
   unlockedIndex: 0,
   showEverything: false,
   completed: [],
+  ...saved.page,
 });
 
-const stopSaving = saveActivity("page", progress);
+if (saved.page || saved.sections) emit("restore", saved);
 
-onUnmounted(() => stopSaving());
+// Several saves in one tick (e.g. a reset) are written once.
+let writeQueued = false;
+function save() {
+  if (writeQueued) return;
+  writeQueued = true;
+  queueMicrotask(() => {
+    writeQueued = false;
+    try {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ page: progress, sections: savedSections }),
+      );
+    } catch (error) {
+      console.warn("Could not save lesson progress:", error);
+    }
+  });
+}
+
+function saveSection(sectionId, state) {
+  savedSections[sectionId] = state;
+  save();
+}
+
+function restoreSection(sectionId) {
+  return savedSections[sectionId];
+}
+
+watch(progress, save, { deep: true });
 
 const mountedSections = new Map();
 const backLink = computed(() => props.backLink);
@@ -124,13 +179,7 @@ function teacherShowAll() {
 
 async function teacherResetView() {
   // Clear saved progress for this lesson
-  const prefix = `prim7:${location.pathname}:`;
-
-  for (const key of Object.keys(localStorage)) {
-    if (key.startsWith(prefix)) {
-      localStorage.removeItem(key);
-    }
-  }
+  for (const id of Object.keys(savedSections)) delete savedSections[id];
 
   progress.completed = [];
   progress.showEverything = false;
@@ -175,6 +224,8 @@ provide("lessonPage", {
   teacherJump,
   teacherShowAll,
   teacherResetView,
+  saveSection,
+  restoreSection,
 });
 // Leave this small config provider for existing sections during the migration.
 provide("pageSections", props.sections);

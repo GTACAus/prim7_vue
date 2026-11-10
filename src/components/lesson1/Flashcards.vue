@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import Button from "../Button.vue";
 import Activity from "../activities/Activity.vue";
 
@@ -34,25 +34,23 @@ function shuffle(items) {
   return result;
 }
 
+const deck = ref(shuffle(props.questions ?? DEFAULT_QUESTIONS));
+const piles = ref({ left: [], right: [] });
+const started = ref(false);
 const flying = ref("");
 const locked = ref(false);
 let timer = null;
 
-// Stage of the activity
-const state = reactive({
-  deck: [shuffle(props.questions ?? DEFAULT_QUESTIONS)],
-  index: 0,
-  piles: { left: [], right: [] },
-  started: false,
-});
+// Saved by <Activity> and restored when the page loads.
+const state = { deck, piles, started };
 
 const total = computed(() => (props.questions ?? DEFAULT_QUESTIONS).length);
 const sortedCount = computed(
-  () => state.piles.left.length + state.piles.right.length,
+  () => piles.value.left.length + piles.value.right.length,
 );
 
 const isComplete = computed(
-  () => state.deck.length > 0 && sortedCount.value === total.value,
+  () => total.value > 0 && sortedCount.value === total.value,
 );
 
 const done = isComplete;
@@ -61,19 +59,8 @@ const progress = computed(() =>
   done.value ? "All sorted!" : `${sortedCount.value + 1} of ${total.value}`,
 );
 
-// Save progress
-const savedState = computed(() => ({
-  deck: deck.value,
-  piles: piles.value,
-  started: started.value,
-}));
-
-function restore(saved) {
-  deck.value = saved.deck ?? [];
-  piles.value = saved.piles ?? { left: [], right: [] };
-  started.value = saved.started ?? false;
-
-  // Don't resume animations halfway through.
+// Saved refs are already restored; just make sure no animation is half-done.
+function onRestore() {
   flying.value = "";
   locked.value = false;
 }
@@ -128,6 +115,7 @@ defineExpose({ reset });
     :state="state"
     :complete="isComplete"
     @reset="reset"
+    @restore="onRestore"
   >
     <div class="flashcard-content">
       <div class="layout">

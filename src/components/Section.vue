@@ -16,7 +16,7 @@ const props = defineProps({
   title: { type: String, default: "" },
   last: { type: Boolean, default: false },
 });
-const emit = defineEmits(["complete", "unlock"]);
+const emit = defineEmits(["complete", "unlock", "restore"]);
 const page = inject("lessonPage", null);
 const legacySections = inject("pageSections", []);
 const index = computed(() =>
@@ -40,13 +40,27 @@ const completed = computed(() =>
 const activities = reactive(new Set());
 const element = ref(null);
 
-// Supports the current Activity.vue registration contract (context objects).
+// Saved state for this section: { activities: { [activityKey]: {...} } }.
+// Restored from the page when the section is created.
+const savedState = page?.restoreSection(sectionId.value);
+const state = { activities: { ...savedState?.activities } };
+if (savedState) emit("restore", savedState);
+
+let activityCount = 0;
+
 provide("section", {
-  register(activity) {
+  // Returns the activity's key and its saved data (if any) so it can restore.
+  register(activity, name) {
     activities.add(activity);
+    const key = name || `activity-${activityCount++}`;
+    return { key, saved: state.activities[key] };
   },
   unregister(activity) {
     activities.delete(activity);
+  },
+  save(key, data) {
+    state.activities[key] = data;
+    page?.saveSection(sectionId.value, state);
   },
 });
 
@@ -62,6 +76,7 @@ const showNext = computed(
 );
 
 function reset() {
+  state.activities = {};
   for (const a of activities) a.reset();
 }
 function next() {
