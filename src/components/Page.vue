@@ -9,10 +9,12 @@ import {
   onMounted,
   onUnmounted,
 } from "vue";
+import { saveActivity } from "../composables/useLessonProgress.js";
 import Button from "./Button.vue";
 import Modal from "./Modal.vue";
 
 const props = defineProps({
+  lessonId: { type: String, required: true },
   title: { type: String, required: true },
   sections: { type: Array, required: true },
   glossary: { type: Object, default: null },
@@ -37,9 +39,18 @@ const sections = computed(() =>
     };
   }),
 );
-const unlockedIndex = ref(0);
-const showEverything = ref(false);
-const completed = reactive(new Set());
+
+// Save page progress
+const progress = reactive({
+  unlockedIndex: 0,
+  showEverything: false,
+  completed: [],
+});
+
+const stopSaving = saveActivity("page", progress);
+
+onUnmounted(() => stopSaving());
+
 const mountedSections = new Map();
 const backLink = computed(() => props.backLink);
 const modalRef = ref(null);
@@ -49,14 +60,17 @@ let teacherTimer = null;
 function indexOfSection(name) {
   return sections.value.findIndex((s) => s.id === name || s.name === name);
 }
+
 function isLocked(name) {
   const i = indexOfSection(name);
-  return i < 0 || (!showEverything.value && i > unlockedIndex.value);
+  return i < 0 || (!progress.showEverything && i > progress.unlockedIndex);
 }
+
 function isCompleted(name) {
   const i = indexOfSection(name);
-  return i >= 0 && completed.has(sections.value[i].id);
+  return i >= 0 && progress.completed.includes(sections.value[i].id);
 }
+
 function isLast(name) {
   return indexOfSection(name) === sections.value.length - 1;
 }
@@ -70,39 +84,66 @@ function getController(name) {
   const s = sections.value[indexOfSection(name)];
   return s && (mountedSections.get(s.id) || mountedSections.get(s.name));
 }
+
 function completeSection(name) {
   const i = indexOfSection(name);
   if (i < 0 || isLocked(name)) return;
-  completed.add(sections.value[i].id);
-  unlockedIndex.value = Math.max(
-    unlockedIndex.value,
+
+  const id = sections.value[i].id;
+
+  if (!progress.completed.includes(id)) {
+    progress.completed.push(id);
+  }
+
+  progress.unlockedIndex = Math.max(
+    progress.unlockedIndex,
     Math.min(i + 1, sections.value.length - 1),
   );
+
   scrollToSection(sections.value[i + 1]?.id);
 }
+
 async function scrollToSection(name) {
   if (!name) return;
   await nextTick();
   getController(name)?.scrollTo();
 }
+
 function teacherJump(name) {
   const i = indexOfSection(name);
   if (i < 0) return;
-  // Teacher navigation changes availability, never marks answers complete.
-  unlockedIndex.value = Math.max(unlockedIndex.value, i);
+
+  progress.unlockedIndex = Math.max(progress.unlockedIndex, i);
+
   scrollToSection(name);
 }
+
 function teacherShowAll() {
-  showEverything.value = true;
+  progress.showEverything = true;
 }
+
 async function teacherResetView() {
-  completed.clear();
-  showEverything.value = false;
-  unlockedIndex.value = 0;
-  for (const controller of mountedSections.values()) controller.reset();
+  // Clear saved progress for this lesson
+  const prefix = `prim7:${location.pathname}:`;
+
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith(prefix)) {
+      localStorage.removeItem(key);
+    }
+  }
+
+  progress.completed = [];
+  progress.showEverything = false;
+  progress.unlockedIndex = 0;
+
+  for (const controller of mountedSections.values()) {
+    controller.reset();
+  }
+
   await nextTick();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
 function handleTeacherClick(event) {
   // Works with the existing id="teacherTrigger" without querying the DOM.
   // Alternatively bind @click="..." directly to a teacher trigger in a lesson view.

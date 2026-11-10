@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { reactive, computed, onBeforeUnmount, ref, watch } from "vue";
 import Button from "../Button.vue";
 import Activity from "../activities/Activity.vue";
 
@@ -34,25 +34,49 @@ function shuffle(items) {
   return result;
 }
 
-const deck = ref(shuffle(props.questions ?? DEFAULT_QUESTIONS));
-const piles = ref({ left: [], right: [] });
 const flying = ref("");
 const locked = ref(false);
-const started = ref(false);
 let timer = null;
+
+// Stage of the activity
+const state = reactive({
+  deck: [shuffle(props.questions ?? DEFAULT_QUESTIONS)],
+  index: 0,
+  piles: { left: [], right: [] },
+  started: false,
+});
 
 const total = computed(() => (props.questions ?? DEFAULT_QUESTIONS).length);
 const sortedCount = computed(
-  () => piles.value.left.length + piles.value.right.length,
+  () => state.piles.left.length + state.piles.right.length,
 );
+
 const isComplete = computed(
-  () => total.value > 0 && sortedCount.value === total.value,
+  () => state.deck.length > 0 && sortedCount.value === total.value,
 );
+
 const done = isComplete;
 const currentText = computed(() => deck.value[0]?.text ?? "");
 const progress = computed(() =>
   done.value ? "All sorted!" : `${sortedCount.value + 1} of ${total.value}`,
 );
+
+// Save progress
+const savedState = computed(() => ({
+  deck: deck.value,
+  piles: piles.value,
+  started: started.value,
+}));
+
+function restore(saved) {
+  deck.value = saved.deck ?? [];
+  piles.value = saved.piles ?? { left: [], right: [] };
+  started.value = saved.started ?? false;
+
+  // Don't resume animations halfway through.
+  flying.value = "";
+  locked.value = false;
+}
 
 function shortText(text) {
   return text.length > 25 ? text.slice(0, 25) + "…" : text;
@@ -99,7 +123,12 @@ defineExpose({ reset });
 </script>
 
 <template>
-  <Activity class="flashcard-box" :complete="isComplete" @reset="reset">
+  <Activity
+    class="flashcard-box"
+    :state="state"
+    :complete="isComplete"
+    @reset="reset"
+  >
     <div class="flashcard-content">
       <div class="layout">
         <div class="pile-section">

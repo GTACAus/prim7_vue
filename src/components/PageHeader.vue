@@ -69,11 +69,18 @@ defineProps({
 .home-button {
   border-top: 5px solid var(--yellow);
   pointer-events: auto;
+  --background-hover: var(--soft-yellow);
+  --background-active: var(--yellow);
 }
 
 .glossary-button {
-  border-top: 5px solid var(--purple);
   pointer-events: auto;
+  justify-self: end;
+
+  border-top: 5px solid var(--purple);
+  --background-hover: var(--soft-purple);
+  --background-active: var(--purple);
+  --color-active: var(--paper);
 }
 
 .save-work-button {
@@ -122,17 +129,5 @@ defineProps({
 .glossary-button {
   --background: var(--card);
   --color: var(--text);
-}
-
-.home-button:hover {
-  --background: var(--soft-yellow);
-}
-
-.glossary-button:hover {
-  --background: var(--soft-purple);
-}
-
-.glossary-button {
-  justify-self: end;
 }
 </style>

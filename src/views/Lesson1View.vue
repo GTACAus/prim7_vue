@@ -148,6 +148,7 @@ const sections = [
 </script>
 <template>
   <Page
+    lessonId="lesson1"
     title="Lesson 1 - Questioning and Predicting"
     :sections="sections"
     :glossary="glossary"

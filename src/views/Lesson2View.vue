@@ -1,3 +1,196 @@
+<script setup>
+import { ref } from "vue";
+import Page from "../components/Page.vue";
+import Section from "../components/Section.vue";
+import StopAndCheck from "../components/StopAndCheck.vue";
+import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
+import DiscoverVariables from "../components/lesson2/DiscoverVariables.vue";
+import MultipleChoice from "../components/activities/MultipleChoice.vue";
+import PredictionTable from "../components/activities/PredictionTable.vue";
+import VariableSort from "../components/activities/VariableSort.vue";
+import FairTestBuilder from "../components/lesson2/FairTestBuilder.vue";
+
+// Options passed to the activity components
+const sortVariablesOneActivityOptions = {
+  answers: {
+    independent: "bounce-surface",
+    dependent: "bounce-height",
+    controlled: [
+      "ball-size",
+      "ball-material",
+      "drop-height",
+      "ball-squashiness",
+    ],
+  },
+};
+
+const sortVariablesTwoActivityOptions = {
+  answers: {
+    independent: "ball-size",
+    dependent: "bounce-height",
+    controlled: [
+      "ball-material",
+      "drop-height",
+      "ball-squashiness",
+      "bounce-surface",
+    ],
+  },
+};
+
+const sortVariablesThreeActivityOptions = {
+  options: {
+    independent: [
+      "ball-size",
+      "ball-material",
+      "drop-height",
+      "ball-squashiness",
+      "bounce-surface",
+    ],
+    dependent: ["bounce-height", "number-of-bounces", "time-spent-bouncing"],
+    controlled: [
+      "ball-size",
+      "ball-material",
+      "drop-height",
+      "ball-squashiness",
+      "bounce-surface",
+    ],
+  },
+};
+
+const ballPairActivityOptions = {
+  completionMode: "live",
+  classes: {
+    selected: "selected",
+    correct: "correct-selection",
+    incorrect: "incorrect-selection",
+    feedbackCorrect: "feedback-success",
+    feedbackIncorrect: "feedback-try-again",
+    feedbackTitle: "ball-pair-feedback-title",
+    feedbackText: "ball-pair-feedback-text",
+  },
+};
+
+const dropdownAnswers = [
+  "ball size",
+  "ball material",
+  "drop height",
+  "ball squashiness",
+  "bounce surface",
+  "bounce height",
+  "number of bounces",
+  "time spent bouncing",
+];
+
+const testableQuestion = ref("");
+
+function onQuestionChange(state) {
+  testableQuestion.value = state?.text ?? "";
+}
+
+// One reset button for the question and the prediction
+function resetQuestionAndPrediction() {
+  getActivity("investigationQuestionActivity")?.reset();
+  getActivity("reasonedPredictionActivity")?.reset();
+}
+
+const investigationQuestionActivityOptions = {
+  variableOptions: dropdownAnswers,
+};
+import LessonIntro from "../components/LessonIntro.vue";
+
+// Learning objective and success criteria shown in the lesson intro
+const objective =
+  "We are learning to plan a fair test and draw it as a diagram.";
+const criteria = [
+  "I can identify <strong>variables</strong> in a fair test.",
+  "To plan a fair test, I can select: <ul> <li>The <strong>independent variable</strong> (thing I change),</li> <li>The <strong>dependent variable</strong> (thing I measure) and</li> <li>The <strong>controlled variables</strong> (things I keep the same) </li> </ul>",
+  "I can use a diagram to describe my <strong>fair test</strong>",
+];
+
+// Terms shown in the vocabulary modal: { word: description }
+const glossary = {
+  Variable:
+    "An aspect of an investigation that can be different or can change.",
+  "Independent variable":
+    "The one <strong>variable</strong> changed during a <strong>fair test</strong> experiment.",
+  "Dependent variable":
+    "The result that is observed or measured during a <strong>fair test</strong> experiment.",
+  "Controlled variables":
+    "The <strong>variables</strong> kept the same so the experiment is fair.",
+  "Fair test Experiment":
+    "An experiment where one <strong>variable</strong> is changed, one is measured, and all others are kept the same.",
+};
+
+// Sections of the page. Order defines the unlock chain (next-id) and which
+// sections start locked; override per section where needed.
+const sections = [
+  {
+    key: "discoverVariables",
+    id: "discover-variables",
+    label: "Discover possible variables",
+    title: "Planning a ball bounce fair test",
+  },
+  {
+    key: "variableTypes",
+    id: "variable-types",
+    label: "Learn the three variable types",
+    title: "Using variables to design a fair test",
+    hideNext: true,
+  },
+  {
+    key: "sortVariablesOne",
+    id: "sort-variables-one",
+    label: "Sort variables: floor surface",
+    title: "Practice reading a fair test question",
+    nextButtonId: "sortVariablesOneNext",
+    hideNext: true,
+  },
+  {
+    key: "sortVariablesTwo",
+    id: "sort-variables-two",
+    label: "Sort variables: ball size",
+    title: "Try another testable question to practice identifying variables",
+    nextButtonId: "sortVariablesTwoNext",
+    hideNext: true,
+  },
+  {
+    key: "chooseBallPair",
+    id: "choose-ball-pair",
+    label: "Choose the right pair for a fair test experiment",
+    title: "Select the picture showing a fair test",
+    hideNext: true,
+  },
+  {
+    key: "designQuestion",
+    id: "design-question",
+    label: "Design a question and make a prediction",
+    title: "Write your own fait test question",
+    nextButtonId: "designQuestionNext",
+    hideNext: true,
+  },
+  {
+    key: "sortVariablesThree",
+    id: "sort-variables-three",
+    label: "Choose variables for your investigation",
+    title: "Identify all variables for your fair test.",
+    nextButtonId: "sortVariablesThreeNext",
+    hideNext: true,
+  },
+  {
+    key: "buildExperiment",
+    id: "build-experiment",
+    label: "Describe the fair-test procedure",
+    title: "Build Your Fair Test Plan",
+  },
+];
+
+// Called by the shared PDF function in common_functions.js.
+// Add localStorage saving here when Lesson 2 interactions are built.
+window.saveCurrentPageData = () => {
+  console.log("Lesson 2 skeleton: no saved activity data yet.");
+};
+</script>
+
 <template>
   <!-- Page renders the vocabulary modal and the hidden teacher menu
        (opened by clicking the lesson title five times). -->
@@ -478,197 +671,3 @@
     </template>
   </Page>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import Page from "../components/Page.vue";
-import Section from "../components/Section.vue";
-import StopAndCheck from "../components/StopAndCheck.vue";
-import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
-import DiscoverVariables from "../components/lesson2/DiscoverVariables.vue";
-import MultipleChoice from "../components/activities/MultipleChoice.vue";
-import PredictionTable from "../components/activities/PredictionTable.vue";
-import VariableSort from "../components/activities/VariableSort.vue";
-import FairTestBuilder from "../components/lesson2/FairTestBuilder.vue";
-
-// Options passed to the activity components
-const sortVariablesOneActivityOptions = {
-  answers: {
-    independent: "bounce-surface",
-    dependent: "bounce-height",
-    controlled: [
-      "ball-size",
-      "ball-material",
-      "drop-height",
-      "ball-squashiness",
-    ],
-  },
-};
-
-const sortVariablesTwoActivityOptions = {
-  answers: {
-    independent: "ball-size",
-    dependent: "bounce-height",
-    controlled: [
-      "ball-material",
-      "drop-height",
-      "ball-squashiness",
-      "bounce-surface",
-    ],
-  },
-};
-
-const sortVariablesThreeActivityOptions = {
-  options: {
-    independent: [
-      "ball-size",
-      "ball-material",
-      "drop-height",
-      "ball-squashiness",
-      "bounce-surface",
-    ],
-    dependent: ["bounce-height", "number-of-bounces", "time-spent-bouncing"],
-    controlled: [
-      "ball-size",
-      "ball-material",
-      "drop-height",
-      "ball-squashiness",
-      "bounce-surface",
-    ],
-  },
-};
-
-const ballPairActivityOptions = {
-  completionMode: "live",
-  classes: {
-    selected: "selected",
-    correct: "correct-selection",
-    incorrect: "incorrect-selection",
-    feedbackCorrect: "feedback-success",
-    feedbackIncorrect: "feedback-try-again",
-    feedbackTitle: "ball-pair-feedback-title",
-    feedbackText: "ball-pair-feedback-text",
-  },
-};
-
-const dropdownAnswers = [
-  "ball size",
-  "ball material",
-  "drop height",
-  "ball squashiness",
-  "bounce surface",
-  "bounce height",
-  "number of bounces",
-  "time spent bouncing",
-];
-
-const testableQuestion = ref("");
-
-function onQuestionChange(state) {
-  testableQuestion.value = state?.text ?? "";
-}
-
-// One reset button for the question and the prediction
-function resetQuestionAndPrediction() {
-  getActivity("investigationQuestionActivity")?.reset();
-  getActivity("reasonedPredictionActivity")?.reset();
-}
-
-const investigationQuestionActivityOptions = {
-  variableOptions: dropdownAnswers,
-};
-import LessonIntro from "../components/LessonIntro.vue";
-
-// Learning objective and success criteria shown in the lesson intro
-const objective =
-  "We are learning to plan a fair test and draw it as a diagram.";
-const criteria = [
-  "I can identify <strong>variables</strong> in a fair test.",
-  "To plan a fair test, I can select: <ul> <li>The <strong>independent variable</strong> (thing I change),</li> <li>The <strong>dependent variable</strong> (thing I measure) and</li> <li>The <strong>controlled variables</strong> (things I keep the same) </li> </ul>",
-  "I can use a diagram to describe my <strong>fair test</strong>",
-];
-
-// Terms shown in the vocabulary modal: { word: description }
-const glossary = {
-  Variable:
-    "An aspect of an investigation that can be different or can change.",
-  "Independent variable":
-    "The one <strong>variable</strong> changed during a <strong>fair test</strong> experiment.",
-  "Dependent variable":
-    "The result that is observed or measured during a <strong>fair test</strong> experiment.",
-  "Controlled variables":
-    "The <strong>variables</strong> kept the same so the experiment is fair.",
-  "Fair test Experiment":
-    "An experiment where one <strong>variable</strong> is changed, one is measured, and all others are kept the same.",
-};
-
-// Sections of the page. Order defines the unlock chain (next-id) and which
-// sections start locked; override per section where needed.
-const sections = [
-  {
-    key: "discoverVariables",
-    id: "discover-variables",
-    label: "Discover possible variables",
-    title: "Planning a ball bounce fair test",
-  },
-  {
-    key: "variableTypes",
-    id: "variable-types",
-    label: "Learn the three variable types",
-    title: "Using variables to design a fair test",
-    hideNext: true,
-  },
-  {
-    key: "sortVariablesOne",
-    id: "sort-variables-one",
-    label: "Sort variables: floor surface",
-    title: "Practice reading a fair test question",
-    nextButtonId: "sortVariablesOneNext",
-    hideNext: true,
-  },
-  {
-    key: "sortVariablesTwo",
-    id: "sort-variables-two",
-    label: "Sort variables: ball size",
-    title: "Try another testable question to practice identifying variables",
-    nextButtonId: "sortVariablesTwoNext",
-    hideNext: true,
-  },
-  {
-    key: "chooseBallPair",
-    id: "choose-ball-pair",
-    label: "Choose the right pair for a fair test experiment",
-    title: "Select the picture showing a fair test",
-    hideNext: true,
-  },
-  {
-    key: "designQuestion",
-    id: "design-question",
-    label: "Design a question and make a prediction",
-    title: "Write your own fait test question",
-    nextButtonId: "designQuestionNext",
-    hideNext: true,
-  },
-  {
-    key: "sortVariablesThree",
-    id: "sort-variables-three",
-    label: "Choose variables for your investigation",
-    title: "Identify all variables for your fair test.",
-    nextButtonId: "sortVariablesThreeNext",
-    hideNext: true,
-  },
-  {
-    key: "buildExperiment",
-    id: "build-experiment",
-    label: "Describe the fair-test procedure",
-    title: "Build Your Fair Test Plan",
-  },
-];
-
-// Called by the shared PDF function in common_functions.js.
-// Add localStorage saving here when Lesson 2 interactions are built.
-window.saveCurrentPageData = () => {
-  console.log("Lesson 2 skeleton: no saved activity data yet.");
-};
-
-</script>
