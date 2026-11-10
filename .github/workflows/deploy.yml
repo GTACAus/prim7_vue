@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: prim7_vue
+        working-directory: /
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: prim7_vue/package-lock.json
+          cache-dependency-path: /package-lock.json
 
       - run: npm ci
       - run: npm run build
@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: prim7_vue/dist
+          path: /dist
 
   deploy:
     needs: build
