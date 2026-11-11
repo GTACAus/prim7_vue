@@ -1,76 +1,120 @@
 <script setup>
-import { computed, ref } from "vue";
-import Activity from "../activities/Activity.vue";
+/*
+  MULTIPLE CHOICE
+  One or more questions, each with its own choice buttons. Lay them out however
+  the page likes - only the three components matter:
+
+    <MultipleChoice completion-mode="live" v-slot="{ reset }">
+      <McQuestion answer="basketballs" class="ball-pair-grid">
+        <McChoice value="basketballs" v-slot="{ selected, correct }">
+          <img ... />
+          <span v-if="selected">{{ correct ? "Yes!" : "Try again" }}</span>
+        </McChoice>
+        <McChoice value="tennis">...</McChoice>
+      </McQuestion>
+
+      <Button @click="reset">Reset</Button>
+    </MultipleChoice>
+
+  A choice is right when its value matches its question's answer.
+
+  Props
+  - completionMode: "sticky" (default) - a question stays done once it has been
+    answered right; "live" - only the latest pick counts, so a wrong pick
+    after a right one un-completes it.
+  - sequence: show one question at a time; a right answer moves to the next.
+  - classes: rename the classes put on a picked choice - defaults
+    { selected: "selected-answer", correct: "correct-answer",
+      incorrect: "incorrect-answer" }.
+
+  Slot props: MultipleChoice { reset, complete }, McQuestion { picked,
+  answered, correct }, McChoice { selected, correct }.
+  @answer gets { question, value, correct } on every pick.
+
+  Complete once every question satisfies completionMode. The picks are saved
+  through <Activity :state>. Give each McQuestion a `name` if questions can be
+  added or removed; otherwise their order is used.
+*/
+import { computed, provide, reactive, ref } from "vue";
+import Activity from "./Activity.vue";
+
+const DEFAULT_CLASSES = {
+  selected: "selected-answer",
+  correct: "correct-answer",
+  incorrect: "incorrect-answer",
+};
 
 const props = defineProps({
-  questions: { type: Array, required: true },
-  completionMode: {
-    type: String,
-    default: "sticky",
-  },
+  tag: { type: String, default: "div" },
+  completionMode: { type: String, default: "sticky" }, // sticky | live
+  sequence: { type: Boolean, default: false },
+  classes: { type: Object, default: () => ({}) },
 });
 
-const answers = ref({});
-const correctAnswers = ref({});
+const emit = defineEmits(["answer"]);
 
-const isComplete = computed(() => {
-  return props.questions.every((question) => {
-    if (props.completionMode === "sticky") {
-      return correctAnswers.value[question.id] === true;
-    }
+// Saved progress: latest pick, and which questions have been answered right
+const picked = ref({});
+const solved = ref({});
+const saved = { picked, solved }; // the refs themselves, so <Activity> can restore them
 
-    return answers.value[question.id] === question.answer;
-  });
-});
+const questions = reactive([]);
+let nextIndex = 0;
 
-function selectAnswer(question, choice) {
-  answers.value[question.id] = choice.value;
+const classNames = computed(() => ({ ...DEFAULT_CLASSES, ...props.classes }));
 
-  if (choice.value === question.answer) {
-    correctAnswers.value[question.id] = true;
-  }
+const isDone = (q) =>
+  props.completionMode === "live"
+    ? picked.value[q.key] === q.answer
+    : !!solved.value[q.key];
+
+const isComplete = computed(
+  () => questions.length > 0 && questions.every(isDone),
+);
+
+// sequence: the first question not yet answered right (none once all are)
+const current = computed(() =>
+  questions.find((q) => !solved.value[q.key]),
+);
+
+function select(question, value) {
+  const correct = value === question.answer;
+  picked.value = { ...picked.value, [question.key]: value };
+  if (correct) solved.value = { ...solved.value, [question.key]: true };
+  emit("answer", { question: question.key, value, correct });
 }
 
 function reset() {
-  answers.value = {};
-  correctAnswers.value = {};
+  picked.value = {};
+  solved.value = {};
 }
+
+provide("multipleChoice", {
+  register(question) {
+    question.key = question.name || "q" + nextIndex++;
+    questions.push(question);
+    return question.key;
+  },
+  unregister(question) {
+    const i = questions.indexOf(question);
+    if (i >= 0) questions.splice(i, 1);
+  },
+  picked,
+  classNames,
+  select,
+  isVisible: (question) => !props.sequence || current.value === question,
+});
+
+defineExpose({ reset, isComplete });
 </script>
 
 <template>
-  <Activity :complete="isComplete" @reset="reset">
-    <div v-for="question in questions" :key="question.id" class="mc-question">
-      <p>{{ question.text }}</p>
-
-      <div class="mc-choices">
-        <button
-          v-for="choice in question.choices"
-          :key="choice.value"
-          type="button"
-          class="mc-choice"
-          :class="{
-            'selected-answer': answers[question.id] === choice.value,
-            'correct-answer':
-              answers[question.id] === choice.value &&
-              choice.value === question.answer,
-            'incorrect-answer':
-              answers[question.id] === choice.value &&
-              choice.value !== question.answer,
-          }"
-          :aria-pressed="answers[question.id] === choice.value"
-          @click="selectAnswer(question, choice)"
-        >
-          {{ choice.label }}
-        </button>
-      </div>
-
-      <p v-if="answers[question.id] !== undefined">
-        {{
-          answers[question.id] === question.answer ? "Correct!" : "Try again."
-        }}
-      </p>
-    </div>
-
-    <button type="button" @click="reset">Reset</button>
+  <Activity
+    :tag="tag"
+    :complete="isComplete"
+    :state="saved"
+    @reset="reset"
+  >
+    <slot :reset="reset" :complete="isComplete" />
   </Activity>
 </template>

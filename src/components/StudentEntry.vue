@@ -27,6 +27,7 @@
 */
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 import { useClassroomLanguageFilter } from "../composables/useClassroomLanguageFilter.js";
+import Button from "./Button.vue";
 
 const props = defineProps({
   type: { type: String, default: "text" }, // text | number | textarea
@@ -161,29 +162,20 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
         @keydown.enter.prevent="save"
         @blur="save"
       />
-      <button
-        v-if="addLabel"
-        type="button"
-        data-tr-add
-        :hidden="atMax"
-        @click="save"
-      >
+      <Button v-if="addLabel" data-tr-add :hidden="atMax" @click="save">
         {{ addLabel }}
-      </button>
+      </Button>
       <span
         v-if="!multipleInputs && answers.length"
         class="ir-answer student-entry-single"
         :class="resultClass(answers[0])"
       >
         <span>{{ answers[0] }}</span>
-        <button
-          class="delete-answer"
-          type="button"
+        <Button
+          :is-delete="true"
           :aria-label="`Delete ${answers[0]}`"
           @click="remove(0)"
-        >
-          ×
-        </button>
+        />
       </span>
     </div>
 
@@ -207,29 +199,20 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
         @keydown.enter.prevent="save"
         @blur="save"
       />
-      <button
-        v-if="addLabel"
-        type="button"
-        data-tr-add
-        :hidden="atMax"
-        @click="save"
-      >
+      <Button v-if="addLabel" data-tr-add :hidden="atMax" @click="save">
         {{ addLabel }}
-      </button>
+      </Button>
       <span
         v-if="!multipleInputs && answers.length"
         class="ir-answer student-entry-single"
         :class="resultClass(answers[0])"
       >
         <span>{{ answers[0] }}</span>
-        <button
-          class="delete-answer"
-          type="button"
+        <Button
+          :is-delete="true"
           :aria-label="`Delete ${answers[0]}`"
           @click="remove(0)"
-        >
-          ×
-        </button>
+        />
       </span>
     </template>
 
@@ -251,14 +234,11 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
         :class="resultClass(entry)"
       >
         <span>{{ entry }}</span>
-        <button
-          class="delete-answer"
-          type="button"
+        <Button
+          :is-delete="true"
           :aria-label="`Delete ${entry}`"
           @click="remove(index)"
-        >
-          ×
-        </button>
+        />
       </component>
     </component>
   </div>
@@ -290,6 +270,8 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
 }
 
 :where(.student-entry-single) {
+  --background: var(--soft-green);
+
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -297,7 +279,7 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
   padding: 5px 10px;
   border: var(--border-medium);
   border-radius: var(--radius-small);
-  background: var(--soft-green);
+  background: var(--background);
   font-size: var(--entry-font-size, clamp(12px, 1.6vw, 18px));
   font-weight: 700;
   vertical-align: middle;

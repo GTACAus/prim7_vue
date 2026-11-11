@@ -29,41 +29,43 @@
     (tag="section" etc. changes the element; default is div). With an id, plain
     page scripts reach it as getActivity(id).
 */
-import { ref, watch } from 'vue'
-import Activity from './Activity.vue'
+import { ref, watch } from "vue";
+import Activity from "./Activity.vue";
 
 const props = defineProps({
-  tag: { type: String, default: 'div' },
+  tag: { type: String, default: "div" },
   // CSS selector for elements outside the slot to show on press
-  reveals: { type: String, default: '' },
-})
+  reveals: { type: String, default: "" },
+});
 
-const emit = defineEmits(['press'])
+const emit = defineEmits(["press"]);
 
-const pressed = ref(false)
+const pressed = ref(false);
+
+const state = { pressed };
 
 function press() {
-  pressed.value = true
-  emit('press')
+  pressed.value = true;
+  emit("press");
 }
 
 function reset() {
-  pressed.value = false
+  pressed.value = false;
 }
 
 // found by selector each time, so elements created later are included
 watch(pressed, (isPressed) => {
-  if (!props.reveals) return
+  if (!props.reveals) return;
   document.querySelectorAll(props.reveals).forEach((element) => {
-    element.hidden = !isPressed
-  })
-})
+    element.hidden = !isPressed;
+  });
+});
 
-defineExpose({ pressed, press, reset })
+defineExpose({ pressed, press, reset });
 </script>
 
 <template>
-  <Activity :tag="tag" :complete="pressed" @reset="reset">
+  <Activity :tag="tag" :complete="pressed" :state="state" @reset="reset">
     <slot :pressed="pressed" :press="press" :reset="reset" />
   </Activity>
 </template>

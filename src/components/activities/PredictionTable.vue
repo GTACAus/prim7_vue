@@ -450,7 +450,7 @@ defineExpose({ reset, setContext, isComplete });
       </div>
 
       <div v-if="showReset" class="reset-button-container">
-        <Button class="reset-btn" @click="reset">Reset</Button>
+        <Button :is-reset="true" @click="reset">Reset</Button>
       </div>
     </div>
 

@@ -1,472 +1,295 @@
-<script>
-import { ActivityBase, whenCommonFunctionsReady } from './legacyActivity.js'
+<script setup>
+/*
+  VARIABLE SORT
+  Pick a role (independent / dependent / controlled), then click the tiles
+  that belong to it - either against a fixed answer key, or against an open
+  set of valid variables for each role.
 
-/* ==================================================
-   VARIABLE SORT
-   Pick a role (independent / dependent / controlled), then classify
-   tiles into it - either against a fixed answer key, or against an
-   open set of valid variables for each role. Pair with Activity.vue.
+    <VariableSort :options="{ answers: { independent: 'bounce-surface',
+                                         dependent: 'bounce-height',
+                                         controlled: ['ball-size', ...] } }">
+      <template #autofillTestableQuestion>How does ...?</template>
+    </VariableSort>
 
-   Markup contract:
+  options - exactly one of answers / options:
+  - answers: the one right classification (fixed).
+  - options: { independent: [...], dependent: [...], controlled: [...] } -
+    any tile in a role's list is valid for it (open). Controlled can't be
+    chosen until independent and dependent are both done.
+  - prompts / messages: override the built-in text (see DEFAULT_* below).
 
-     <div id="myActivity" data-activity>
-       <div aria-label="Choose a variable type">
-         <button type="button" data-sort-mode="independent" aria-pressed="false">
-           <span>Independent Variable</span><span>Change</span>
-         </button>
-         <button type="button" data-sort-mode="dependent" aria-pressed="false">...</button>
-         <button type="button" data-sort-mode="controlled" aria-pressed="false">...</button>
-       </div>
+  Tiles are the variables named in answers / options ("ball-size" shows as
+  "Ball size"). Independent and dependent are each chosen once; controlled
+  stays available until every controlled variable is done.
 
-       <div>
-         <button type="button" data-sort-tile="ball-size"><span>Ball size</span></button>
-         <button type="button" data-sort-tile="bounce-height"><span>Bounce height</span></button>
-         ...
-       </div>
+  Complete once independent, dependent and every controlled variable are
+  classified. Progress (which tile has which role) is saved through
+  <Activity :state>.
+*/
+import { computed, nextTick, ref } from "vue";
+import Activity from "./Activity.vue";
+import Button from "../Button.vue";
 
-       <div data-sort-feedback class="variable-feedback" role="status" aria-live="polite"></div>
-       <button data-reset-trigger>Reset</button>
-     </div>
-
-   Usage - exactly one of answers/options is required:
-
-     // Fixed: there's exactly one right classification.
-     new VariableSortActivity(root, {
-       answers: { independent: "bounce-surface", dependent: "bounce-height",
-                  controlled: ["ball-size", "ball-material", "drop-height", "ball-squashiness"] }
-     });
-
-     // Open: several tiles would be valid in each role - any classification
-     // that respects these sets counts (controlled can't be chosen until
-     // independent and dependent are both done).
-     new VariableSortActivity(root, {
-       options: { independent: ["ball-size", "ball-material", ...],
-                  dependent: ["bounce-height", "number-of-bounces", ...],
-                  controlled: ["ball-size", "ball-material", ...] }
-     });
-
-   Optional: options.defaultMessage, options.prompts ({independent, dependent,
-   controlled} shown in the feedback box while that mode is active), and
-   options.messages (override any of the built-in feedback strings - see
-   DEFAULT_MESSAGES below for every key).
-
-   A tile can only be classified once; independent and dependent can each
-   only be chosen once (their mode button disables itself after), while
-   controlled stays available until every controlled tile is done. The
-   activity is data-activity-complete once every tile has a role.
-   ================================================== */
-
-
-var DEFAULT_PROMPTS = {
+const DEFAULT_PROMPTS = {
   independent: "Choose the variable that is changed.",
   dependent: "Choose the variable that is measured.",
-  controlled: "Choose all the variables that must be kept the same."
+  controlled: "Choose all the variables that must be kept the same.",
 };
 
-var DEFAULT_MESSAGES = {
+const DEFAULT_MESSAGES = {
   defaultMessage: "Choose a variable type, then select the matching variable.",
-  chooseModeFirst: "Choose Independent Variable, Dependent Variable or Controlled Variable first.",
+  chooseModeFirst:
+    "Choose Independent Variable, Dependent Variable or Controlled Variable first.",
 
-  independentWrongType: "That is a measurable outcome. Choose a variable that you can change.",
+  independentWrongType:
+    "That is a measurable outcome. Choose a variable that you can change.",
   independentWrong: "Try again. Which variable is changed in the question?",
   independentSuccess: "Independent variable selected.",
 
-  dependentWrongType: "That is a variable you can change or keep the same. Choose a measurable result instead.",
+  dependentWrongType:
+    "That is a variable you can change or keep the same. Choose a measurable result instead.",
   dependentWrong: "Try again. Which result is observed or measured?",
   dependentSuccess: "Dependent variable selected.",
 
-  controlledNeedsBoth: "Choose one independent variable and one dependent variable before selecting the controlled variables.",
-  controlledWrongType: "That is a measurable outcome, not a variable that needs to be kept the same.",
-  controlledWrong: "Try again. That variable is not controlled in this investigation.",
-  controlledMore: "Controlled variable selected. Choose any other variables that must be kept the same.",
+  controlledNeedsBoth:
+    "Choose one independent variable and one dependent variable before selecting the controlled variables.",
+  controlledWrongType:
+    "That is a measurable outcome, not a variable that needs to be kept the same.",
+  controlledWrong:
+    "Try again. That variable is not controlled in this investigation.",
+  controlledMore:
+    "Controlled variable selected. Choose any other variables that must be kept the same.",
   controlledDone: "All controlled variables have been selected.",
 
-  allDone: "You identified the independent, dependent and controlled variables."
+  allDone:
+    "You identified the independent, dependent and controlled variables.",
 };
 
-function VariableSortActivity(root, options) {
-  ActivityBase.call(this, root, options);
-
-  this.answers = this.options.answers || null;
-  this.openOptions = this.options.options || null;
-  this.isFixed = Boolean(this.answers);
-
-  this.prompts = this.options.prompts || DEFAULT_PROMPTS;
-  this.messages = Object.assign({}, DEFAULT_MESSAGES, this.options.messages || {});
-
-  this.modeButtons = root.querySelectorAll("[data-sort-mode]");
-  this.tiles = root.querySelectorAll("[data-sort-tile]");
-  this.feedback = root.querySelector("[data-sort-feedback]");
-
-  this.selectedMode = "";
-  this.independentComplete = false;
-  this.dependentComplete = false;
-
-  var self = this;
-
-  Array.prototype.forEach.call(this.modeButtons, function (button) {
-    button.addEventListener("click", function () { self._setMode(button.dataset.sortMode); });
-  });
-
-  Array.prototype.forEach.call(this.tiles, function (tile) {
-    tile.addEventListener("click", function () { self._selectTile(tile); });
-    tile.addEventListener("animationend", function () { tile.classList.remove("buzz"); });
-  });
-
-  this._showMessage(this.messages.defaultMessage);
-  this.setComplete(false);
-}
-
-VariableSortActivity.prototype = Object.create(ActivityBase.prototype);
-VariableSortActivity.prototype.constructor = VariableSortActivity;
-
-/* ---------- public API ---------- */
-
-VariableSortActivity.prototype.reset = function () {
-  this.selectedMode = "";
-  this.independentComplete = false;
-  this.dependentComplete = false;
-
-  Array.prototype.forEach.call(this.modeButtons, function (button) {
-    button.disabled = false;
-    button.classList.remove("mode-active", "mode-complete");
-    button.setAttribute("aria-pressed", "false");
-  });
-
-  Array.prototype.forEach.call(this.tiles, function (tile) {
-    tile.disabled = false;
-    tile.classList.remove("is-independent", "is-dependent", "is-controlled", "is-classified", "buzz");
-
-    var typeText = tile.querySelector(".variable-tile-type");
-    if (typeText) typeText.remove();
-  });
-
-  this._showMessage(this.messages.defaultMessage);
-  this.setComplete(false);
-};
-
-/* ---------- mode selection ---------- */
-
-VariableSortActivity.prototype._setMode = function (mode) {
-  this.selectedMode = mode;
-
-  Array.prototype.forEach.call(this.modeButtons, function (button) {
-    var isActive = button.dataset.sortMode === mode;
-    button.classList.toggle("mode-active", isActive);
-    button.setAttribute("aria-pressed", String(isActive));
-  });
-
-  if (!this.feedback) return;
-  this.feedback.className = "variable-feedback";
-  this.feedback.innerHTML = this.prompts[mode] || this.messages.defaultMessage;
-};
-
-/* ---------- tile classification ---------- */
-
-VariableSortActivity.prototype._selectTile = function (tile) {
-  var variableName = tile.dataset.sortTile;
-  var mode = this.selectedMode;
-
-  if (tile.classList.contains("is-classified")) return;
-
-  if (mode === "") {
-    this._buzz(tile, this.messages.chooseModeFirst);
-    return;
-  }
-
-  if (mode === "independent") this._selectIndependent(tile, variableName);
-  else if (mode === "dependent") this._selectDependent(tile, variableName);
-  else if (mode === "controlled") this._selectControlled(tile, variableName);
-};
-
-VariableSortActivity.prototype._selectIndependent = function (tile, variableName) {
-  if (!this.isFixed && this.openOptions.independent.indexOf(variableName) === -1) {
-    this._buzz(tile, this.messages.independentWrongType);
-    return;
-  }
-
-  if (this.isFixed && variableName !== this.answers.independent) {
-    this._buzz(tile, this.messages.independentWrong);
-    return;
-  }
-
-  this._classify(tile, "independent", "Independent variable");
-  this.independentComplete = true;
-  this._finishMode("independent");
-  this._showMessage(this.messages.independentSuccess, "feedback-success");
-  this._checkComplete();
-};
-
-VariableSortActivity.prototype._selectDependent = function (tile, variableName) {
-  if (!this.isFixed && this.openOptions.dependent.indexOf(variableName) === -1) {
-    this._buzz(tile, this.messages.dependentWrongType);
-    return;
-  }
-
-  if (this.isFixed && variableName !== this.answers.dependent) {
-    this._buzz(tile, this.messages.dependentWrong);
-    return;
-  }
-
-  this._classify(tile, "dependent", "Dependent variable");
-  this.dependentComplete = true;
-  this._finishMode("dependent");
-  this._showMessage(this.messages.dependentSuccess, "feedback-success");
-  this._checkComplete();
-};
-
-VariableSortActivity.prototype._selectControlled = function (tile, variableName) {
-  if (!this.isFixed && (!this.independentComplete || !this.dependentComplete)) {
-    this._buzz(tile, this.messages.controlledNeedsBoth);
-    return;
-  }
-
-  if (!this.isFixed && this.openOptions.controlled.indexOf(variableName) === -1) {
-    this._buzz(tile, this.messages.controlledWrongType);
-    return;
-  }
-
-  if (this.isFixed && this.answers.controlled.indexOf(variableName) === -1) {
-    this._buzz(tile, this.messages.controlledWrong);
-    return;
-  }
-
-  this._classify(tile, "controlled", "Controlled variable");
-
-  var controlledButton = this.root.querySelector('[data-sort-mode="controlled"]');
-  if (controlledButton) controlledButton.classList.add("mode-complete");
-
-  var self = this;
-  var controlledDone = this.isFixed
-    ? this.answers.controlled.every(function (name) { return self._tileFor(name) && self._tileFor(name).classList.contains("is-controlled"); })
-    : this.openOptions.controlled.every(function (name) {
-        var tile = self._tileFor(name);
-        return tile && (tile.classList.contains("is-independent") || tile.classList.contains("is-controlled"));
-      });
-
-  if (controlledDone) {
-    if (controlledButton) {
-      controlledButton.classList.remove("mode-active");
-      controlledButton.setAttribute("aria-pressed", "false");
-      controlledButton.disabled = true;
-    }
-    this.selectedMode = "";
-    this._showMessage(this.messages.controlledDone, "feedback-success");
-  } else {
-    this._showMessage(this.messages.controlledMore, "feedback-success");
-  }
-
-  this._checkComplete();
-};
-
-/* ---------- shared helpers ---------- */
-
-VariableSortActivity.prototype._tileFor = function (variableName) {
-  return this.root.querySelector('[data-sort-tile="' + variableName + '"]');
-};
-
-VariableSortActivity.prototype._classify = function (tile, role, label) {
-  tile.classList.add("is-" + role, "is-classified");
-  tile.disabled = true;
-
-  var typeText = document.createElement("span");
-  typeText.className = "variable-tile-type";
-  typeText.textContent = "(" + label + ")";
-  tile.appendChild(typeText);
-};
-
-VariableSortActivity.prototype._finishMode = function (mode) {
-  this.selectedMode = "";
-
-  var modeButton = this.root.querySelector('[data-sort-mode="' + mode + '"]');
-  if (!modeButton) return;
-
-  modeButton.classList.remove("mode-active");
-  modeButton.classList.add("mode-complete");
-  modeButton.setAttribute("aria-pressed", "false");
-
-  /* Independent and dependent can only be chosen once; controlled stays
-     available because several tiles need to be classified into it. */
-  if (mode === "independent" || mode === "dependent") modeButton.disabled = true;
-};
-
-VariableSortActivity.prototype._buzz = function (tile, message) {
-  tile.classList.remove("buzz");
-  void tile.offsetWidth; /* restarts the shake animation on repeated wrong clicks */
-  tile.classList.add("buzz");
-  this._showMessage(message, "feedback-try-again");
-};
-
-VariableSortActivity.prototype._showMessage = function (message, variant) {
-  if (!this.feedback) return;
-  this.feedback.className = variant ? "variable-feedback " + variant : "variable-feedback";
-  this.feedback.innerHTML = message;
-};
-
-VariableSortActivity.prototype._checkComplete = function () {
-  var self = this;
-
-  var complete = this.isFixed
-    ? [this.answers.independent, this.answers.dependent].concat(this.answers.controlled).every(function (name) {
-        var tile = self._tileFor(name);
-        return tile && tile.classList.contains("is-classified");
-      })
-    : this.root.querySelectorAll("[data-sort-tile].is-classified").length === this.tiles.length;
-
-  if (!complete) return;
-
-  this.selectedMode = "";
-
-  Array.prototype.forEach.call(this.modeButtons, function (button) {
-    button.classList.remove("mode-active");
-    button.setAttribute("aria-pressed", "false");
-    button.disabled = true;
-  });
-
-  /* Disable any tiles that were never classified (fixed mode can leave some unused). */
-  Array.prototype.forEach.call(this.tiles, function (tile) { tile.disabled = true; });
-
-  this._showMessage(this.messages.allDone, "feedback-success");
-  this.setComplete(true);
-};
-</script>
-
-
-<script setup>
-import { onMounted, onBeforeUnmount, ref, nextTick, computed } from 'vue'
-import Activity from './Activity.vue'
+const MODES = [
+  {
+    id: "independent",
+    title: "Independent Variable",
+    subtitle: "Change",
+    label: "Independent variable",
+  },
+  {
+    id: "dependent",
+    title: "Dependent Variable",
+    subtitle: "Measure",
+    label: "Dependent variable",
+  },
+  {
+    id: "controlled",
+    title: "Controlled Variable",
+    subtitle: "Keep the same",
+    label: "Controlled variable",
+  },
+];
+const roleLabel = Object.fromEntries(MODES.map((m) => [m.id, m.label]));
 
 const props = defineProps({
-  tag: { type: String, default: 'div' },
+  tag: { type: String, default: "div" },
   options: { type: Object, default: () => ({}) },
-})
+});
 
-const variableOptions = computed(() => {
-  // For open-ended activities
-  if (props.options.options) {
-    return [
-      ...new Set(
-        Object.values(props.options.options).flat()
-      )
-    ]
+const fixed = computed(() => props.options.answers || null);
+const open = computed(() => props.options.options || null);
+const prompts = computed(() => props.options.prompts || DEFAULT_PROMPTS);
+const messages = computed(() => ({
+  ...DEFAULT_MESSAGES,
+  ...(props.options.messages || {}),
+}));
+
+const tiles = computed(() => {
+  if (open.value) return [...new Set(Object.values(open.value).flat())];
+  if (fixed.value) {
+    const { independent, dependent, controlled } = fixed.value;
+    return [...new Set([independent, dependent, ...controlled])];
   }
+  return [];
+});
 
-  // For activities with fixed answers
-  if (props.options.answers) {
-    const { independent, dependent, controlled } =
-      props.options.answers
-
-    return [
-      ...new Set([
-        independent,
-        dependent,
-        ...controlled
-      ])
-    ]
-  }
-
-  return []
-})
-
-const root = ref(null)
-let activity = null
-
-onMounted(async () => {
-  await nextTick()
-
-  whenCommonFunctionsReady(() => {
-    if (!root.value?.$el) return
-
-    activity = new VariableSortActivity(
-      root.value?.$el,
-      { ...props.options }
-    )
-  })
-})
-
-function reset() {
-  activity?.reset()
+function tileLabel(name) {
+  const text = name.replaceAll("-", " ");
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-onBeforeUnmount(() => {
-  activity = null
-})
+// Saved progress: { tileName: "independent" | "dependent" | "controlled" }
+const roles = ref({});
+const saved = { roles }; // the ref itself, so <Activity> can restore it
 
-defineExpose({
-  reset,
-  getActivity: () => activity,
-})
+// Not saved
+const mode = ref("");
+const feedback = ref({ text: DEFAULT_MESSAGES.defaultMessage, variant: "" });
+const buzzing = ref({});
+
+const has = (role) => Object.values(roles.value).includes(role);
+
+const controlledDone = computed(() =>
+  fixed.value
+    ? fixed.value.controlled.every((name) => roles.value[name] === "controlled")
+    : (open.value?.controlled || []).every(
+        (name) =>
+          roles.value[name] === "independent" ||
+          roles.value[name] === "controlled",
+      ),
+);
+
+const isComplete = computed(
+  () =>
+    tiles.value.length > 0 &&
+    has("independent") &&
+    has("dependent") &&
+    controlledDone.value,
+);
+
+// independent / dependent are chosen once; controlled until all are done
+function modeDisabled(id) {
+  if (isComplete.value) return true;
+  return id === "controlled" ? controlledDone.value : has(id);
+}
+
+function show(text, variant = "") {
+  feedback.value = { text, variant };
+}
+
+function setMode(id) {
+  mode.value = id;
+  show(prompts.value[id] || messages.value.defaultMessage);
+}
+
+async function buzz(name, element, message) {
+  show(message, "feedback-try-again");
+  // restart the shake animation on repeated wrong clicks
+  buzzing.value[name] = false;
+  await nextTick();
+  void element?.offsetWidth;
+  buzzing.value[name] = true;
+}
+
+function selectTile(name, event) {
+  if (roles.value[name] || isComplete.value) return;
+
+  const m = messages.value;
+  const role = mode.value;
+  const element = event.currentTarget;
+
+  if (!role) return buzz(name, element, m.chooseModeFirst);
+
+  if (role === "independent" || role === "dependent") {
+    if (open.value && !open.value[role].includes(name))
+      return buzz(name, element, m[role + "WrongType"]);
+    if (fixed.value && name !== fixed.value[role])
+      return buzz(name, element, m[role + "Wrong"]);
+
+    roles.value = { ...roles.value, [name]: role };
+    mode.value = "";
+    show(m[role + "Success"], "feedback-success");
+  } else {
+    if (open.value && (!has("independent") || !has("dependent")))
+      return buzz(name, element, m.controlledNeedsBoth);
+    if (open.value && !open.value.controlled.includes(name))
+      return buzz(name, element, m.controlledWrongType);
+    if (fixed.value && !fixed.value.controlled.includes(name))
+      return buzz(name, element, m.controlledWrong);
+
+    roles.value = { ...roles.value, [name]: role };
+    if (controlledDone.value) {
+      mode.value = "";
+      show(m.controlledDone, "feedback-success");
+    } else {
+      show(m.controlledMore, "feedback-success");
+    }
+  }
+
+  if (isComplete.value) {
+    mode.value = "";
+    show(m.allDone, "feedback-success");
+  }
+}
+
+// after a restore or reset: no mode picked, message to match the progress
+function settle() {
+  mode.value = "";
+  buzzing.value = {};
+  if (isComplete.value) show(messages.value.allDone, "feedback-success");
+  else show(messages.value.defaultMessage);
+}
+
+function reset() {
+  roles.value = {};
+  settle();
+}
+
+defineExpose({ reset, isComplete });
 </script>
 
 <template>
   <Activity
     :tag="tag"
-    ref="root"
     class="variable-activity"
+    :complete="isComplete"
+    :state="saved"
+    @reset="reset"
+    @restore="settle"
   >
-    <div v-if="$slots.autofillTestableQuestion" class="variable-question floating-title">
+    <div
+      v-if="$slots.autofillTestableQuestion"
+      class="variable-question floating-title"
+    >
       <slot name="autofillTestableQuestion" />
     </div>
+
     <div class="variable-selection-toolbar" aria-label="Choose a variable type">
       <button
+        v-for="m in MODES"
+        :key="m.id"
         type="button"
-        class="variable-mode-button independent-mode-button"
-        data-sort-mode="independent"
-        aria-pressed="false"
+        class="variable-mode-button"
+        :class="[
+          m.id + '-mode-button',
+          { 'mode-active': mode === m.id, 'mode-complete': has(m.id) },
+        ]"
+        :aria-pressed="mode === m.id"
+        :disabled="modeDisabled(m.id)"
+        @click="setMode(m.id)"
       >
-        <span class="variable-mode-title">Independent Variable</span>
-
-        <span class="variable-mode-subtitle"> Change </span>
-      </button>
-
-      <button
-        type="button"
-        class="variable-mode-button dependent-mode-button"
-        data-sort-mode="dependent"
-        aria-pressed="false"
-      >
-        <span class="variable-mode-title"> Dependent Variable </span>
-
-        <span class="variable-mode-subtitle"> Measure </span>
-      </button>
-
-      <button
-        type="button"
-        class="variable-mode-button controlled-mode-button"
-        data-sort-mode="controlled"
-        aria-pressed="false"
-      >
-        <span class="variable-mode-title"> Controlled Variable </span>
-
-        <span class="variable-mode-subtitle"> Keep the same </span>
+        <span class="variable-mode-title">{{ m.title }}</span>
+        <span class="variable-mode-subtitle">{{ m.subtitle }}</span>
       </button>
     </div>
+
     <div class="variable-tile-grid">
       <button
-        v-for="option in variableOptions"
-        :key="option"
+        v-for="name in tiles"
+        :key="name"
         type="button"
         class="variable-tile"
-        :data-sort-tile="option"
+        :class="[
+          roles[name] ? ['is-' + roles[name], 'is-classified'] : null,
+          { buzz: buzzing[name] },
+        ]"
+        :disabled="!!roles[name] || isComplete"
+        @click="selectTile(name, $event)"
+        @animationend="buzzing[name] = false"
       >
-        <span class="variable-tile-label">
-          {{ option.replaceAll('-', ' ').charAt(0).toUpperCase() + option.replaceAll('-', ' ').slice(1) }}
-        </span>
+        <span class="variable-tile-label">{{ tileLabel(name) }}</span>
+        <span v-if="roles[name]" class="variable-tile-type"
+          >({{ roleLabel[roles[name]] }})</span
+        >
       </button>
-
-
     </div>
 
-    <div class="variable-feedback" data-sort-feedback role="status" aria-live="polite"></div>
+    <div
+      class="variable-feedback"
+      :class="feedback.variant"
+      role="status"
+      aria-live="polite"
+      v-html="feedback.text"
+    ></div>
 
     <div class="reset-button-container">
-      <button
-        type="button"
-        class="general-button reset-btn"
-        @click="reset"
-      >
-        Reset
-      </button>
+      <Button :is-reset="true" @click="reset" />
     </div>
   </Activity>
 </template>
@@ -487,7 +310,6 @@ defineExpose({
     inset 0 2px 0 rgba(255, 255, 255, 0.9),
     var(--shadow-small);
 }
-
 
 /* ---------- Testable question ---------- */
 
@@ -514,7 +336,6 @@ defineExpose({
 
   background: var(--blue);
 }
-
 
 /* ---------- Variable type buttons ---------- */
 
@@ -601,7 +422,6 @@ defineExpose({
   border-top: 6px solid var(--green);
 }
 
-
 /* ---------- Variable choices ---------- */
 
 .variable-tile-grid {
@@ -660,7 +480,6 @@ defineExpose({
   line-height: 1.25;
 }
 
-
 /* ---------- Feedback ---------- */
 
 .variable-feedback {
@@ -688,12 +507,6 @@ defineExpose({
   background: var(--soft-orange);
   border-style: solid;
 }
-
-#sortVariablesOneNext:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
 
 /* ---------- Selected / completed colours ---------- */
 
@@ -727,7 +540,6 @@ defineExpose({
   border-top: 6px solid var(--green);
 }
 
-
 /* ---------- Incorrect answer animation ---------- */
 
 @keyframes variableTileBuzz {
@@ -752,7 +564,6 @@ defineExpose({
 .variable-tile.buzz {
   animation: variableTileBuzz 0.28s ease;
 }
-
 
 /* ---------- Mobile ---------- */
 

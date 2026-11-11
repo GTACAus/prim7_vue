@@ -327,17 +327,19 @@
         </p>
 
         <InvestigationQuestion
-          id="ballBounceQuestion"
-          :options="ballBounceQuestionOptions"
-          feeds="predictionTable"
+          name="ball-bounce-question"
+          input-type="text"
+          @change="question = $event"
         />
 
         <!-- ---------- REASONED PREDICTION ---------- -->
 
         <PredictionTable
           id="predictionTable"
+          name="ball-bounce-prediction"
           class="pop-in"
           data-activity-depends-on="ballBounceQuestion"
+          :context="predictionContext"
         >
           <template #before>
             <div class="lesson3-planning-heading prediction-heading">
@@ -813,15 +815,23 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Modal from "../components/Modal.vue";
 import Section from "../components/Section.vue";
 import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
 import MultipleChoice from "../components/activities/MultipleChoice.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 
+// The student's testable question fills in the prediction table's
+// change / measure.
+const question = ref({ structure: "", firstAnswer: "", secondAnswer: "", text: "" });
+const predictionContext = computed(() => ({
+  structure: question.value.structure,
+  change: question.value.firstAnswer,
+  measure: question.value.secondAnswer,
+}));
+
 // Options passed to the activity components
-const ballBounceQuestionOptions = { inputType: "text" };
 
 const ballBouncePredictionCheckOptions = {
   classes: {

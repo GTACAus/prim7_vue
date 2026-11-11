@@ -5,7 +5,10 @@
   Completion: pass :complete so the parent Section knows when to show "Next".
 
   Saving: pass :state – an object of the refs / reactive objects that
-  describe this activity's progress, e.g. :state="{ deck, piles, started }".
+  describe this activity's progress. Build the object in <script setup>
+  (const state = { deck, piles, started }; then :state="state"), not inline in
+  the template: the template unwraps refs, so a ref holding a plain value
+  (true, "", 3) could not be restored.
   Whenever any of them change, Activity calls section.save(), which calls
   page.save(), which writes the whole lesson to localStorage.
 

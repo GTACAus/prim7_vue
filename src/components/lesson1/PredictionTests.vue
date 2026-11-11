@@ -148,7 +148,7 @@ defineExpose({ reset, isComplete });
       </ol>
     </div>
     <div class="reset-button-container">
-      <Button class="reset-btn" @click="reset">Reset</Button>
+      <Button :is-reset="reset - btn" @click="reset">Reset</Button>
     </div>
   </Activity>
 </template>

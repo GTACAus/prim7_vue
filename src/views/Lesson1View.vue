@@ -110,37 +110,30 @@ const measureOptions = ["the distance the car travels"];
 // sections start locked; override per section where needed.
 const sections = [
   {
-    key: "observe",
     id: "observe-experiment",
     title: "Observe the Experiment",
   },
   {
-    key: "intro",
     id: "testable-question-intro",
     title: "Make a Testable Question",
   },
   {
-    key: "flashcards",
     id: "flashcards",
     title: "Testable or Non-testable?",
   },
   {
-    key: "questions",
     id: "testable-questions",
     title: "How do We Write Testable Questions?",
   },
   {
-    key: "prediction",
     id: "reasoned-prediction",
     title: "Writing a Reasoned Prediction",
   },
   {
-    key: "builder",
     id: "reasoned-builder",
     title: "Make a Reasoned Prediction",
   },
   {
-    key: "testing",
     id: "testing-predictions",
     title: "How to Test Reasoned Predictions",
   },
@@ -192,7 +185,7 @@ const sections = [
 
     <template #sections>
       <!-- ---------- Explicit Teaching: Introduction Image ---------- -->
-      <Section name="observe">
+      <Section name="observe-experiment">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Look at the image below. It shows a fair test being done. Use the
@@ -205,7 +198,7 @@ const sections = [
         </div>
       </Section>
       <!-- ---------- Explicit Teaching: What is a Testable Question? ---------- -->
-      <Section name="intro">
+      <Section name="testable-question-intro">
         <div class="diagram-box diagram-activity">
           <h3>What is a testable question?</h3>
           <p class="activity-instruction">
@@ -354,7 +347,7 @@ const sections = [
         <Flashcards />
       </Section>
       <!-- Part C: How do we write testable questions? -->
-      <Section name="questions">
+      <Section name="testable-questions">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             A <strong>testable question</strong> describes two things:
@@ -369,7 +362,7 @@ const sections = [
         </div>
         <QuestionWheel next-button-id="testableQuestionsNextButton" />
       </Section>
-      <Section name="prediction">
+      <Section name="reasoned-prediction">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             You have a <strong>testable question</strong>. Next you make a
@@ -490,7 +483,7 @@ const sections = [
         </div>
       </Section>
       <!-- ---------- Reasoned Prediction Builder ---------- -->
-      <Section name="builder">
+      <Section name="reasoned-builder">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Choose your investigation question. Then use the graphic organiser
@@ -527,7 +520,7 @@ const sections = [
         />
       </Section>
       <!-- ---------- Testing Reasoned Predictions ---------- -->
-      <Section name="testing">
+      <Section name="testing-predictions">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             To test a <strong>reasoned prediction</strong>, you do an

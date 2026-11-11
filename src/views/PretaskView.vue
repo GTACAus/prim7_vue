@@ -1,5 +1,133 @@
+<script setup>
+import { onMounted } from "vue";
+import Page from "../components/Page.vue";
+import Section from "../components/Section.vue";
+import DragDrop from "../components/activities/DragDrop.vue";
+import DropSlot from "../components/activities/DropSlot.vue";
+import DragItem from "../components/activities/DragItem.vue";
+import ThinkBox from "../components/pretask/ThinkBox.vue";
+import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
+import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
+
+// Sections of the page. Order defines the unlock chain (next-id) and which
+// sections start locked; override per section where needed.
+const sections = [
+  {
+    id: "watch",
+    title: "Making observations of plants",
+  },
+  {
+    id: "build",
+    title: "The structure of a flowering plant",
+  },
+  {
+    id: "brainstorm",
+    title: "Think like a scientist - Brainstorm to share ideas",
+  },
+  {
+    id: "diagram",
+    title: "Why do plants need the right physical conditions to survive?",
+  },
+  {
+    id: "detective",
+    title: "Can you solve the mystery of the unhealthy plants?",
+  },
+  {
+    id: "final-brainstorm",
+    title: "Check your understanding",
+  },
+];
+
+// See, Think, Wonder columns
+const stwGroups = [
+  {
+    key: "see",
+    title: "See",
+    prompt: "What do you notice?",
+    placeholder: "Type something you see",
+  },
+  {
+    key: "think",
+    title: "Think",
+    prompt: "What do you think is happening?",
+    placeholder: "Type what you think",
+  },
+  {
+    key: "wonder",
+    title: "Wonder",
+    prompt: "What questions do you have?",
+    placeholder: "Type what you wonder",
+  },
+];
+
+// Closing brainstorm
+const finalPrompt = "Why do plants need these physical conditions?";
+const finalBranches = [
+  {
+    key: "water",
+    title: "Water",
+    placeholder: "Why do plants need water?",
+  },
+  {
+    key: "sunlight",
+    title: "Sunlight",
+    placeholder: "Why do plants need sunlight?",
+  },
+  {
+    key: "nutrients",
+    title: "Nutrients",
+    placeholder: "Why do plants need nutrients?",
+  },
+  {
+    key: "soil",
+    title: "Soil",
+    placeholder: "Why does soil matter?",
+  },
+  {
+    key: "co2",
+    title: "Carbon Dioxide",
+    placeholder: "Why might plants need carbon dioxide?",
+  },
+  {
+    key: "oxygen",
+    title: "Oxygen",
+    placeholder: "Why might plants need oxygen?",
+  },
+];
+
+import LessonIntro from "../components/LessonIntro.vue";
+
+// Learning objective and success criteria shown in the lesson intro
+const objective =
+  "Identify the physical conditions that affect a plant’s ability to grow and survive.";
+const criteria = [
+  "I can identify the <strong>physical conditions</strong> that a plant needs to grow and survive.",
+  "I can compare healthy and unhealthy plants to explain why plants need the correct <strong>physical conditions</strong> to be healthy",
+];
+
+// Terms shown in the vocabulary modal: { word: description }
+const glossary = {
+  Botanist: "A scientist who studies plants.",
+  Diagnose:
+    "To identify what is wrong with a living thing by carefully examining it and looking for clues about what physical condition may be missing or out of balance.",
+  Function:
+    "The job or role that a part of a plant performs to help it survive.",
+  Germinate:
+    "When a seed begins to sprout and grow into a new plant after absorbing water and being exposed to the right temperature and conditions.",
+  Investigate:
+    "To carefully examine and gather information about something in order to find an answer or understand it better.",
+  Nutrients:
+    "Substances found in soil and water that plants absorb through their roots to grow and stay healthy.",
+  "Observe / Observation":
+    "Information gathered by using your senses—sight, hearing, touch, smell, or taste—to carefully notice and describe something in the world around you.",
+  Structure:
+    "A physical part of a plant, such as the roots, stem, leaves, flower, or fruit, that has a specific job.",
+};
+</script>
+
 <template>
   <Page
+    lessonId="pretask"
     title="Lesson 1 - Structure &amp; Function of a Plant"
     :sections="sections"
     :glossary="glossary"
@@ -69,14 +197,7 @@
 
     <template #sections>
       <!-- Part B: Making observations of plants -->
-
-      <Section
-        id="watch"
-        title="Making observations of plants"
-        next-id="build"
-        next-button-id="watchNextButton"
-        hide-next
-      >
+      <Section name="watch">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Watch the video of a seed germinating, add your observations, and
@@ -111,14 +232,7 @@
       </Section>
 
       <!-- Part C: The structure of a flowering plant -->
-      <Section
-        id="build"
-        title="The structure of a flowering plant"
-        next-id="brainstorm"
-        next-button-id="buildNextButton"
-        locked
-        hide-next
-      >
+      <Section name="build">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Watching time lapse videos of plants helps us to
@@ -304,14 +418,7 @@
         </div>
       </Section>
 
-      <Section
-        id="brainstorm"
-        title="Think like a scientist - Brainstorm to share ideas"
-        next-id="diagram"
-        next-button-id="brainstormNextButton"
-        locked
-        hide-next
-      >
+      <Section name="brainstorm">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             <strong>Botanists</strong> like to collaborate and share ideas with
@@ -336,14 +443,7 @@
         <PostitBrainstorm id="brainstormActivity" />
       </Section>
 
-      <Section
-        id="diagram"
-        title="Why do plants need the right physical conditions to survive?"
-        next-id="detective"
-        next-button-id="diagramNextButton"
-        locked
-        hide-next
-      >
+      <Section name="diagram">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Some of the <strong>physical conditions</strong> that plants need to
@@ -515,12 +615,7 @@
         </div>
       </Section>
 
-      <Section
-        id="detective"
-        title="Can you solve the mystery of the unhealthy plants?"
-        next-id="final-brainstorm"
-        locked
-      >
+      <Section name="detective">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             <strong>Botanists</strong>, farmers, nursery workers and gardeners
@@ -546,12 +641,7 @@
         </div>
       </Section>
 
-      <Section
-        id="final-brainstorm"
-        title="Check your understanding"
-        locked
-        last
-      >
+      <Section name="final-brainstorm">
         <FinalBrainstorm
           id="finalBrainstormActivity"
           :prompt="finalPrompt"
@@ -561,482 +651,3 @@
     </template>
   </Page>
 </template>
-
-<script setup>
-import { onMounted } from "vue";
-import Page from "../components/Page.vue";
-import Section from "../components/Section.vue";
-import DragDrop from "../components/activities/DragDrop.vue";
-import DropSlot from "../components/activities/DropSlot.vue";
-import DragItem from "../components/activities/DragItem.vue";
-import ThinkBox from "../components/pretask/ThinkBox.vue";
-import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
-import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
-
-// Sections of the page. Order defines the unlock chain (next-id) and which
-// sections start locked; override per section where needed.
-const sections = [
-  {
-    id: "watch",
-    key: "watch",
-    title: "Making observations of plants",
-    last: true,
-  },
-  { id: "build", key: "build", title: "The structure of a flowering plant" },
-  {
-    id: "brainstorm",
-    key: "brainstorm",
-    title: "Think like a scientist - Brainstorm to share ideas",
-  },
-  {
-    id: "diagram",
-    key: "diagram",
-    title: "Why do plants need the right physical conditions to survive?",
-  },
-  {
-    id: "detective",
-    key: "detective",
-    title: "Can you solve the mystery of the unhealthy plants?",
-  },
-  {
-    id: "final-brainstorm",
-    key: "final-brainstorm",
-    title: "Check your understanding",
-
-    last: true,
-  },
-];
-
-// See, Think, Wonder columns
-const stwGroups = [
-  {
-    key: "see",
-    title: "See",
-    prompt: "What do you notice?",
-    placeholder: "Type something you see",
-  },
-  {
-    key: "think",
-    title: "Think",
-    prompt: "What do you think is happening?",
-    placeholder: "Type what you think",
-  },
-  {
-    key: "wonder",
-    title: "Wonder",
-    prompt: "What questions do you have?",
-    placeholder: "Type what you wonder",
-  },
-];
-
-// Closing brainstorm
-const finalPrompt = "Why do plants need these physical conditions?";
-const finalBranches = [
-  {
-    key: "water",
-    title: "Water",
-    placeholder: "Why do plants need water?",
-  },
-  {
-    key: "sunlight",
-    title: "Sunlight",
-    placeholder: "Why do plants need sunlight?",
-  },
-  {
-    key: "nutrients",
-    title: "Nutrients",
-    placeholder: "Why do plants need nutrients?",
-  },
-  {
-    key: "soil",
-    title: "Soil",
-    placeholder: "Why does soil matter?",
-  },
-  {
-    key: "co2",
-    title: "Carbon Dioxide",
-    placeholder: "Why might plants need carbon dioxide?",
-  },
-  {
-    key: "oxygen",
-    title: "Oxygen",
-    placeholder: "Why might plants need oxygen?",
-  },
-];
-
-import LessonIntro from "../components/LessonIntro.vue";
-
-// Learning objective and success criteria shown in the lesson intro
-const objective =
-  "Identify the physical conditions that affect a plant’s ability to grow and survive.";
-const criteria = [
-  "I can identify the <strong>physical conditions</strong> that a plant needs to grow and survive.",
-  "I can compare healthy and unhealthy plants to explain why plants need the correct <strong>physical conditions</strong> to be healthy",
-];
-
-// Terms shown in the vocabulary modal: { word: description }
-const glossary = {
-  Botanist: "A scientist who studies plants.",
-  Diagnose:
-    "To identify what is wrong with a living thing by carefully examining it and looking for clues about what physical condition may be missing or out of balance.",
-  Function:
-    "The job or role that a part of a plant performs to help it survive.",
-  Germinate:
-    "When a seed begins to sprout and grow into a new plant after absorbing water and being exposed to the right temperature and conditions.",
-  Investigate:
-    "To carefully examine and gather information about something in order to find an answer or understand it better.",
-  Nutrients:
-    "Substances found in soil and water that plants absorb through their roots to grow and stay healthy.",
-  "Observe / Observation":
-    "Information gathered by using your senses—sight, hearing, touch, smell, or taste—to carefully notice and describe something in the world around you.",
-  Structure:
-    "A physical part of a plant, such as the roots, stem, leaves, flower, or fruit, that has a specific job.",
-};
-
-// Original <head>/<body> resources of pretask/pretask.html, loaded in document order.
-const scripts = [
-  {
-    src: "https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js",
-    type: "text/javascript",
-  },
-  { src: "//cdn.thinglink.me/jse/responsive.js" },
-  { src: "../scripts/common_functions.js" },
-  {
-    type: "module",
-    code: String.raw`
-
-  /* ---------- Plant-building drag and drop ---------- */
-
-  let plantPartsActivity = null;
-  let plantLabelsActivity = null;
-
-  function switchGame(game) {
-    if (game === 'labels' && (!plantPartsActivity || !plantPartsActivity.isAvailable())) {
-      return;
-    }
-
-    document.getElementById('game-parts').hidden = game !== 'parts';
-    document.getElementById('game-labels').hidden = game !== 'labels';
-    document.getElementById('tab-parts').classList.toggle('active', game === 'parts');
-    document.getElementById('tab-labels').classList.toggle('active', game === 'labels');
-  }
-
-  /* Success messages, the Continue button and the tray follow each DragDrop's
-     own state in the markup; the page script only saves on change. */
-  function initPlantGames() {
-    plantPartsActivity = getActivity("plantPartsActivity");
-    plantLabelsActivity = getActivity("plantLabelsActivity");
-
-    ['plantPartsActivity', 'plantLabelsActivity'].forEach(id => {
-      document.getElementById(id)?.addEventListener('dd:change', schedulePretaskSave);
-    });
-  }
-
-  /* ---------- Plant-science word sentences drag and drop ---------- */
-
-  let wordSentencesActivity = null;
-
-  function initWordSentencesActivity() {
-    wordSentencesActivity = getActivity("wordSentencesActivity");
-    document.getElementById('wordSentencesActivity')?.addEventListener('dd:change', schedulePretaskSave);
-  }
-
-  /* ---------- Text-response activities: STW, brainstorm, final brainstorm ---------- */
-
-  let watchStwActivity = null;
-  let brainstormActivity = null;
-  let finalBrainstormActivity = null;
-
-  function initTextResponseActivities() {
-    const watchRoot = document.getElementById('watchStwActivity');
-    if (watchRoot) {
-      watchStwActivity = getActivity("watchStwActivity");
-Object.assign(watchStwActivity.options, {
-        onChange: function() { schedulePretaskSave(); }
-});
-    }
-
-    const brainstormRoot = document.getElementById('brainstormActivity');
-    if (brainstormRoot) {
-      brainstormActivity = getActivity("brainstormActivity");
-    }
-
-    const finalBrainstormRoot = document.getElementById('finalBrainstormActivity');
-    if (finalBrainstormRoot) {
-      finalBrainstormActivity = getActivity("finalBrainstormActivity");
-    }
-  }
-
-  /* ---------- Save and restore Lesson 1 answers ---------- */
-
-  const PRETASK_SAVE_KEY = 'plantExplorerPretaskSave';
-
-  /*
-    Used by the teacher menu's "Reset student view" to
-    clear this page's saved progress before it reloads.
-  */
-  function clearPageSavedData() {
-    try {
-      localStorage.removeItem(PRETASK_SAVE_KEY);
-    } catch (error) {
-      /* A blocked store just means there was nothing to clear. */
-    }
-  }
-
-  let pretaskIsRestoring = false;
-  let pretaskSaveTimer = null;
-
-  const PRETASK_SECTION_IDS = [
-    'watch', 'build', 'brainstorm', 'diagram', 'detective', 'final-brainstorm'
-  ];
-
-  /*
-    Collect the student's current answers and opened sections.
-  */
-  function collectPretaskData() {
-    return {
-      stw: watchStwActivity ? watchStwActivity.getAnswers() : {},
-
-      plantBuilding: {
-        partsPlacements: plantPartsActivity ? plantPartsActivity.getPlacements() : {},
-        labelsPlacements: plantLabelsActivity ? plantLabelsActivity.getPlacements() : {}
-      },
-
-      wordSentences: wordSentencesActivity ? wordSentencesActivity.getPlacements() : {},
-
-      brainstorm: brainstormActivity ? brainstormActivity.getAnswers() : {},
-      finalBrainstorm: finalBrainstormActivity ? finalBrainstormActivity.getAnswers() : {},
-
-      unlockedSections: PRETASK_SECTION_IDS.filter(sectionId => {
-        const section = document.getElementById(sectionId);
-        return section && !section.classList.contains('locked');
-      }),
-
-      completedSections: PRETASK_SECTION_IDS.filter(sectionId => {
-        const section = document.getElementById(sectionId);
-        return section && section.classList.contains('completed');
-      })
-    };
-  }
-
-  /*
-    Save everything to this browser.
-  */
-  function saveCurrentPageData() {
-    if (pretaskIsRestoring) {
-      return;
-    }
-
-    /*
-      Printing opens every section for the PDF. That is a
-      temporary view, not the student's progress, so
-      nothing is saved while it is on screen - otherwise
-      the whole lesson would reopen next time.
-    */
-    if (document.body.classList.contains('printing-lesson')) {
-      return;
-    }
-
-    localStorage.setItem(PRETASK_SAVE_KEY, JSON.stringify(collectPretaskData()));
-  }
-
-  /*
-    Avoid saving many times during one quick action.
-  */
-  function schedulePretaskSave() {
-    if (pretaskIsRestoring) {
-      return;
-    }
-
-    clearTimeout(pretaskSaveTimer);
-    pretaskSaveTimer = setTimeout(saveCurrentPageData, 150);
-  }
-
-  /*
-    Restore all saved progress when the page opens.
-  */
-  function restorePretaskData() {
-    const savedText = localStorage.getItem(PRETASK_SAVE_KEY);
-
-    if (!savedText) {
-      return;
-    }
-
-    let savedData;
-
-    try {
-      savedData = JSON.parse(savedText);
-    } catch (error) {
-      console.error('Could not read saved Lesson 1 progress:', error);
-      return;
-    }
-
-    pretaskIsRestoring = true;
-
-    /*
-      Restore opened sections first so their elements
-      are visible before rebuilding the answers.
-    */
-    const unlockedSections = savedData.unlockedSections || ['watch'];
-
-    unlockedSections.forEach(sectionId => {
-      const section = document.getElementById(sectionId);
-      if (section) section.classList.remove('locked');
-    });
-
-    let completedSections = savedData.completedSections || [];
-
-    /*
-      This also fixes older saved progress created before
-      completedSections existed.
-    */
-    if (completedSections.length === 0) {
-      const progression = [
-        { unlocked: 'build', completed: 'watch' },
-        { unlocked: 'brainstorm', completed: 'build' },
-        { unlocked: 'diagram', completed: 'brainstorm' },
-        { unlocked: 'detective', completed: 'diagram' },
-        { unlocked: 'final-brainstorm', completed: 'detective' }
-      ];
-
-      progression.forEach(step => {
-        if (unlockedSections.includes(step.unlocked)) {
-          completedSections.push(step.completed);
-        }
-      });
-    }
-
-    completedSections.forEach(sectionId => {
-      const section = document.getElementById(sectionId);
-      if (section) section.classList.add('completed');
-    });
-
-    if (watchStwActivity) watchStwActivity.restore(savedData.stw || {});
-
-    const plantBuilding = savedData.plantBuilding || {};
-
-    if (plantPartsActivity) {
-      plantPartsActivity.setPlacements(plantBuilding.partsPlacements || {});
-    }
-
-    if (plantLabelsActivity) {
-      plantLabelsActivity.setPlacements(plantBuilding.labelsPlacements || {});
-    }
-
-    if (wordSentencesActivity) {
-      wordSentencesActivity.setPlacements(savedData.wordSentences || {});
-    }
-
-    if (brainstormActivity) brainstormActivity.restore(savedData.brainstorm || {});
-    if (finalBrainstormActivity) finalBrainstormActivity.restore(savedData.finalBrainstorm || {});
-
-    pretaskIsRestoring = false;
-
-  }
-
-  /*
-    Watch answer areas for additions or deletions.
-  */
-  const pretaskObserver = new MutationObserver(() => {
-    schedulePretaskSave();
-  });
-
-  /*
-    Begin watching after the HTML has loaded.
-  */
-  document.addEventListener('DOMContentLoaded', function() {
-    initPlantGames();
-    initWordSentencesActivity();
-    initTextResponseActivities();
-
-    const areasToWatch = [
-      document.getElementById('watchStwActivity'),
-      document.getElementById('brainstormActivity'),
-      document.getElementById('finalBrainstormActivity')
-    ];
-
-    areasToWatch.forEach(area => {
-      if (area) {
-        pretaskObserver.observe(area, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          characterData: true
-        });
-      }
-    });
-
-    restorePretaskData();
-  });
-
-  /*
-    Save when a Next button opens another section.
-  */
-  document.addEventListener('click', function(event) {
-    const nextButton = event.target.closest('.next-button');
-
-    if (!nextButton) {
-      return;
-    }
-
-    const currentSection = nextButton.closest('.section');
-
-    if (currentSection) {
-      currentSection.classList.add('completed');
-    }
-
-    setTimeout(saveCurrentPageData, 250);
-  });
-
-const pretaskSectionIds = [
-  { id: "watch", label: "Making observations of plants" },
-  { id: "build", label: "The structure of a flowering plant" },
-  { id: "brainstorm", label: "Think like a scientist - Brainstorm to share ideas" },
-  { id: "diagram", label: "Why do plants need the right physical conditions to survive?" },
-  { id: "detective", label: "Can you solve the mystery of the unhealthy plants?" },
-  { id: "final-brainstorm", label: "Check your understanding" },
-];
-
-document.addEventListener("DOMContentLoaded", function() {
-  if (typeof initialiseTeacherMenu === "function") {
-    initialiseTeacherMenu(pretaskSectionIds);
-  }
-});
-
-    /* Called from inline handlers / shared scripts, which cannot see module scope. */
-    Object.assign(window, { switchGame, clearPageSavedData, saveCurrentPageData });`,
-  },
-];
-
-function loadScript(def) {
-  return new Promise((resolve) => {
-    const el = document.createElement("script");
-    if (def.type) el.type = def.type;
-    if (def.src) {
-      el.src = def.src;
-      el.onload = el.onerror = resolve;
-      document.body.appendChild(el);
-    } else {
-      if (def.type === "module") {
-        // inline module scripts run async: wait until this one has finished
-        window.__inlineScriptDone = resolve;
-        el.onerror = resolve;
-        el.textContent = def.code + "\n;window.__inlineScriptDone()";
-        document.body.appendChild(el);
-      } else {
-        el.textContent = def.code;
-        document.body.appendChild(el);
-        resolve();
-      }
-    }
-  });
-}
-
-onMounted(async () => {
-  document.title = "Plant Learning Website";
-  for (const def of scripts) await loadScript(def);
-  // the original scripts wait for DOMContentLoaded, which has already fired
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  window.dispatchEvent(new Event("DOMContentLoaded"));
-});
-</script>

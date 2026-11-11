@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
 import StopAndCheck from "../components/StopAndCheck.vue";
 import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
 import DiscoverVariables from "../components/lesson2/DiscoverVariables.vue";
-import MultipleChoice from "../components/activities/MultipleChoice.vue";
+import BallPairChoice from "../components/lesson2/BallPairChoice.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 import VariableSort from "../components/activities/VariableSort.vue";
 import FairTestBuilder from "../components/lesson2/FairTestBuilder.vue";
@@ -57,19 +57,6 @@ const sortVariablesThreeActivityOptions = {
   },
 };
 
-const ballPairActivityOptions = {
-  completionMode: "live",
-  classes: {
-    selected: "selected",
-    correct: "correct-selection",
-    incorrect: "incorrect-selection",
-    feedbackCorrect: "feedback-success",
-    feedbackIncorrect: "feedback-try-again",
-    feedbackTitle: "ball-pair-feedback-title",
-    feedbackText: "ball-pair-feedback-text",
-  },
-};
-
 const dropdownAnswers = [
   "ball size",
   "ball material",
@@ -81,22 +68,31 @@ const dropdownAnswers = [
   "time spent bouncing",
 ];
 
-const testableQuestion = ref("");
-
-function onQuestionChange(state) {
-  testableQuestion.value = state?.text ?? "";
-}
+// The student's testable question, from <InvestigationQuestion @change>.
+// It fills in the prediction table's change / measure and the question
+// shown above the variable sort.
+const question = ref({
+  structure: "",
+  firstAnswer: "",
+  secondAnswer: "",
+  text: "",
+});
+const testableQuestion = computed(() => question.value.text);
+const predictionContext = computed(() => ({
+  structure: question.value.structure,
+  change: question.value.firstAnswer,
+  measure: question.value.secondAnswer,
+}));
 
 // One reset button for the question and the prediction
+const questionActivity = ref(null);
+const predictionActivity = ref(null);
 function resetQuestionAndPrediction() {
-  getActivity("investigationQuestionActivity")?.reset();
-  getActivity("reasonedPredictionActivity")?.reset();
+  questionActivity.value?.reset();
+  predictionActivity.value?.reset();
 }
-
-const investigationQuestionActivityOptions = {
-  variableOptions: dropdownAnswers,
-};
 import LessonIntro from "../components/LessonIntro.vue";
+import Button from "../components/Button.vue";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -125,78 +121,46 @@ const glossary = {
 // sections start locked; override per section where needed.
 const sections = [
   {
-    key: "discoverVariables",
     id: "discover-variables",
-    label: "Discover possible variables",
     title: "Planning a ball bounce fair test",
   },
   {
-    key: "variableTypes",
     id: "variable-types",
-    label: "Learn the three variable types",
     title: "Using variables to design a fair test",
-    hideNext: true,
   },
   {
-    key: "sortVariablesOne",
     id: "sort-variables-one",
-    label: "Sort variables: floor surface",
     title: "Practice reading a fair test question",
-    nextButtonId: "sortVariablesOneNext",
-    hideNext: true,
   },
   {
-    key: "sortVariablesTwo",
     id: "sort-variables-two",
-    label: "Sort variables: ball size",
     title: "Try another testable question to practice identifying variables",
-    nextButtonId: "sortVariablesTwoNext",
-    hideNext: true,
   },
   {
-    key: "chooseBallPair",
     id: "choose-ball-pair",
-    label: "Choose the right pair for a fair test experiment",
     title: "Select the picture showing a fair test",
-    hideNext: true,
   },
   {
-    key: "designQuestion",
     id: "design-question",
-    label: "Design a question and make a prediction",
     title: "Write your own fait test question",
-    nextButtonId: "designQuestionNext",
-    hideNext: true,
   },
   {
-    key: "sortVariablesThree",
     id: "sort-variables-three",
-    label: "Choose variables for your investigation",
     title: "Identify all variables for your fair test.",
-    nextButtonId: "sortVariablesThreeNext",
-    hideNext: true,
   },
   {
-    key: "buildExperiment",
     id: "build-experiment",
-    label: "Describe the fair-test procedure",
     title: "Build Your Fair Test Plan",
   },
 ];
-
-// Called by the shared PDF function in common_functions.js.
-// Add localStorage saving here when Lesson 2 interactions are built.
-window.saveCurrentPageData = () => {
-  console.log("Lesson 2 skeleton: no saved activity data yet.");
-};
 </script>
 
 <template>
   <!-- Page renders the vocabulary modal and the hidden teacher menu
        (opened by clicking the lesson title five times). -->
   <Page
+    lessonId="lesson2"
     title="Lesson 2 - Planning a Fair Test Experiment"
-    label="Lesson 2: Planning a Fair Test Experiment"
     :sections="sections"
     :glossary="glossary"
   >
@@ -259,7 +223,7 @@ window.saveCurrentPageData = () => {
       <!-- ==================================================
            2. DISCOVER VARIABLES
            ================================================== -->
-      <Section name="discoverVariables">
+      <Section name="discover-variables">
         <DiscoverVariables
           id="discoverVariablesActivity"
           image="../images/lesson2/l2-stw.png"
@@ -298,7 +262,7 @@ window.saveCurrentPageData = () => {
       <!-- ==================================================
           3. VARIABLE TYPES
           ================================================== -->
-      <Section name="variableTypes">
+      <Section name="variable-types">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             In a <strong>fair test</strong>, you change one
@@ -355,7 +319,7 @@ window.saveCurrentPageData = () => {
       <!-- ==================================================
              4. SORT VARIABLES - FLOOR SURFACE
              ================================================== -->
-      <Section name="sortVariablesOne" class="sort-variables-section">
+      <Section name="sort-variables-one" class="sort-variables-section">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Read the testable question for a ball bounce fair test.
@@ -397,7 +361,7 @@ window.saveCurrentPageData = () => {
       <!-- ==================================================
            5. SORT VARIABLES - BALL SIZE
            ================================================== -->
-      <Section name="sortVariablesTwo" class="sort-variables-section">
+      <Section name="sort-variables-two" class="sort-variables-section">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Follow the steps to identify the <strong>variables</strong> in this
@@ -417,7 +381,7 @@ window.saveCurrentPageData = () => {
       <!-- ==================================================
             6. CHOOSE A FAIR-TEST BALL PAIR
             ================================================== -->
-      <Section name="chooseBallPair">
+      <Section name="choose-ball-pair">
         <p class="variable-question floating-title">
           Does changing the size of a ball effect the height of the first
           bounce?
@@ -428,135 +392,12 @@ window.saveCurrentPageData = () => {
             balls that could be used in this <strong>fair test</strong>.
           </p>
         </div>
-        <MultipleChoice
-          id="ballPairActivity"
-          :options="ballPairActivityOptions"
-        >
-          <div
-            id="ballPairGrid"
-            class="ball-pair-grid"
-            data-mc-question
-            data-mc-answer="basketballs"
-          >
-            <!-- Correct: different size, same material and shape -->
-            <button
-              type="button"
-              class="ball-pair-card"
-              data-mc-choice="basketballs"
-              data-feedback-title="Yes — this pair can be used for a fair test experiment"
-              data-feedback="
-                These basketballs are different sizes, but they have the same shape and are made from the same material.
-                Ball size is the only variable changed, so this pair can be used in a <strong>fair test</strong>."
-              aria-pressed="false"
-            >
-              <span class="ball-pair-images">
-                <img
-                  class="ball-pair-image"
-                  src="../images/lesson2/l2-mcq1.png"
-                  alt="A large basketball beside a small basketball"
-                />
-              </span>
-              <span
-                class="ball-pair-card-feedback"
-                data-mc-choice-feedback
-                role="status"
-                aria-live="polite"
-              ></span>
-            </button>
-            <!-- Incorrect: material also changes -->
-            <button
-              type="button"
-              class="ball-pair-card"
-              data-mc-choice="basketball-tennis"
-              data-feedback-title="Not a fair test experiment - two variables are changed"
-              data-feedback="
-                These balls are different sizes, but they are also made of different materials.
-                You could not know whether the height of the bounce changes because of size or material.
-                Try again."
-              aria-pressed="false"
-            >
-              <span class="ball-pair-images">
-                <img
-                  class="ball-pair-image"
-                  src="../images/lesson2/l2-mcq2.png"
-                  alt="A basketball beside a tennis ball"
-                />
-              </span>
-              <span
-                class="ball-pair-card-feedback"
-                data-mc-choice-feedback
-                role="status"
-                aria-live="polite"
-              ></span>
-            </button>
-            <!-- Incorrect: shape also changes -->
-            <button
-              type="button"
-              class="ball-pair-card"
-              data-mc-choice="soccer-football"
-              data-feedback-title="Not a fair test experiment - two variables are changed"
-              data-feedback="
-              These balls are different sizes and have different shapes.
-              The size and shape could both affect the bounce height.
-              Try again."
-              aria-pressed="false"
-            >
-              <span class="ball-pair-images">
-                <img
-                  class="ball-pair-image"
-                  src="../images/lesson2/l2-mcq3.png"
-                  alt="A soccer ball beside an oval football"
-                />
-              </span>
-              <span
-                class="ball-pair-card-feedback"
-                data-mc-choice-feedback
-                role="status"
-                aria-live="polite"
-              ></span>
-            </button>
-            <!-- Incorrect: no size change -->
-            <button
-              type="button"
-              class="ball-pair-card"
-              data-mc-choice="same-size"
-              data-feedback-title="Not a fair test experiment - no variables are changed"
-              data-feedback="
-              These balls have the same size, shape, and they are made of the same material.
-              This investigation is testing the effect of ball size, so the balls must be different sizes.
-              Try again."
-              aria-pressed="false"
-            >
-              <span class="ball-pair-images">
-                <img
-                  class="ball-pair-image"
-                  src="../images/lesson2/l2-mcq4.png"
-                  alt="Two basketballs of the same size"
-                />
-              </span>
-              <span
-                class="ball-pair-card-feedback"
-                data-mc-choice-feedback
-                role="status"
-                aria-live="polite"
-              ></span>
-            </button>
-          </div>
-          <div class="reset-button-container">
-            <button
-              type="button"
-              class="general-button reset-btn"
-              data-reset-trigger
-            >
-              Reset
-            </button>
-          </div>
-        </MultipleChoice>
+        <BallPairChoice />
       </Section>
       <!-- ==================================================
              DESIGN A QUESTION AND MAKE A PREDICTION
              ================================================== -->
-      <Section name="designQuestion">
+      <Section name="design-question">
         <!-- ================================
          PART 1: INVESTIGATION QUESTION
          ================================ -->
@@ -583,10 +424,10 @@ window.saveCurrentPageData = () => {
           </div>
         </div>
         <InvestigationQuestion
-          id="investigationQuestionActivity"
-          :options="investigationQuestionActivityOptions"
-          feeds="reasonedPredictionActivity"
-          @change="onQuestionChange"
+          ref="questionActivity"
+          name="investigation-question"
+          :variable-options="dropdownAnswers"
+          @change="question = $event"
         >
           <template #autofillTestableQuestion />
         </InvestigationQuestion>
@@ -601,22 +442,20 @@ window.saveCurrentPageData = () => {
             reasoned prediction.
           </p>
         </div>
-        <PredictionTable id="reasonedPredictionActivity" />
+        <PredictionTable
+          ref="predictionActivity"
+          name="reasoned-prediction"
+          :context="predictionContext"
+        />
         <!-- One reset button for both activities -->
         <div class="reset-button-container">
-          <button
-            type="button"
-            class="general-button reset-btn"
-            @click="resetQuestionAndPrediction"
-          >
-            Reset
-          </button>
+          <Button :is-reset="true" @click="resetQuestionAndPrediction" />
         </div>
       </Section>
       <!-- ==================================================
              OPEN VARIABLE SELECTION
              ================================================== -->
-      <Section name="sortVariablesThree" class="sort-variables-section">
+      <Section name="sort-variables-three" class="sort-variables-section">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             What will you change? What will you measure? What will you keep the
@@ -635,7 +474,7 @@ window.saveCurrentPageData = () => {
       <!-- ==================================================
            9. DESCRIBE THE FAIR TEST
            ================================================== -->
-      <Section name="buildExperiment">
+      <Section name="build-experiment">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Follow the steps and watch as your

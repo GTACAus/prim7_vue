@@ -257,17 +257,6 @@ input[type="checkbox"]:active {
   color: var(--muted);
 }
 
-.delete-answer {
-  background: var(--soft-orange);
-  border: 2px solid var(--charcoal);
-  color: var(--text);
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
 .label-bank {
   min-height: 280px;
   background: #ffffff;

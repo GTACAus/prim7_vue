@@ -7,6 +7,8 @@ const props = defineProps({
   content: String,
   // route to go to, e.g. to="/lesson2". Renders a real link to that route.
   to: String,
+  isDelete: Boolean,
+  isReset: Boolean,
 });
 
 const attrs = useAttrs();
@@ -28,9 +30,14 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
     :is="isLink ? 'a' : 'button'"
     :href="isLink ? href : undefined"
     :type="isLink ? undefined : 'button'"
+    :class="{ 'delete-answer': isDelete, 'reset-btn': isReset }"
   >
-    <p v-if="symbol" class="bounce-symbol">{{ symbol }}</p>
-    <slot>{{ content }}</slot>
+    <p v-if="symbol && !isDelete && !isReset" class="bounce-symbol">
+      {{ symbol }}
+    </p>
+    <slot v-if="!isDelete && !isReset">{{ content }}</slot>
+    <p v-if="isDelete">x</p>
+    <p v-if="!isDelete && isReset">Reset</p>
   </component>
 </template>
 
@@ -77,6 +84,25 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
     transform 0.15s ease,
     box-shadow 0.15s ease,
     background 0.15s ease;
+}
+
+.delete-answer {
+  --background: var(--soft-orange);
+  --color: var(--text);
+  --box-shadow: none;
+  --border-radius: 50%;
+  --padding: 0;
+  --width: 26px;
+  --height: 26px;
+  --display: inline-grid;
+  --font-weight: 700;
+
+  --background-hover: var(--orange);
+  --color-hover: var(--paper);
+
+  place-items: center;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 :is(button, a):hover {

@@ -51,7 +51,6 @@ const routes = [
       stylesheets: [
         "/styles/lesson2_styles/lesson2.css",
         "/styles/variable-activity.css",
-        "/styles/lesson2_styles/bigkahuna4.css",
       ],
     },
     component: () => import("./views/Lesson2View.vue"),

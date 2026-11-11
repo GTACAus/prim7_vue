@@ -1,395 +1,251 @@
-<script>
-import { ActivityBase, whenCommonFunctionsReady } from './legacyActivity.js'
+<script setup>
+/*
+  ==================================================
+  INVESTIGATION (TESTABLE) QUESTION BUILDER
+  Pick a question structure ("If I change the ___, what happens to the
+  ___?"), then fill in its two blanks to build one testable question.
 
-/* ==================================================
-   INVESTIGATION (TESTABLE) QUESTION BUILDER
-   Pick a question structure ("If I change the ___, what happens to the
-   ___?"), then fill in its two blanks from a list of variables, to build
-   one testable question. Pair with Activity.vue.
+    <InvestigationQuestion
+      :variable-options="['ball size', 'drop height', ...]"
+      @change="question = $event"
+    />
 
-   Markup contract:
+  Props
+  - variableOptions: words offered in each blank's dropdown (page-specific).
+  - inputType: "text" makes each blank a single-answer <StudentEntry> instead
+    (saved on Enter or blur, checked by the classroom language filter, shown
+    in place of the box with a × to change it).
+  - textInputClass: class for those text fields.
+  - templates: overrides the four structures (what/how/does/if). Each is
+      { parts: [before-first, between, after-second],
+        firstPlaceholder, secondPlaceholder }
 
-     <div id="myQuestion" data-activity>
-       <div>
-         <button type="button" data-question-structure="what" aria-pressed="false">
-           When I change the ______, what happens to the ______?
-         </button>
-         <button type="button" data-question-structure="how" aria-pressed="false">...</button>
-         <button type="button" data-question-structure="does" aria-pressed="false">...</button>
-         <button type="button" data-question-structure="if" aria-pressed="false">...</button>
-       </div>
+  @change gets { structure, firstAnswer, secondAnswer, text } whenever the
+  question changes (including after it's restored). Pass it on to a
+  <PredictionTable :context="..."> to fill in its change / measure.
 
-       <div data-question-builder aria-live="polite">
-         <p class="question-builder-placeholder">Select a question structure above to begin.</p>
-       </div>
-     </div>
+  Complete once a structure is chosen and both blanks are filled.
+  Progress is saved and restored through <Activity :state>.
+  ==================================================
+*/
+import { computed, ref, watch } from "vue";
+import Activity from "./Activity.vue";
+import StudentEntry from "../StudentEntry.vue";
+import Button from "../Button.vue";
 
-   Usage:
-
-     const activity = new InvestigationQuestionActivity(root, {
-       variableOptions: ["ball size", "ball material", "drop height", ...],
-       onChange: function(state) { ... }   // see getState() below
-       // templates: {...}  // optional - see DEFAULT_TEMPLATES for the shape
-     });
-
-   options.variableOptions is the list of words/phrases offered in each
-   blank's dropdown - always page-specific (different lessons study
-   different variables), so there's no default: pass it in.
-
-   options.inputType: "text" makes each blank a free-text field (saved on
-   Enter or blur, checked by the classroom language filter) instead of a
-   dropdown; variableOptions is then not needed. options.textInputClass
-   sets that field's class (default "question-blank-input").
-
-   options.templates optionally overrides the four built-in question
-   structures (what/how/does/if). Each entry is:
-     { parts: [before-first-blank, between-blanks, after-second-blank],
-       firstPlaceholder, secondPlaceholder }
-
-   API (beyond the shared Activity API - isComplete/reset/...):
-     activity.getState() -> { structure, firstAnswer, secondAnswer, text }
-       text is the fully-written question once both blanks are filled,
-       else "".
-     root event "question:change" -> same as onChange (detail = state)
-
-   The activity is data-activity-complete once a structure is chosen and
-   both blanks are filled in.
-   ================================================== */
-
-
-var DEFAULT_TEMPLATES = {
+const DEFAULT_TEMPLATES = {
   what: {
     parts: ["When I change the ", ", what happens to the ", "?"],
     firstPlaceholder: "What will you change?",
-    secondPlaceholder: "What will you measure?"
+    secondPlaceholder: "What will you measure?",
   },
   how: {
     parts: ["How does changing the ", " affect the ", "?"],
     firstPlaceholder: "What will you change?",
-    secondPlaceholder: "What will you measure?"
+    secondPlaceholder: "What will you measure?",
   },
   does: {
     parts: ["Does changing the ", " affect the ", "?"],
     firstPlaceholder: "What will you change?",
-    secondPlaceholder: "What will you measure?"
+    secondPlaceholder: "What will you measure?",
   },
   if: {
     parts: ["If I change the ", ", what happens to the ", "?"],
     firstPlaceholder: "What will you change?",
-    secondPlaceholder: "What will you measure?"
-  }
+    secondPlaceholder: "What will you measure?",
+  },
 };
 
-function InvestigationQuestionActivity(root, options) {
-  ActivityBase.call(this, root, options);
-
-  this.templates = this.options.templates || DEFAULT_TEMPLATES;
-  this.variableOptions = this.options.variableOptions || [];
-
-  this.structureButtons = root.querySelectorAll("[data-question-structure]");
-  this.builder = root.querySelector("[data-question-builder]");
-  this.completedElement = null;
-
-  this.state = { structure: "", firstAnswer: "", secondAnswer: "" };
-
-  var self = this;
-  Array.prototype.forEach.call(this.structureButtons, function (button) {
-    button.addEventListener("click", function () {
-      self._selectStructure(button.dataset.questionStructure);
-    });
-  });
-
-  this._renderPlaceholder();
-  this.setComplete(false);
-}
-
-InvestigationQuestionActivity.prototype = Object.create(ActivityBase.prototype);
-InvestigationQuestionActivity.prototype.constructor = InvestigationQuestionActivity;
-
-/* ---------- public API ---------- */
-
-InvestigationQuestionActivity.prototype.getState = function () {
-  return {
-    structure: this.state.structure,
-    firstAnswer: this.state.firstAnswer,
-    secondAnswer: this.state.secondAnswer,
-    text: this._getCompletedText()
-  };
-};
-
-InvestigationQuestionActivity.prototype.reset = function () {
-  this.state = { structure: "", firstAnswer: "", secondAnswer: "" };
-
-  Array.prototype.forEach.call(this.structureButtons, function (button) {
-    button.classList.remove("selected");
-    button.setAttribute("aria-pressed", "false");
-  });
-
-  this._renderPlaceholder();
-  this._notify();
-  this.setComplete(false);
-};
-
-/* ---------- rendering ---------- */
-
-InvestigationQuestionActivity.prototype._renderPlaceholder = function () {
-  if (!this.builder) return;
-  this.completedElement = null;
-  this.builder.classList.remove("builder-active");
-  this.builder.innerHTML = '<p class="question-builder-placeholder">Select a question structure above to begin.</p>';
-};
-
-InvestigationQuestionActivity.prototype._selectStructure = function (structureName) {
-  var template = this.templates[structureName];
-  if (!template || !this.builder) return;
-
-  this.state = { structure: structureName, firstAnswer: "", secondAnswer: "" };
-
-  Array.prototype.forEach.call(this.structureButtons, function (button) {
-    var isSelected = button.dataset.questionStructure === structureName;
-    button.classList.toggle("selected", isSelected);
-    button.setAttribute("aria-pressed", String(isSelected));
-  });
-
-  this.builder.classList.add("builder-active");
-  this.builder.innerHTML = "";
-
-  var sentence = document.createElement("div");
-  sentence.className = "question-builder-sentence";
-  sentence.appendChild(document.createTextNode(template.parts[0]));
-  sentence.appendChild(this._createBlank("firstAnswer", template.firstPlaceholder));
-  sentence.appendChild(document.createTextNode(template.parts[1]));
-  sentence.appendChild(this._createBlank("secondAnswer", template.secondPlaceholder));
-  sentence.appendChild(document.createTextNode(template.parts[2]));
-
-  this.completedElement = document.createElement("div");
-  this.completedElement.className = "completed-investigation-question";
-  this.completedElement.hidden = true;
-
-  this.builder.appendChild(sentence);
-  this.builder.appendChild(this.completedElement);
-
-  this._notify();
-  this.setComplete(false);
-};
-
-InvestigationQuestionActivity.prototype._createBlank = function (fieldName, placeholderText) {
-  var self = this;
-
-  var wrapper = document.createElement("span");
-  wrapper.className = "question-blank";
-
-  var inputRow = document.createElement("span");
-  inputRow.className = "question-blank-input-row";
-
-  var isText = this.options.inputType === "text";
-  var input;
-
-  if (isText) {
-    input = document.createElement("input");
-    input.type = "text";
-    input.maxLength = 50;
-    input.placeholder = placeholderText;
-    input.className = this.options.textInputClass || "question-blank-input";
-  } else {
-    input = document.createElement("select");
-    input.className = "question-blank-input";
-
-    var placeholderOption = document.createElement("option");
-    placeholderOption.value = "";
-    placeholderOption.textContent = placeholderText;
-    placeholderOption.disabled = true;
-    placeholderOption.selected = true;
-    input.appendChild(placeholderOption);
-
-    this.variableOptions.forEach(function (answer) {
-      var option = document.createElement("option");
-      option.value = answer;
-      option.textContent = answer;
-      input.appendChild(option);
-    });
-  }
-
-  input.name = fieldName;
-  input.setAttribute("aria-label", placeholderText);
-
-  var answerBox = document.createElement("span");
-  answerBox.className = "question-blank-answer";
-
-  inputRow.appendChild(input);
-  wrapper.appendChild(inputRow);
-  wrapper.appendChild(answerBox);
-
-  function saveAnswer() {
-    var value = isText ? getValidStudentInput(input) : input.value;
-    if (value === null || value === "") return;
-
-    self.state[fieldName] = value;
-
-    answerBox.innerHTML = "";
-
-    var answerText = document.createElement("span");
-    answerText.className = "question-blank-answer-text";
-    answerText.textContent = value;
-
-    var deleteButton = createDeleteAnswerButton("Edit " + value, function () {
-      self.state[fieldName] = "";
-      answerBox.classList.remove("visible");
-      answerBox.innerHTML = "";
-      inputRow.style.display = isText ? "inline-block" : "block";
-      input.value = "";
-      input.focus();
-
-      self._renderCompleted();
-      self._notify();
-      self.setComplete(self._isComplete());
-    });
-
-    answerBox.appendChild(answerText);
-    answerBox.appendChild(deleteButton);
-
-    inputRow.style.display = "none";
-    answerBox.classList.add("visible");
-    input.value = "";
-
-    self._renderCompleted();
-    self._notify();
-    self.setComplete(self._isComplete());
-  }
-
-  if (isText) {
-    /* Enter or clicking away saves the answer */
-    connectEnterAndBlurSave(input, saveAnswer);
-  } else {
-    input.addEventListener("change", function () {
-      if (input.value === "") return;
-      saveAnswer();
-    });
-  }
-
-  return wrapper;
-};
-
-InvestigationQuestionActivity.prototype._renderCompleted = function () {
-  if (!this.completedElement) return;
-
-  var text = this._getCompletedText();
-
-  if (!text) {
-    this.completedElement.hidden = true;
-    this.completedElement.textContent = "";
-    return;
-  }
-
-  this.completedElement.textContent = text;
-  this.completedElement.hidden = false;
-};
-
-/* ---------- internals ---------- */
-
-InvestigationQuestionActivity.prototype._isComplete = function () {
-  return Boolean(this.state.structure && this.state.firstAnswer && this.state.secondAnswer);
-};
-
-InvestigationQuestionActivity.prototype._getCompletedText = function () {
-  var template = this.templates[this.state.structure];
-  if (!template || !this.state.firstAnswer || !this.state.secondAnswer) return "";
-
-  return template.parts[0] + this.state.firstAnswer + template.parts[1] + this.state.secondAnswer + template.parts[2];
-};
-
-InvestigationQuestionActivity.prototype._notify = function () {
-  var state = this.getState();
-  if (typeof this.options.onChange === "function") this.options.onChange(state);
-  this.root.dispatchEvent(new CustomEvent("question:change", { detail: state, bubbles: true }));
-};
-</script>
-
-<script setup>
-/*
-  Build a testable question: pick a structure, then fill in the two blanks
-  from a list of variables (or type them in).
-
-    <InvestigationQuestion id="investigationQuestionActivity"
-                           :options="{ variableOptions: [...] }"
-                           feeds="reasonedPredictionActivity"
-                           @change="onQuestionChange" />
-
-  - options is the options object of InvestigationQuestionActivity
-    (variableOptions, inputType, textInputClass, templates, ...).
-  - feeds: id of a <PredictionTable>; each change is passed to its setContext(),
-    so the prediction organiser shows the student's change / measure variables.
-  - @change gets the question state: { structure, firstAnswer, secondAnswer, text }.
-  - the activity instance is also reachable from the page as getActivity(id).
-*/
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import Activity from './Activity.vue'
+const STRUCTURES = [
+  {
+    key: "what",
+    text: "When I change the ______, what happens to the ______?",
+  },
+  { key: "how", text: "How does changing the ______ affect the ______?" },
+  { key: "does", text: "Does changing the ______ affect the ______?" },
+  { key: "if", text: "If I change the ______, what happens to the ______?" },
+];
 
 const props = defineProps({
-  tag: { type: String, default: 'div' },
-  options: { type: Object, default: () => ({}) },
-  feeds: { type: String, default: '' },
-})
+  tag: { type: String, default: "div" },
+  variableOptions: { type: Array, default: () => [] },
+  inputType: { type: String, default: "select" },
+  textInputClass: { type: String, default: "question-blank-input" },
+  templates: { type: Object, default: null },
+});
 
-const emit = defineEmits(['change'])
+const emit = defineEmits(["change"]);
 
-const structures = [
-  { key: 'what', text: 'When I change the ______, what happens to the ______?' },
-  { key: 'how', text: 'How does changing the ______ affect the ______?' },
-  { key: 'does', text: 'Does changing the ______ affect the ______?' },
-  { key: 'if', text: 'If I change the ______, what happens to the ______?' },
-]
+// Saved progress
+const structure = ref("");
+const answers = ref({ first: "", second: "" });
+const state = { structure, answers };
 
-const root = ref(null)
-let activity = null
+// What's typed / picked in each blank before it's saved
+const drafts = ref({ first: "", second: "" });
 
-onMounted(() => {
-  whenCommonFunctionsReady(() => {
-    activity = new InvestigationQuestionActivity(root.value?.$el, {
-      ...props.options,
-      onChange(state) {
-        if (props.options.onChange) props.options.onChange(state)
+const templates = computed(() => props.templates || DEFAULT_TEMPLATES);
+const template = computed(() => templates.value[structure.value] || null);
 
-        const target = props.feeds && window.getActivity(props.feeds)
-        if (target) {
-          target.setContext({
-            structure: state.structure,
-            change: state.firstAnswer,
-            measure: state.secondAnswer,
-          })
-        }
+const text = computed(() => {
+  const t = template.value;
+  if (!t || !answers.value.first || !answers.value.second) return "";
+  return (
+    t.parts[0] +
+    answers.value.first +
+    t.parts[1] +
+    answers.value.second +
+    t.parts[2]
+  );
+});
 
-        emit('change', state)
-      },
-    })
-  })
-})
+const isComplete = computed(() => !!text.value);
 
-onBeforeUnmount(() => {
-  activity = null
-})
+const blanks = computed(() =>
+  template.value
+    ? [
+        { name: "first", placeholder: template.value.firstPlaceholder },
+        { name: "second", placeholder: template.value.secondPlaceholder },
+      ]
+    : [],
+);
 
-defineExpose({ getActivity: () => activity })
+function selectStructure(key) {
+  if (!templates.value[key]) return;
+  structure.value = key;
+  answers.value = { first: "", second: "" };
+  drafts.value = { first: "", second: "" };
+}
+
+// dropdown mode only; text mode saves through <StudentEntry>
+function saveAnswer(name) {
+  const value = drafts.value[name];
+  if (!value) return;
+  answers.value[name] = value;
+  drafts.value[name] = "";
+}
+
+function editAnswer(name) {
+  answers.value[name] = "";
+}
+
+function reset() {
+  structure.value = "";
+  answers.value = { first: "", second: "" };
+  drafts.value = { first: "", second: "" };
+}
+
+// <StudentEntry> works with a list; each blank keeps a single string
+function entryAnswers(name) {
+  return answers.value[name] ? [answers.value[name]] : [];
+}
+
+function setEntryAnswers(name, list) {
+  answers.value[name] = list[0] ?? "";
+}
+
+// Tell the page whenever the question changes, including after a restore.
+watch(
+  [structure, answers],
+  () =>
+    emit("change", {
+      structure: structure.value,
+      firstAnswer: answers.value.first,
+      secondAnswer: answers.value.second,
+      text: text.value,
+    }),
+  { deep: true },
+);
+
+defineExpose({ reset, isComplete, text });
 </script>
 
 <template>
-  <Activity :tag="tag" ref="root">
-    <div class="question-structure-grid" id="questionStructureGrid">
+  <Activity :tag="tag" :complete="isComplete" :state="state" @reset="reset">
+    <div class="question-structure-grid">
       <button
-        v-for="structure in structures"
-        :key="structure.key"
+        v-for="s in STRUCTURES"
+        :key="s.key"
         type="button"
         class="question-structure-card"
-        :class="'question-structure-' + structure.key"
-        :data-question-structure="structure.key"
-        aria-pressed="false"
+        :class="[
+          'question-structure-' + s.key,
+          { selected: structure === s.key },
+        ]"
+        :aria-pressed="structure === s.key"
+        @click="selectStructure(s.key)"
       >
-        {{ structure.text }}
+        {{ s.text }}
       </button>
     </div>
 
-    <div class="investigation-question-builder" id="investigationQuestionBuilder" data-question-builder aria-live="polite">
-      <p class="question-builder-placeholder">Select a question structure above to begin.</p>
+    <div
+      class="investigation-question-builder"
+      :class="{ 'builder-active': template }"
+      aria-live="polite"
+    >
+      <p v-if="!template" class="question-builder-placeholder">
+        Select a question structure above to begin.
+      </p>
+
+      <template v-else>
+        <div class="question-builder-sentence">
+          <template v-for="(blank, i) in blanks" :key="blank.name">
+            {{ template.parts[i] }}
+            <span class="question-blank">
+              <StudentEntry
+                v-if="inputType === 'text'"
+                :key="structure + ':' + blank.name"
+                :answers="entryAnswers(blank.name)"
+                :multiple-inputs="false"
+                :maxlength="50"
+                :input-class="textInputClass"
+                :placeholder="blank.placeholder"
+                :aria-label="blank.placeholder"
+                @update:answers="setEntryAnswers(blank.name, $event)"
+              />
+
+              <template v-else>
+                <span
+                  v-if="!answers[blank.name]"
+                  class="question-blank-input-row"
+                >
+                  <select
+                    v-model="drafts[blank.name]"
+                    class="question-blank-input"
+                    :aria-label="blank.placeholder"
+                    @change="saveAnswer(blank.name)"
+                  >
+                    <option value="" disabled>{{ blank.placeholder }}</option>
+                    <option
+                      v-for="option in variableOptions"
+                      :key="option"
+                      :value="option"
+                    >
+                      {{ option }}
+                    </option>
+                  </select>
+                </span>
+                <span v-else class="question-blank-answer visible">
+                  <span class="question-blank-answer-text">{{
+                    answers[blank.name]
+                  }}</span>
+                  <Button
+                    :is-delete="true"
+                    :aria-label="`Edit ${answers[blank.name]}`"
+                    @click="editAnswer(blank.name)"
+                  />
+                </span>
+              </template>
+            </span>
+          </template>
+          {{ template.parts[2] }}
+        </div>
+
+        <div v-if="text" class="completed-investigation-question">
+          {{ text }}
+        </div>
+      </template>
     </div>
 
     <slot />
@@ -424,21 +280,6 @@ defineExpose({ getActivity: () => activity })
       ================================================== */
 .question-blank-answer.visible {
   display: flex;
-}
-
-.question-blank-answer .delete-answer {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 auto;
-
-  width: 24px;
-  height: 24px;
-  padding: 0;
-
-  line-height: 1;
-  font-size: 0.95rem;
 }
 
 .question-structure-card {
@@ -638,7 +479,6 @@ defineExpose({ getActivity: () => activity })
   .question-blank {
     width: 100%;
   }
-
 }
 
 @media (max-width: 650px) {

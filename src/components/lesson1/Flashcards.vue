@@ -173,7 +173,7 @@ defineExpose({ reset });
             </Button>
           </div>
 
-          <Button v-if="started" class="reset-btn" @click="reset">Reset</Button>
+          <Button v-if="started" :is-reset @click="reset" />
         </div>
 
         <div class="pile-section">

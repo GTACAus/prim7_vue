@@ -410,7 +410,7 @@ defineExpose({ reset });
     </div>
 
     <div class="reset-button-container">
-      <Button class="reset-btn" @click="reset">Reset</Button>
+      <Button :is-reset="true" @click="reset">Reset</Button>
     </div>
   </Activity>
 </template>

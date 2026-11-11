@@ -2,11 +2,16 @@
 /*
   Lesson 2 "build your fair test plan": pick what to change, measure and keep
   the same, and watch two experiments (A and B) update as a diagram and a
-  blueprint. Styled by styles/lesson2_styles/bigkahuna4.css.
+  blueprint.
 
     <FairTestBuilder />
+
+  "Check fair test experiment design" lists anything still missing (and keeps
+  the list up to date after that). Complete once checked with nothing
+  missing. The choices are saved through <Activity :state>.
 */
 import { computed, reactive, ref } from 'vue'
+import Activity from '../activities/Activity.vue'
 
 const variableConfig = {
   size: {
@@ -94,7 +99,10 @@ const state = reactive({
   selectedControlVariable: null,
   controls: initialControls(),
 })
-const missing = ref(null) // null = "check" not pressed yet, [] = complete
+const checked = ref(false) // "Check" pressed at least once
+
+// What <Activity> saves and restores (the refs themselves, so restoring works)
+const saved = { plan: state, checked }
 
 const getOptionLabel = (options, value) => options.find((option) => option.value === value)?.label || 'Not selected'
 
@@ -190,18 +198,24 @@ const measurementNote = computed(() =>
 
 /* ---------- check and reset ---------- */
 
-function check() {
+const missing = computed(() => {
   const found = []
   if (!state.changeVariable) found.push('a Change variable')
   if (!state.measureOutcome) found.push('a Measure outcome')
   if (!state.measureTool) found.push('a Measurement tool')
   if (!state.selectedControlVariable) found.push('a Control variable')
-  missing.value = found
+  return found
+})
+
+const isComplete = computed(() => checked.value && missing.value.length === 0)
+
+function check() {
+  checked.value = true
 }
 
-const warningClass = computed(() => (missing.value?.length === 0 ? 'blueprint-success' : 'blueprint-warning'))
+const warningClass = computed(() => (missing.value.length === 0 ? 'blueprint-success' : 'blueprint-warning'))
 const warningStyle = computed(() =>
-  missing.value?.length === 0
+  missing.value.length === 0
     ? { background: 'var(--soft-green)', borderTop: '4px solid var(--green)' }
     : { background: 'var(--soft-orange)', borderTop: '4px solid var(--orange)' }
 )
@@ -214,12 +228,19 @@ function reset() {
   state.measureTool = null
   state.selectedControlVariable = null
   state.controls = initialControls()
-  missing.value = null
+  checked.value = false
 }
+
+defineExpose({ reset, isComplete })
 </script>
 
 <template>
-  <div class="bk-area">
+  <Activity
+    class="bk-area"
+    :complete="isComplete"
+    :state="saved"
+    @reset="reset"
+  >
     <div class="bk3-page">
       <nav class="bk3-progress" aria-label="Investigation sections">
         <button
@@ -360,8 +381,8 @@ function reset() {
           <article class="blueprint-card control-card"><strong>Control</strong><span>{{ blueprintControl }}</span></article>
         </div>
         <div
-          v-if="missing"
-          class="diagram-box diagram-activity"
+          v-if="checked"
+          class="diagram-box diagram-activity blueprint-message"
           :class="warningClass"
           :style="warningStyle"
         >
@@ -373,10 +394,537 @@ function reset() {
           </ul>
         </div>
         <div class="bk3-actions">
-          <button type="button" @click="reset">Reset</button>
-          <button type="button" class="primary" @click="check">Check fair test experiment design</button>
+          <button type="button" class="bk3-reset-button" @click="reset">Reset</button>
+          <button type="button" class="primary bk3-check-button" @click="check">Check fair test experiment design</button>
         </div>
       </section>
     </div>
-  </div>
+  </Activity>
 </template>
+
+<style scoped>
+/* Scoped: the plain p / h1 / button rules below only touch this builder. */
+.bk-area {
+  margin-bottom: 10px;
+}
+
+button,
+select {
+  font: inherit;
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.bk3-page {
+  width: min(1440px, calc(100% - 32px));
+  margin: 24px auto;
+}
+
+.bk3-progress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.bk3-progress-step {
+  padding: 12px 16px;
+  border: 2px solid var(--charcoal);
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--charcoal);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+.bk3-progress-step:not(.active):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--charcoal);
+}
+.bk3-progress-step.active {
+  color: #fff;
+  background: var(--purple);
+  border-color: var(--purple);
+  box-shadow: 0 0px 0 var(--charcoal);
+  transform: translateY(2px);
+}
+
+.bk3-top-controls {
+  background: var(--paper);
+  border: 2px solid var(--charcoal);
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 0 rgba(48, 51, 47, 0.12);
+}
+.control-instruction {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+.choice-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.choice-button {
+  min-height: 42px;
+  padding: 8px 13px;
+  border: 2px solid var(--charcoal);
+  box-shadow: 0 4px 0 var(--charcoal);
+  border-radius: 11px;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.choice-button:not(:disabled):not(.selected):hover {
+  background: var(--soft-purple);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--charcoal);
+}
+.choice-button.selected {
+  color: #fff;
+  background: var(--purple);
+  border-color: var(--purple);
+  transform: translateY(4px);
+  box-shadow: 0 0px 0 var(--charcoal);
+}
+.choice-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  background: #e8ebe7;
+}
+
+.bk3-reset-button {
+  background: var(--orange);
+  color: var(--paper);
+  box-shadow: 0 4px 0 var(--charcoal);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+.bk3-reset-button:hover {
+  box-shadow: 0 6px 0 var(--charcoal);
+  transform: translateY(-2px);
+}
+.bk3-reset-button:active {
+  box-shadow: 0 0px 0 var(--charcoal);
+  transform: translateY(6px);
+}
+
+.bk3-check-button {
+  box-shadow: 0 4px 0 var(--charcoal);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+.bk3-check-button:hover {
+  box-shadow: 0 6px 0 var(--charcoal);
+  transform: translateY(-2px);
+}
+.bk3-check-button:active {
+  box-shadow: 0 0px 0 var(--charcoal);
+  transform: translateY(6px);
+}
+
+.revealed-menu {
+  display: grid;
+  grid-template-columns: minmax(170px, 260px) minmax(240px, 440px);
+  gap: 12px;
+  align-items: end;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px dashed var(--line);
+}
+.revealed-copy strong {
+  display: block;
+  margin-bottom: 3px;
+}
+.revealed-copy span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.bk3-control {
+  display: grid;
+  gap: 5px;
+}
+.bk3-control label {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.bk3-control select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 34px 8px 10px;
+  border: 2px solid var(--charcoal);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--charcoal);
+}
+
+.control-editor {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px dashed var(--line);
+}
+.control-editor-empty {
+  color: var(--muted);
+}
+
+.bk3-main-card,
+.bk3-blueprint {
+  background: linear-gradient(to bottom, white, var(--soft-blue));
+  border: 2px solid var(--charcoal);
+  border-radius: 20px;
+  box-shadow: 0 7px 0 rgba(48, 51, 47, 0.12);
+}
+.bk3-main-card {
+  padding: 16px;
+}
+.bk3-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+h1,
+h2,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+h2 {
+  font-size: 1.15rem;
+}
+.bk3-status {
+  max-width: 560px;
+  color: var(--muted);
+  font-weight: 500;
+  text-align: right;
+  background: var(--soft-green);
+  border: 2px solid var(--charcoal);
+  border-radius: 16px;
+  box-shadow: 0 4px 0 var(--charcoal);
+  padding: 12px;
+}
+
+.bk3-canvas {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+  border: 2px solid var(--charcoal);
+  border-radius: 18px;
+  background: linear-gradient(to bottom, #fffdf4 0 88%, #eee7d6 88% 100%);
+}
+.ruler {
+  position: absolute;
+  left: 4.5%;
+  top: 8%;
+  width: 78px;
+  height: 70%;
+
+  border: 4px solid var(--charcoal);
+  border-radius: 10px;
+  background: #fff8c9;
+}
+
+/* Horizontal height markers */
+.ruler::before,
+.ruler::after {
+  position: absolute;
+  left: 88px;
+  width: 72px;
+
+  color: var(--purple);
+  font-weight: 700;
+  font-size: 1rem;
+
+  /* Put the line above the number */
+  padding-top: 7px;
+  border-top: 3px solid var(--purple);
+}
+
+/*
+      The ball at 1.5 m has top: 21%.
+      Put its marker lower than the bottom of the ball.
+    */
+.ruler::before {
+  content: "1.5 m";
+  top: 32%;
+}
+
+/*
+      The ball at 1 m has top: 39%.
+      Put its marker lower than the bottom of the ball.
+    */
+.ruler::after {
+  content: "1 m";
+  top: 58%;
+}
+.lane-label {
+  position: absolute;
+  top: 18px;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border: 2px solid var(--charcoal);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 700;
+}
+.lane-label.a {
+  left: 43%;
+}
+.lane-label.b {
+  left: 72%;
+}
+.drop-line {
+  position: absolute;
+  top: 17%;
+  bottom: 18%;
+  border-left: 3px dashed #888;
+  opacity: 0.65;
+}
+.drop-line.a {
+  left: 43%;
+}
+.drop-line.b {
+  left: 72%;
+}
+
+.ball {
+  --size: 110px;
+  position: absolute;
+  z-index: 3;
+  width: var(--size);
+  height: var(--size);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 4px solid var(--charcoal);
+  box-shadow: 0 8px 0 rgba(48, 51, 47, 0.14);
+  transition:
+    width 0.25s,
+    height 0.25s,
+    top 0.25s,
+    background 0.25s,
+    border-radius 0.25s,
+    transform 0.25s;
+}
+.ball.a {
+  left: 43%;
+}
+.ball.b {
+  left: 72%;
+}
+.ball.basketball {
+  background: linear-gradient(-70deg, transparent 48%, var(--charcoal) 52.5% 53.5%, transparent 50%),
+    radial-gradient(circle at 2% 160%, transparent 56%, var(--charcoal) 57% 58%, transparent 60%),
+    radial-gradient(circle at 88% -60%, transparent 56%, var(--charcoal) 57% 58%, transparent 60%),
+    linear-gradient(20deg, transparent 46%, var(--charcoal) 49.5% 51.5%, transparent 50%), #e88d25;
+}
+.ball.tennis {
+  background: radial-gradient(circle at 50% -5%, transparent 54%, #fff 55% 59%, transparent 60%),
+    radial-gradient(circle at 50% 105%, transparent 54%, #fff 55% 59%, transparent 60%), #cbe934;
+}
+.ball.pingpong {
+  background: radial-gradient(circle at 32% 28%, #fff 0 12%, #f2f2f2 13% 100%);
+}
+.ball.soft {
+  border-radius: 48% 52% 45% 55% / 56% 44% 58% 42%;
+  transform: translate(-50%, -50%) scaleY(0.82);
+}
+
+.surface {
+  position: absolute;
+  bottom: 8%;
+  width: 28%;
+  height: 58px;
+  border: 4px solid var(--charcoal);
+  border-radius: 10px 10px 4px 4px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  transition: background 0.25s;
+}
+.surface.a {
+  left: 29%;
+}
+.surface.b {
+  left: 58%;
+}
+/* Hard testing surface */
+.surface.hard-surface {
+  background: repeating-linear-gradient(90deg, #d5a56e 0 42px, #c08d55 42px 45px);
+}
+
+/* Soft testing surface */
+.surface.soft-surface {
+  background: repeating-linear-gradient(0deg, #ded7ff 0 7px, #c7b9fa 7px 10px);
+}
+.measurement-note {
+  position: absolute;
+  right: 3%;
+  top: 42%;
+  width: 180px;
+  padding: 10px;
+  border: 2px dashed var(--purple);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--purple);
+  font-weight: 700;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.bk3-blueprint {
+  margin-top: 14px;
+  padding: 16px;
+}
+.blueprint-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+.blueprint-card {
+  min-height: 108px;
+  padding: 12px;
+  border: 2px solid var(--line);
+  box-shadow: 0 4px 0 var(--charcoal);
+  border-radius: 14px;
+  background: #fff;
+}
+.blueprint-card strong {
+  display: block;
+  margin-bottom: 6px;
+}
+.bk3-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+.bk3-actions button {
+  padding: 10px 18px;
+  border: 2px solid var(--charcoal);
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.bk3-actions .primary {
+  margin-left: auto;
+  color: #fff;
+  background: var(--purple);
+  border-color: var(--purple);
+}
+
+@media (max-width: 760px) {
+  .bk3-page {
+    width: min(100% - 18px, 1440px);
+  }
+  .bk3-progress {
+    grid-template-columns: 1fr;
+  }
+  .revealed-menu {
+    grid-template-columns: 1fr;
+  }
+  .bk3-heading-row {
+    display: grid;
+  }
+  .bk3-status {
+    text-align: left;
+  }
+  .blueprint-grid {
+    grid-template-columns: 1fr;
+  }
+  .measurement-note {
+    display: none;
+  }
+  .ruler {
+    left: 1%;
+    transform: scale(0.82);
+    transform-origin: top left;
+  }
+  .lane-label.a,
+  .drop-line.a,
+  .ball.a {
+    left: 45%;
+  }
+  .lane-label.b,
+  .drop-line.b,
+  .ball.b {
+    left: 76%;
+  }
+  .surface.a {
+    left: 31%;
+  }
+  .surface.b {
+    left: 62%;
+  }
+}
+
+.blueprint-message {
+  position: relative;
+  margin-top: 20px;
+  color: var(--charcoal);
+  font-weight: 800;
+}
+.blueprint-message.blueprint-warning::before {
+  content: "YOU STILL NEED TO SELECT";
+
+  position: absolute;
+  top: -16px;
+  left: 18px;
+
+  padding: 4px 12px;
+
+  background: var(--orange);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+
+  color: var(--paper);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.blueprint-message.blueprint-success::before {
+  content: "✅ SUCCESS!";
+
+  position: absolute;
+  top: -16px;
+  left: 18px;
+
+  padding: 4px 12px;
+
+  background: var(--green);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+
+  color: var(--charcoal);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.independent-card {
+  border-top: 4px solid var(--yellow);
+}
+.dependent-card {
+  border-top: 4px solid var(--purple);
+}
+.control-card {
+  border-top: 4px solid var(--green);
+}
+</style>

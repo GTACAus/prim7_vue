@@ -122,7 +122,7 @@ function showBlockedLanguageFeedback(input) {
 export function useClassroomLanguageFilter() {
   if (!loadPromise) loadPromise = load()
 
-  return { ready, loading, containsProfanity, showBlockedLanguageFeedback }
+  return { ready, loading, containsProfanity, showBlockedLanguageFeedback, getValidStudentInput }
 }
 
 /* ---------- for the plain scripts that are not components yet ---------- */
