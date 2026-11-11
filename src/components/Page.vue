@@ -72,8 +72,32 @@ const progress = reactive({
   unlockedIndex: 0,
   showEverything: false,
   completed: [],
+  scrollY: 0,
   ...saved.page,
 });
+
+// Only record the position once scrolling stops, so we don't write to localStorage on every scroll event.
+let scrollTimer = null;
+function rememberScroll() {
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(
+    () => (progress.scrollY = Math.round(window.scrollY)),
+    300,
+  );
+}
+
+function restoreScroll() {
+  window.scrollTo({ top: progress.scrollY });
+}
+
+async function scrollProgressOnMounted() {
+  history.scrollRestoration = "manual"; // stop the browser's own restore from fighting ours
+  await nextTick();
+  // Wait for images to load, otherwise the page is too short to scroll that far yet.
+  if (document.readyState === "complete") restoreScroll();
+  else window.addEventListener("load", restoreScroll, { once: true });
+  window.addEventListener("scroll", rememberScroll, { passive: true });
+}
 
 if (saved.page || saved.sections) emit("restore", saved);
 
@@ -232,10 +256,15 @@ provide("pageSections", props.sections);
 watchEffect(() => {
   if (typeof document !== "undefined") document.title = props.title;
 });
-onMounted(() => document.addEventListener("click", handleTeacherClick, true));
+onMounted(() => {
+  scrollProgressOnMounted();
+  document.addEventListener("click", handleTeacherClick, true);
+});
 onUnmounted(() => {
   clearTimeout(teacherTimer);
+  clearTimeout(scrollTimer);
   document.removeEventListener("click", handleTeacherClick, true);
+  window.removeEventListener("scroll", rememberScroll);
 });
 defineExpose({
   teacherJump,

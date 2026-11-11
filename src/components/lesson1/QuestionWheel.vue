@@ -8,13 +8,11 @@
 
   Completion is reactive once two different starters have been saved.
 */
+
 import { computed, nextTick, onBeforeUnmount, reactive, ref } from "vue";
 import Activity from "../activities/Activity.vue";
 import Button from "../Button.vue";
-import { useClassroomLanguageFilter } from "../../composables/useClassroomLanguageFilter.js";
-
-const { ready, loading, containsProfanity, showBlockedLanguageFeedback } =
-  useClassroomLanguageFilter();
+import StudentEntry from "../StudentEntry.vue";
 
 /* One entry per segment of the wheel. destination = the wheel angle (deg) that
    brings that segment under the pointer. */
@@ -52,13 +50,14 @@ const structures = [
 const SPIN_MS = 3250;
 const START_TEXT = "Your question structures will appear here.";
 const RESET_TEXT = "Spin the wheel to generate a question starter.";
+const WHEEL_IS_SPINNING_TEXT = "The wheel is spinning...";
+const WHEEL_START_TEXT =
+  "Spin the wheel to receive a <strong>question</strong> structure.";
 
 const rotation = ref(0);
 const spinning = ref(false);
 const instant = ref(false); // switch the wheel's transition off while it jumps back to 0
-const result = ref(
-  "Spin the wheel to receive a <strong>question</strong> structure.",
-);
+const result = ref(WHEEL_START_TEXT);
 const resultColor = ref("");
 const placeholder = ref(START_TEXT);
 const cards = ref([]);
@@ -77,6 +76,9 @@ function setCardInput(id, part, el) {
 const allUsed = computed(() => usedWords.value.length === structures.length);
 const spinDisabled = computed(() => spinning.value || allUsed.value);
 
+// Saved by <Activity> and restored when the page loads.
+const state = { result, resultColor, placeholder, cards, usedWords };
+
 const wheelStyle = computed(() => ({
   transform: `rotate(${rotation.value}deg)`,
   transition: instant.value ? "none" : undefined,
@@ -86,16 +88,28 @@ const labelStyle = computed(() => ({
   transition: instant.value ? "none" : undefined,
 }));
 
+// Saved refs are already restored
+function onRestore() {
+  if (result.value === WHEEL_IS_SPINNING_TEXT) {
+    result.value = WHEEL_START_TEXT;
+    resultColor.value = "";
+  }
+  spinning.value = false;
+  rotation.value = 0;
+}
 /* ---------- cards ---------- */
 
+/* Each blank is a single-answer <StudentEntry>; answers[0] is the saved text. */
 function newPart() {
-  return { value: "", text: "", submitted: false };
+  return { answers: [] };
+}
+
+function partText(part) {
+  return part.answers[0] ?? "";
 }
 
 function hasContent(card) {
-  return Object.values(card.parts).some(
-    (part) => part.submitted || part.value.trim() !== "",
-  );
+  return Object.values(card.parts).some((part) => part.answers.length > 0);
 }
 
 function clearMessage(card) {
@@ -117,58 +131,12 @@ function addCard(structure) {
   cards.value.push(card);
 
   nextTick(() => {
-    const first = cardInputs.get(`${card.id}:changed`);
-    first?.focus();
-    first?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  });
-}
-
-/* Enter or leaving the box submits it as an answer chip. */
-function submitPart(card, partName, event) {
-  const part = card.parts[partName];
-  const input = event.target;
-
-  if (
-    card.saved ||
-    part.submitted ||
-    !input.isConnected ||
-    part.value.trim() === ""
-  )
-    return;
-
-  const answer = part.value.trim();
-
-  // refused until the word list has loaded, and if it holds a blocked word
-  if (!ready.value) {
-    input.focus();
-    return;
-  }
-
-  if (containsProfanity(answer)) {
-    showBlockedLanguageFeedback(input);
-    part.value = "";
-    return;
-  }
-
-  part.text = answer;
-  part.submitted = true;
-  clearMessage(card);
-}
-
-function deletePart(card, partName) {
-  const part = card.parts[partName];
-  part.submitted = false;
-  part.text = "";
-  part.value = "";
-  clearMessage(card);
-
-  nextTick(() => {
-    cardInputs.get(`${card.id}:${partName}`)?.focus();
+    cardInputs.get(`${card.id}:changed`)?.focus();
   });
 }
 
 function canSave(card) {
-  return card.parts.changed.submitted && card.parts.measured.submitted;
+  return Object.values(card.parts).every((part) => part.answers.length > 0);
 }
 
 function showMessage(card, text) {
@@ -206,7 +174,7 @@ function spin() {
   if (spinning.value) return;
 
   spinning.value = true;
-  result.value = "The wheel is spinning...";
+  result.value = WHEEL_IS_SPINNING_TEXT;
 
   const chosen = structures[Math.floor(Math.random() * structures.length)];
 
@@ -272,6 +240,8 @@ defineExpose({ reset });
   <Activity
     class="testable-question-activity"
     :complete="isComplete"
+    :state="state"
+    @restore="onRestore"
     @reset="reset"
   >
     <div class="activity-heading">
@@ -352,12 +322,12 @@ defineExpose({ reset });
               <span>
                 {{ card.structure.before }}
                 <span class="submitted-variable">{{
-                  card.parts.changed.text
+                  partText(card.parts.changed)
                 }}</span
                 >{{ card.structure.between.startsWith(",") ? "" : " "
                 }}{{ card.structure.between }}
                 <span class="submitted-variable">{{
-                  card.parts.measured.text
+                  partText(card.parts.measured)
                 }}</span
                 >?
               </span>
@@ -372,60 +342,24 @@ defineExpose({ reset });
               >
               <span>{{ card.structure.before }}</span>
 
-              <span
-                v-if="card.parts.changed.submitted"
-                class="submitted-variable submitted-question-part"
-              >
-                <span class="submitted-question-part-text">{{
-                  card.parts.changed.text
-                }}</span>
-                <Button
-                  class="submitted-part-delete"
-                  :aria-label="'Delete ' + card.parts.changed.text"
-                  @click="deletePart(card, 'changed')"
-                >
-                  ×
-                </button>
-              </span>
-              <input
-                v-else
+              <StudentEntry
                 :ref="(el) => setCardInput(card.id, 'changed', el)"
-                v-model="card.parts.changed.value"
-                type="text"
-                class="question-template-input"
+                v-model:answers="card.parts.changed.answers"
+                :multiple-inputs="false"
+                input-class="question-template-input"
                 placeholder="what you will change"
-                :disabled="loading"
-                @keydown.enter.prevent="submitPart(card, 'changed', $event)"
-                @blur="submitPart(card, 'changed', $event)"
+                @update:answers="clearMessage(card)"
               />
 
               <span>{{ card.structure.between }}</span>
 
-              <span
-                v-if="card.parts.measured.submitted"
-                class="submitted-variable submitted-question-part"
-              >
-                <span class="submitted-question-part-text">{{
-                  card.parts.measured.text
-                }}</span>
-                <Button
-                  class="submitted-part-delete"
-                  :aria-label="'Delete ' + card.parts.measured.text"
-                  @click="deletePart(card, 'measured')"
-                >
-                  ×
-                </Button>
-              </span>
-              <input
-                v-else
+              <StudentEntry
                 :ref="(el) => setCardInput(card.id, 'measured', el)"
-                v-model="card.parts.measured.value"
-                type="text"
-                class="question-template-input"
+                v-model:answers="card.parts.measured.answers"
+                :multiple-inputs="false"
+                input-class="question-template-input"
                 placeholder="what you will measure"
-                :disabled="loading"
-                @keydown.enter.prevent="submitPart(card, 'measured', $event)"
-                @blur="submitPart(card, 'measured', $event)"
+                @update:answers="clearMessage(card)"
               />
 
               <span>?</span>
@@ -469,7 +403,7 @@ defineExpose({ reset });
               @click="saveCard(card)"
             >
               Save my question
-          </Button>
+            </Button>
           </div>
         </div>
       </div>
@@ -745,19 +679,15 @@ defineExpose({ reset });
 }
 
 .question-template-input {
-  width: min(190px, 100%);
-
   margin: 0;
-  padding: 8px 10px;
+  --padding: 8px 10px;
 
-  background: white;
-  border: 2px solid var(--line);
-  border-radius: 10px;
+  --border: var(--border-medium);
+  --border-radius: 10px;
 
-  color: var(--text);
+  --color: var(--text);
 
-  font-family: inherit;
-  font-size: 0.98rem;
+  --entry-font-size: 0.98rem;
 }
 
 .question-template-input:focus {
@@ -892,7 +822,6 @@ defineExpose({ reset });
   }
 
   .question-template-input {
-    width: 100%;
     margin: 4px 0;
   }
 

@@ -56,12 +56,18 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
   --animation: pop-fade-in 0.5s ease;
 
   padding: var(--padding);
+  width: var(--width, auto);
+  height: var(--height, auto);
+
+  display: var(--display, inline-block);
+
   background: var(--background);
   color: var(--color);
   border: var(--border);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   font-weight: var(--font-weight);
+  font-size: var(--font-size);
   text-decoration: none;
   cursor: pointer;
   animation: var(--animation);

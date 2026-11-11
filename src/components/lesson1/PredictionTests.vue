@@ -22,6 +22,8 @@ const isComplete = computed(
     ),
 );
 
+const state = { answers, correctEver, completion };
+
 function selectAnswer(index, value) {
   answers.value = { ...answers.value, [index]: value };
   if (value === String(props.tests[index].answer)) {
@@ -55,6 +57,7 @@ defineExpose({ reset, isComplete });
   <Activity
     class="prediction-tests-activity"
     :complete="isComplete"
+    :state="state"
     @reset="reset"
   >
     <div class="prediction-test-list">

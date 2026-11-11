@@ -10,6 +10,7 @@ import {
 } from "vue";
 
 import { modal, openModal, closeModal } from "../composables/useModal.js";
+import Button from "./Button.vue";
 
 const props = defineProps({
   label: { type: String, default: "" },
@@ -218,14 +219,12 @@ defineExpose({ open: show, close });
           <h2>{{ modalTitle }}</h2>
         </div>
 
-        <button
-          type="button"
+        <Button
           class="close-button"
           :aria-label="`Close ${modal.type}`"
           @click="close"
+          >x</Button
         >
-          ×
-        </button>
       </div>
 
       <!-- Teacher menu -->
@@ -374,15 +373,24 @@ defineExpose({ open: show, close });
 }
 
 .close-button {
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 50%;
-  background: var(--soft-orange);
-  color: var(--text);
-  font-size: 1.4rem;
-  cursor: pointer;
+  --radius: 40px;
+  --display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  --width: var(--radius);
+  --height: var(--radius);
+
+  --border-radius: 50%;
+  --background: var(--soft-orange);
+  --border: var(--border-medium);
+  --box-shadow: none;
+  --color: var(--text);
+  --font-size: 1.4rem;
+
+  --background-hover: var(--orange);
+  --background-active: var(--orange);
 }
 
 .modal-label {

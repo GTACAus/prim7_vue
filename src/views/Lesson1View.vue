@@ -117,7 +117,7 @@ const sections = [
   {
     key: "intro",
     id: "testable-question-intro",
-    title: "Make a testable question",
+    title: "Make a Testable Question",
   },
   {
     key: "flashcards",
@@ -127,7 +127,7 @@ const sections = [
   {
     key: "questions",
     id: "testable-questions",
-    title: "How do we write testable questions?",
+    title: "How do We Write Testable Questions?",
   },
   {
     key: "prediction",
@@ -137,12 +137,12 @@ const sections = [
   {
     key: "builder",
     id: "reasoned-builder",
-    title: "MAKE A REASONED PREDICTION",
+    title: "Make a Reasoned Prediction",
   },
   {
     key: "testing",
     id: "testing-predictions",
-    title: "HOW TO TEST REASONED PREDICTIONS",
+    title: "How to Test Reasoned Predictions",
   },
 ];
 </script>

@@ -4,7 +4,7 @@
 
   Completion: pass :complete so the parent Section knows when to show "Next".
 
-  Saving: pass :state – an object of the refs (or a reactive object) that
+  Saving: pass :state – an object of the refs / reactive objects that
   describe this activity's progress, e.g. :state="{ deck, piles, started }".
   Whenever any of them change, Activity calls section.save(), which calls
   page.save(), which writes the whole lesson to localStorage.
@@ -16,7 +16,7 @@
   Give the activity a `name` if its position in the section might change
   (e.g. it's inside a v-if); otherwise its index in the section is used.
 */
-import { inject, isRef, onUnmounted, watch } from "vue";
+import { inject, isReactive, isRef, onUnmounted, watch } from "vue";
 
 const props = defineProps({
   name: { type: String, default: "" },
@@ -45,11 +45,12 @@ function snapshot(state) {
   return JSON.stringify(data);
 }
 
-// Write saved data back into the state's refs / reactive fields.
+// Write saved data back into the state's refs / reactive objects / fields.
 function restore(state, data) {
   for (const [field, value] of Object.entries(data)) {
     if (!(field in state)) continue;
     if (isRef(state[field])) state[field].value = value;
+    else if (isReactive(state[field])) Object.assign(state[field], value);
     else state[field] = value;
   }
 }

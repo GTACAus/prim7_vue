@@ -73,13 +73,26 @@ const entries = reactive({
   reason: { draft: "", saved: "" },
 });
 const choices = computed(() => causeOptions.value[causeType.value] || []);
-watch(causeType, () => {
+
+// Saved by <Activity> and restored when the page loads. The context from
+// another activity (props.context / setContext) isn't saved here: that
+// activity restores itself and passes it back in.
+const state = {
+  changeSelection,
+  measureSelection,
+  causeType,
+  selectedCause,
+  selectedEffect,
+  entries,
+};
+
+// Only when the student picks a different relationship type (not a watcher,
+// so restoring causeType doesn't wipe the restored cause and conditions).
+function changeCauseType() {
   selectedCause.value = "";
-  entries.conditionOne.draft = "";
-  entries.conditionOne.saved = "";
-  entries.conditionTwo.draft = "";
-  entries.conditionTwo.saved = "";
-});
+  clearEntry("conditionOne");
+  clearEntry("conditionTwo");
+}
 function submitEntry(name) {
   const entry = entries[name];
   const value = entry.draft.trim();
@@ -182,7 +195,7 @@ defineExpose({ reset, setContext, isComplete });
 </script>
 
 <template>
-  <Activity :tag="tag" :complete="isComplete" @reset="reset">
+  <Activity :tag="tag" :complete="isComplete" :state="state" @reset="reset">
     <!-- anything that sits above the organiser, e.g. a heading -->
     <slot name="before" />
 
@@ -274,7 +287,11 @@ defineExpose({ reset, setContext, isComplete });
           <div class="prediction-organiser-cell">
             <label class="cell-sublabel">Cause</label>
             <div class="relationship-area">
-              <select v-model="causeType" class="prediction-select">
+              <select
+                v-model="causeType"
+                class="prediction-select"
+                @change="changeCauseType"
+              >
                 <option value="">Choose a relationship type</option>
                 <option value="increase-decrease">Increase / decrease</option>
                 <option value="with-without">With / without</option>
