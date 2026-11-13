@@ -9,7 +9,6 @@ import BallPairChoice from "../components/lesson2/BallPairChoice.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 import VariableSort from "../components/activities/VariableSort.vue";
 import FairTestBuilder from "../components/lesson2/FairTestBuilder.vue";
-import ContentBox from "../components/ContentBox.vue";
 
 // Options passed to the activity components
 const sortVariablesOneActivityOptions = {
