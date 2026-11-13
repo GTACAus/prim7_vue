@@ -1,5 +1,6 @@
 <script setup>
-import Button from './Button.vue';
+import Button from "./Button.vue";
+import ContentBox from "./ContentBox.vue";
 /*
   Lesson introduction: label, title, summary, worksheet download and an
   optional objectives / "think like a scientist" grid.
@@ -17,16 +18,16 @@ import Button from './Button.vue';
   the heading and the grid, observation = right-hand grid card.
 */
 defineProps({
-  label: { type: String, default: '' },
-  title: { type: String, default: '' },
+  label: { type: String, default: "" },
+  title: { type: String, default: "" },
   // URL of the worksheet PDF; omit for no download button
-  worksheet: { type: String, default: '' },
+  worksheet: { type: String, default: "" },
   // extra class on the header, e.g. lesson3-intro
-  introClass: { type: String, default: '' },
+  introClass: { type: String, default: "" },
   // learning objective (HTML) and success criteria (array of HTML strings)
-  objective: { type: String, default: '' },
+  objective: { type: String, default: "" },
   criteria: { type: Array, default: () => [] },
-})
+});
 </script>
 
 <template>
@@ -42,12 +43,24 @@ defineProps({
       <p class="lesson-summary"><slot /></p>
 
       <div v-if="$slots.actions" class="intro-actions">
-        <Button v-if="worksheet" class="worksheet-button" :href="worksheet" download symbol="📄">
+        <Button
+          v-if="worksheet"
+          class="worksheet-button"
+          :href="worksheet"
+          download
+          symbol="📄"
+        >
           Download worksheet
         </Button>
         <slot name="actions" />
       </div>
-      <Button v-else-if="worksheet" class="worksheet-button" :href="worksheet" download symbol="📄">
+      <Button
+        v-else-if="worksheet"
+        class="worksheet-button"
+        :href="worksheet"
+        download
+        symbol="📄"
+      >
         Download worksheet
       </Button>
     </div>
@@ -55,7 +68,7 @@ defineProps({
     <slot name="mission" />
 
     <div v-if="objective || $slots.observation" class="intro-grid">
-      <section v-if="objective" class="intro-card objectives-card">
+      <ContentBox v-if="objective" class="intro-card objectives-card">
         <p class="intro-eyebrow">Learning objective</p>
         <p class="learning-objective-text" v-html="objective"></p>
 
@@ -63,12 +76,12 @@ defineProps({
         <ol class="objective-list">
           <li v-for="(item, i) in criteria" :key="i" v-html="item"></li>
         </ol>
-      </section>
+      </ContentBox>
 
-      <section v-if="$slots.observation" class="intro-card observation-card">
+      <ContentBox v-if="$slots.observation" class="intro-card observation-card">
         <p class="intro-eyebrow">Think like a scientist</p>
         <slot name="observation" />
-      </section>
+      </ContentBox>
     </div>
   </header>
 </template>
@@ -90,7 +103,6 @@ defineProps({
 .lesson-intro {
   position: relative;
 
-  margin-bottom: 34px;
   padding-top: 40px;
 }
 
@@ -149,18 +161,11 @@ defineProps({
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
-  margin-bottom: 24px;
 }
 
 .intro-card {
   position: relative;
-  padding: 26px;
-
   background: var(--paper);
-  border: 3px solid var(--charcoal);
-  border-radius: 24px;
-
-  box-shadow: var(--shadow-small);
 }
 
 .intro-card::before {

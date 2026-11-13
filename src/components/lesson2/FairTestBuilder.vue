@@ -10,228 +10,313 @@
   the list up to date after that). Complete once checked with nothing
   missing. The choices are saved through <Activity :state>.
 */
-import { computed, reactive, ref } from 'vue'
-import Activity from '../activities/Activity.vue'
+import { computed, reactive, ref } from "vue";
+import Activity from "../activities/Activity.vue";
+import Button from "../Button.vue";
 
 const variableConfig = {
   size: {
-    label: 'Ball size',
+    label: "Ball size",
     changeOptions: [
-      { value: 'small-large', label: 'Small ball vs large ball', pair: ['small', 'large'] },
-      { value: 'large-small', label: 'Large ball vs small ball', pair: ['large', 'small'] },
-    ],
-    controlOptions: [{ value: 'large', label: 'Large ball' }, { value: 'small', label: 'Small ball' }],
-  },
-  material: {
-    label: 'Ball material',
-    changeOptions: [
-      { value: 'basketball-pingpong', label: 'Rubber vs plastic', pair: ['basketball', 'pingpong'] },
-      { value: 'basketball-tennis', label: 'Rubber vs furry', pair: ['basketball', 'tennis'] },
-      { value: 'tennis-pingpong', label: 'Furry vs plastic', pair: ['tennis', 'pingpong'] },
+      {
+        value: "small-large",
+        label: "Small ball vs large ball",
+        pair: ["small", "large"],
+      },
+      {
+        value: "large-small",
+        label: "Large ball vs small ball",
+        pair: ["large", "small"],
+      },
     ],
     controlOptions: [
-      { value: 'basketball', label: 'Rubber' },
-      { value: 'pingpong', label: 'Plastic' },
-      { value: 'tennis', label: 'Furry' },
+      { value: "large", label: "Large ball" },
+      { value: "small", label: "Small ball" },
+    ],
+  },
+  material: {
+    label: "Ball material",
+    changeOptions: [
+      {
+        value: "basketball-pingpong",
+        label: "Rubber vs plastic",
+        pair: ["basketball", "pingpong"],
+      },
+      {
+        value: "basketball-tennis",
+        label: "Rubber vs furry",
+        pair: ["basketball", "tennis"],
+      },
+      {
+        value: "tennis-pingpong",
+        label: "Furry vs plastic",
+        pair: ["tennis", "pingpong"],
+      },
+    ],
+    controlOptions: [
+      { value: "basketball", label: "Rubber" },
+      { value: "pingpong", label: "Plastic" },
+      { value: "tennis", label: "Furry" },
     ],
   },
   height: {
-    label: 'Drop height',
+    label: "Drop height",
     changeOptions: [
-      { value: '1-1.5', label: '1 m vs 1.5 m', pair: ['1', '1.5'] },
-      { value: '1.5-1', label: '1.5 m vs 1 m', pair: ['1.5', '1'] },
-    ],
-    controlOptions: [{ value: '1', label: '1 m' }, { value: '1.5', label: '1.5 m' }],
-  },
-  firmness: {
-    label: 'Squashiness',
-    changeOptions: [
-      { value: 'firm-soft', label: 'Firm ball vs soft ball', pair: ['firm', 'soft'] },
-      { value: 'soft-firm', label: 'Soft ball vs firm ball', pair: ['soft', 'firm'] },
-    ],
-    controlOptions: [{ value: 'firm', label: 'Firm ball' }, { value: 'soft', label: 'Soft ball' }],
-  },
-  surface: {
-    label: 'Bounce surface',
-    changeOptions: [
-      { value: 'hard-soft', label: 'Hard surface vs soft surface', pair: ['hard-surface', 'soft-surface'] },
-      { value: 'soft-hard', label: 'Soft surface vs hard surface', pair: ['soft-surface', 'hard-surface'] },
+      { value: "1-1.5", label: "1 m vs 1.5 m", pair: ["1", "1.5"] },
+      { value: "1.5-1", label: "1.5 m vs 1 m", pair: ["1.5", "1"] },
     ],
     controlOptions: [
-      { value: 'hard-surface', label: 'Hard surface' },
-      { value: 'soft-surface', label: 'Soft surface' },
+      { value: "1", label: "1 m" },
+      { value: "1.5", label: "1.5 m" },
     ],
   },
-}
+  firmness: {
+    label: "Squashiness",
+    changeOptions: [
+      {
+        value: "firm-soft",
+        label: "Firm ball vs soft ball",
+        pair: ["firm", "soft"],
+      },
+      {
+        value: "soft-firm",
+        label: "Soft ball vs firm ball",
+        pair: ["soft", "firm"],
+      },
+    ],
+    controlOptions: [
+      { value: "firm", label: "Firm ball" },
+      { value: "soft", label: "Soft ball" },
+    ],
+  },
+  surface: {
+    label: "Bounce surface",
+    changeOptions: [
+      {
+        value: "hard-soft",
+        label: "Hard surface vs soft surface",
+        pair: ["hard-surface", "soft-surface"],
+      },
+      {
+        value: "soft-hard",
+        label: "Soft surface vs hard surface",
+        pair: ["soft-surface", "hard-surface"],
+      },
+    ],
+    controlOptions: [
+      { value: "hard-surface", label: "Hard surface" },
+      { value: "soft-surface", label: "Soft surface" },
+    ],
+  },
+};
 
 const measureOutcomes = [
-  { value: 'bounceHeight', label: 'Bounce height' },
-  { value: 'bounceCount', label: 'Number of bounces' },
-  { value: 'bounceTime', label: 'Time spent bouncing' },
-]
+  { value: "bounceHeight", label: "Bounce height" },
+  { value: "bounceCount", label: "Number of bounces" },
+  { value: "bounceTime", label: "Time spent bouncing" },
+];
 const measureTools = [
-  { value: 'measuringTape', label: 'Use measuring tape' },
-  { value: 'ruler', label: 'Use ruler' },
-  { value: 'stopwatch', label: 'Use stopwatch' },
-  { value: 'count', label: 'Count the bounces' },
-  { value: 'video', label: 'Record a video' },
-  { value: 'estimate', label: 'Estimate by eye' },
-]
+  { value: "measuringTape", label: "Use measuring tape" },
+  { value: "ruler", label: "Use ruler" },
+  { value: "stopwatch", label: "Use stopwatch" },
+  { value: "count", label: "Count the bounces" },
+  { value: "video", label: "Record a video" },
+  { value: "estimate", label: "Estimate by eye" },
+];
 
 const stages = [
-  { id: 'change', label: '1. Change' },
-  { id: 'measure', label: '2. Measure' },
-  { id: 'control', label: '3. Control' },
-]
+  { id: "change", label: "1. Change" },
+  { id: "measure", label: "2. Measure" },
+  { id: "control", label: "3. Control" },
+];
 
-const variables = Object.entries(variableConfig).map(([value, config]) => ({ value, label: config.label }))
+const variables = Object.entries(variableConfig).map(([value, config]) => ({
+  value,
+  label: config.label,
+}));
 
 function initialControls() {
-  return { size: 'large', material: 'basketball', height: '1.5', firmness: 'firm', surface: 'hard-surface' }
+  return {
+    size: "large",
+    material: "basketball",
+    height: "1.5",
+    firmness: "firm",
+    surface: "hard-surface",
+  };
 }
 
 const state = reactive({
-  stage: 'change',
+  stage: "change",
   changeVariable: null,
   changeSelections: {},
   measureOutcome: null,
   measureTool: null,
   selectedControlVariable: null,
   controls: initialControls(),
-})
-const checked = ref(false) // "Check" pressed at least once
+});
+const checked = ref(false); // "Check" pressed at least once
 
 // What <Activity> saves and restores (the refs themselves, so restoring works)
-const saved = { plan: state, checked }
+const saved = { plan: state, checked };
 
-const getOptionLabel = (options, value) => options.find((option) => option.value === value)?.label || 'Not selected'
+const getOptionLabel = (options, value) =>
+  options.find((option) => option.value === value)?.label || "Not selected";
 
 /* ---------- controls ---------- */
 
-const changeConfig = computed(() => (state.changeVariable ? variableConfig[state.changeVariable] : null))
+const changeConfig = computed(() =>
+  state.changeVariable ? variableConfig[state.changeVariable] : null,
+);
 const changeSelected = computed(() =>
   changeConfig.value
-    ? state.changeSelections[state.changeVariable] || changeConfig.value.changeOptions[0].value
-    : null
-)
-const outcomeLabel = computed(() => getOptionLabel(measureOutcomes, state.measureOutcome))
-const toolLabel = computed(() => getOptionLabel(measureTools, state.measureTool))
+    ? state.changeSelections[state.changeVariable] ||
+      changeConfig.value.changeOptions[0].value
+    : null,
+);
+const outcomeLabel = computed(() =>
+  getOptionLabel(measureOutcomes, state.measureOutcome),
+);
+const toolLabel = computed(() =>
+  getOptionLabel(measureTools, state.measureTool),
+);
 const controlConfig = computed(() =>
-  state.selectedControlVariable && state.selectedControlVariable !== state.changeVariable
+  state.selectedControlVariable &&
+  state.selectedControlVariable !== state.changeVariable
     ? variableConfig[state.selectedControlVariable]
-    : null
-)
+    : null,
+);
 
 function chooseChange(value) {
-  state.changeVariable = value
-  state.selectedControlVariable = null
-  if (!state.changeSelections[value]) state.changeSelections[value] = variableConfig[value].changeOptions[0].value
+  state.changeVariable = value;
+  state.selectedControlVariable = null;
+  if (!state.changeSelections[value])
+    state.changeSelections[value] =
+      variableConfig[value].changeOptions[0].value;
 }
 
 function chooseMeasure(value) {
-  state.measureOutcome = value
-  if (!state.measureTool) state.measureTool = measureTools[0].value
+  state.measureOutcome = value;
+  if (!state.measureTool) state.measureTool = measureTools[0].value;
 }
 
 /* ---------- diagram ---------- */
 
 const experiments = computed(() => {
-  const a = { ...state.controls }
-  const b = { ...state.controls }
+  const a = { ...state.controls };
+  const b = { ...state.controls };
   if (state.changeVariable) {
-    const pair = changeConfig.value.changeOptions.find((option) => option.value === changeSelected.value).pair
-    a[state.changeVariable] = pair[0]
-    b[state.changeVariable] = pair[1]
+    const pair = changeConfig.value.changeOptions.find(
+      (option) => option.value === changeSelected.value,
+    ).pair;
+    a[state.changeVariable] = pair[0];
+    b[state.changeVariable] = pair[1];
   }
-  return { a, b }
-})
+  return { a, b };
+});
 
 function ballProps(values) {
   return {
-    class: [values.material, { soft: values.firmness === 'soft' }],
-    style: { '--size': values.size === 'small' ? '82px' : '120px', top: values.height === '1' ? '39%' : '21%' },
-  }
+    class: [values.material, { soft: values.firmness === "soft" }],
+    style: {
+      "--size": values.size === "small" ? "82px" : "120px",
+      top: values.height === "1" ? "39%" : "21%",
+    },
+  };
 }
 
-const surfaceLabel = (type) => getOptionLabel(variableConfig.surface.controlOptions, type)
+const surfaceLabel = (type) =>
+  getOptionLabel(variableConfig.surface.controlOptions, type);
 
 /* ---------- copy and blueprint ---------- */
 
 const stageCopy = computed(() => {
-  if (state.stage === 'change') {
+  if (state.stage === "change") {
     return {
-      prompt: 'Choose the one variable that will be different.',
-      status: 'After choosing a variable, its comparison menu appears underneath.',
-    }
+      prompt: "Choose the one variable that will be different.",
+      status:
+        "After choosing a variable, its comparison menu appears underneath.",
+    };
   }
-  if (state.stage === 'measure') {
+  if (state.stage === "measure") {
     return {
-      prompt: 'Choose one outcome to measure.',
-      status: 'The same measurement-method menu is available for each outcome.',
-    }
+      prompt: "Choose one outcome to measure.",
+      status: "The same measurement-method menu is available for each outcome.",
+    };
   }
   return {
-    prompt: 'Choose the settings that both experiments will share.',
+    prompt: "Choose the settings that both experiments will share.",
     status: state.changeVariable
       ? `${changeConfig.value.label} cannot be controlled because it is being changed.`
-      : 'Choose a Change variable first to disable it here.',
-  }
-})
+      : "Choose a Change variable first to disable it here.",
+  };
+});
 
 const blueprintChange = computed(() =>
   state.changeVariable
     ? `${changeConfig.value.label}: ${getOptionLabel(changeConfig.value.changeOptions, changeSelected.value)}`
-    : 'Not selected yet'
-)
+    : "Not selected yet",
+);
 const blueprintMeasure = computed(() =>
-  state.measureOutcome ? `${outcomeLabel.value}: ${toolLabel.value}` : 'Not selected yet'
-)
+  state.measureOutcome
+    ? `${outcomeLabel.value}: ${toolLabel.value}`
+    : "Not selected yet",
+);
 const blueprintControl = computed(() =>
   Object.keys(variableConfig)
     .filter((key) => key !== state.changeVariable)
-    .map((key) => `${variableConfig[key].label}: ${getOptionLabel(variableConfig[key].controlOptions, state.controls[key])}`)
-    .join('; ')
-)
+    .map(
+      (key) =>
+        `${variableConfig[key].label}: ${getOptionLabel(variableConfig[key].controlOptions, state.controls[key])}`,
+    )
+    .join("; "),
+);
 const measurementNote = computed(() =>
-  state.measureOutcome ? `${outcomeLabel.value}\n${toolLabel.value}` : 'Choose what you will measure.'
-)
+  state.measureOutcome
+    ? `${outcomeLabel.value}\n${toolLabel.value}`
+    : "Choose what you will measure.",
+);
 
 /* ---------- check and reset ---------- */
 
 const missing = computed(() => {
-  const found = []
-  if (!state.changeVariable) found.push('a Change variable')
-  if (!state.measureOutcome) found.push('a Measure outcome')
-  if (!state.measureTool) found.push('a Measurement tool')
-  if (!state.selectedControlVariable) found.push('a Control variable')
-  return found
-})
+  const found = [];
+  if (!state.changeVariable) found.push("a Change variable");
+  if (!state.measureOutcome) found.push("a Measure outcome");
+  if (!state.measureTool) found.push("a Measurement tool");
+  if (!state.selectedControlVariable) found.push("a Control variable");
+  return found;
+});
 
-const isComplete = computed(() => checked.value && missing.value.length === 0)
+const isComplete = computed(() => checked.value && missing.value.length === 0);
 
 function check() {
-  checked.value = true
+  checked.value = true;
 }
 
-const warningClass = computed(() => (missing.value.length === 0 ? 'blueprint-success' : 'blueprint-warning'))
+const warningClass = computed(() =>
+  missing.value.length === 0 ? "blueprint-success" : "blueprint-warning",
+);
 const warningStyle = computed(() =>
   missing.value.length === 0
-    ? { background: 'var(--soft-green)', borderTop: '4px solid var(--green)' }
-    : { background: 'var(--soft-orange)', borderTop: '4px solid var(--orange)' }
-)
+    ? { background: "var(--soft-green)", borderTop: "4px solid var(--green)" }
+    : {
+        background: "var(--soft-orange)",
+        borderTop: "4px solid var(--orange)",
+      },
+);
 
 function reset() {
-  state.stage = 'change'
-  state.changeVariable = null
-  state.changeSelections = {}
-  state.measureOutcome = null
-  state.measureTool = null
-  state.selectedControlVariable = null
-  state.controls = initialControls()
-  checked.value = false
+  state.stage = "change";
+  state.changeVariable = null;
+  state.changeSelections = {};
+  state.measureOutcome = null;
+  state.measureTool = null;
+  state.selectedControlVariable = null;
+  state.controls = initialControls();
+  checked.value = false;
 }
 
-defineExpose({ reset, isComplete })
+defineExpose({ reset, isComplete });
 </script>
 
 <template>
@@ -250,7 +335,9 @@ defineExpose({ reset, isComplete })
           class="bk3-progress-step"
           :class="{ active: state.stage === stage.id }"
           @click="state.stage = stage.id"
-        >{{ stage.label }}</button>
+        >
+          {{ stage.label }}
+        </button>
       </nav>
 
       <section class="bk3-top-controls" aria-label="Experiment choices">
@@ -258,28 +345,40 @@ defineExpose({ reset, isComplete })
           <template v-if="state.stage === 'change'">
             <p class="control-instruction">What will you change?</p>
             <div class="choice-buttons">
-              <button
+              <Button
                 v-for="item in variables"
                 :key="item.value"
-                type="button"
                 class="choice-button"
                 :class="{ selected: state.changeVariable === item.value }"
                 @click="chooseChange(item.value)"
-              >{{ item.label }}</button>
+              >
+                {{ item.label }}
+              </Button>
             </div>
             <div v-if="changeConfig" class="revealed-menu">
               <div class="revealed-copy">
                 <strong>{{ changeConfig.label }}</strong>
-                <span>Choose how Experiment A and Experiment B will differ.</span>
+                <span
+                  >Choose how Experiment A and Experiment B will differ.</span
+                >
               </div>
               <div class="bk3-control">
                 <label for="changePairSelect">Comparison</label>
                 <select
                   id="changePairSelect"
                   :value="changeSelected"
-                  @change="state.changeSelections[state.changeVariable] = $event.target.value"
+                  @change="
+                    state.changeSelections[state.changeVariable] =
+                      $event.target.value
+                  "
                 >
-                  <option v-for="option in changeConfig.changeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                  <option
+                    v-for="option in changeConfig.changeOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -288,14 +387,16 @@ defineExpose({ reset, isComplete })
           <template v-else-if="state.stage === 'measure'">
             <p class="control-instruction">What will you measure?</p>
             <div class="choice-buttons">
-              <button
+              <Button
                 v-for="item in measureOutcomes"
                 :key="item.value"
                 type="button"
                 class="choice-button"
                 :class="{ selected: state.measureOutcome === item.value }"
                 @click="chooseMeasure(item.value)"
-              >{{ item.label }}</button>
+              >
+                {{ item.label }}
+              </Button>
             </div>
             <div v-if="state.measureOutcome" class="revealed-menu">
               <div class="revealed-copy">
@@ -304,8 +405,18 @@ defineExpose({ reset, isComplete })
               </div>
               <div class="bk3-control">
                 <label for="measureToolSelect">Measurement method</label>
-                <select id="measureToolSelect" :value="state.measureTool" @change="state.measureTool = $event.target.value">
-                  <option v-for="option in measureTools" :key="option.value" :value="option.value">{{ option.label }}</option>
+                <select
+                  id="measureToolSelect"
+                  :value="state.measureTool"
+                  @change="state.measureTool = $event.target.value"
+                >
+                  <option
+                    v-for="option in measureTools"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -314,37 +425,58 @@ defineExpose({ reset, isComplete })
           <template v-else>
             <p class="control-instruction">What will you keep the same?</p>
             <div class="choice-buttons">
-              <button
+              <Button
                 v-for="item in variables"
                 :key="item.value"
                 type="button"
                 class="choice-button"
-                :class="{ selected: state.selectedControlVariable === item.value }"
+                :class="{
+                  selected: state.selectedControlVariable === item.value,
+                }"
                 :disabled="state.changeVariable === item.value"
                 @click="state.selectedControlVariable = item.value"
-              >{{ item.label }}</button>
+              >
+                {{ item.label }}
+              </Button>
             </div>
-            <p v-if="state.changeVariable" style="margin-top:9px;color:var(--muted);font-size:.9rem;">
-              {{ changeConfig.label }} is unavailable here because it is the variable being changed.
+            <p
+              v-if="state.changeVariable"
+              style="margin-top: 9px; color: var(--muted); font-size: 0.9rem"
+            >
+              {{ changeConfig.label }} is unavailable here because it is the
+              variable being changed.
             </p>
             <div v-if="controlConfig" class="revealed-menu control-editor">
               <div class="revealed-copy">
                 <strong>{{ controlConfig.label }}</strong>
-                <span>This setting will apply to both Experiment A and Experiment B.</span>
+                <span
+                  >This setting will apply to both Experiment A and Experiment
+                  B.</span
+                >
               </div>
               <div class="bk3-control">
                 <label for="controlValueSelect">Shared value</label>
                 <select
                   id="controlValueSelect"
                   :value="state.controls[state.selectedControlVariable]"
-                  @change="state.controls[state.selectedControlVariable] = $event.target.value"
+                  @change="
+                    state.controls[state.selectedControlVariable] =
+                      $event.target.value
+                  "
                 >
-                  <option v-for="option in controlConfig.controlOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+                  <option
+                    v-for="option in controlConfig.controlOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
                 </select>
               </div>
             </div>
             <div v-else class="control-editor control-editor-empty">
-              Select a controlled variable to choose the value that both experiments will share.
+              Select a controlled variable to choose the value that both
+              experiments will share.
             </div>
           </template>
         </div>
@@ -365,20 +497,40 @@ defineExpose({ reset, isComplete })
           <div class="lane-label b">Experiment B</div>
           <div class="drop-line a"></div>
           <div class="drop-line b"></div>
-          <div id="ballA" class="ball a" v-bind="ballProps(experiments.a)"></div>
-          <div id="ballB" class="ball b" v-bind="ballProps(experiments.b)"></div>
-          <div id="surfaceA" class="surface a" :class="experiments.a.surface"><span>{{ surfaceLabel(experiments.a.surface) }}</span></div>
-          <div id="surfaceB" class="surface b" :class="experiments.b.surface"><span>{{ surfaceLabel(experiments.b.surface) }}</span></div>
-          <div class="measurement-note" id="measurementNote">{{ measurementNote }}</div>
+          <div
+            id="ballA"
+            class="ball a"
+            v-bind="ballProps(experiments.a)"
+          ></div>
+          <div
+            id="ballB"
+            class="ball b"
+            v-bind="ballProps(experiments.b)"
+          ></div>
+          <div id="surfaceA" class="surface a" :class="experiments.a.surface">
+            <span>{{ surfaceLabel(experiments.a.surface) }}</span>
+          </div>
+          <div id="surfaceB" class="surface b" :class="experiments.b.surface">
+            <span>{{ surfaceLabel(experiments.b.surface) }}</span>
+          </div>
+          <div class="measurement-note" id="measurementNote">
+            {{ measurementNote }}
+          </div>
         </div>
       </section>
 
       <section class="bk3-blueprint">
         <h2>Fair test experiment design</h2>
         <div class="blueprint-grid">
-          <article class="blueprint-card independent-card"><strong>Change</strong><span>{{ blueprintChange }}</span></article>
-          <article class="blueprint-card dependent-card"><strong>Measure</strong><span>{{ blueprintMeasure }}</span></article>
-          <article class="blueprint-card control-card"><strong>Control</strong><span>{{ blueprintControl }}</span></article>
+          <article class="blueprint-card independent-card">
+            <strong>Change</strong><span>{{ blueprintChange }}</span>
+          </article>
+          <article class="blueprint-card dependent-card">
+            <strong>Measure</strong><span>{{ blueprintMeasure }}</span>
+          </article>
+          <article class="blueprint-card control-card">
+            <strong>Control</strong><span>{{ blueprintControl }}</span>
+          </article>
         </div>
         <div
           v-if="checked"
@@ -387,15 +539,18 @@ defineExpose({ reset, isComplete })
           :style="warningStyle"
         >
           <p v-if="!missing.length" class="success-message">
-            You have selected all required options. Your experiment blueprint is complete!
+            You have selected all required options. Your experiment blueprint is
+            complete!
           </p>
           <ul v-else>
             <li v-for="item in missing" :key="item">{{ item }}</li>
           </ul>
         </div>
         <div class="bk3-actions">
-          <button type="button" class="bk3-reset-button" @click="reset">Reset</button>
-          <button type="button" class="primary bk3-check-button" @click="check">Check fair test experiment design</button>
+          <Button :is-reset="true" @click="reset">Reset</Button>
+          <Button class="primary" @click="check"
+            >Check fair test experiment design
+          </Button>
         </div>
       </section>
     </div>
@@ -407,13 +562,6 @@ defineExpose({ reset, isComplete })
 .bk-area {
   margin-bottom: 10px;
 }
-
-button,
-select {
-  font: inherit;
-  cursor: pointer;
-}
-
 [hidden] {
   display: none !important;
 }
@@ -473,65 +621,18 @@ select {
   gap: 8px;
 }
 .choice-button {
-  min-height: 42px;
-  padding: 8px 13px;
-  border: 2px solid var(--charcoal);
-  box-shadow: 0 4px 0 var(--charcoal);
-  border-radius: 11px;
-  background: #fff;
-  font-weight: 700;
-  cursor: pointer;
-}
-.choice-button:not(:disabled):not(.selected):hover {
-  background: var(--soft-purple);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 var(--charcoal);
-}
-.choice-button.selected {
-  color: #fff;
-  background: var(--purple);
-  border-color: var(--purple);
-  transform: translateY(4px);
-  box-shadow: 0 0px 0 var(--charcoal);
-}
-.choice-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.42;
-  background: #e8ebe7;
-}
+  --padding: 8px 13px;
+  --background: #fff;
+  --color: var(--charcoal);
+  --font-weight: 700;
 
-.bk3-reset-button {
-  background: var(--orange);
-  color: var(--paper);
-  box-shadow: 0 4px 0 var(--charcoal);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
-}
-.bk3-reset-button:hover {
-  box-shadow: 0 6px 0 var(--charcoal);
-  transform: translateY(-2px);
-}
-.bk3-reset-button:active {
-  box-shadow: 0 0px 0 var(--charcoal);
-  transform: translateY(6px);
-}
+  --background-hover: var(--soft-purple);
+  --translate-amount-hover: -2px;
 
-.bk3-check-button {
-  box-shadow: 0 4px 0 var(--charcoal);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
-}
-.bk3-check-button:hover {
-  box-shadow: 0 6px 0 var(--charcoal);
-  transform: translateY(-2px);
-}
-.bk3-check-button:active {
-  box-shadow: 0 0px 0 var(--charcoal);
-  transform: translateY(6px);
+  --background-active: var(--purple);
+  --color-active: #fff;
+  --border-color-active: var(--purple);
+  --translate-amount-active: 4px;
 }
 
 .revealed-menu {
@@ -726,14 +827,48 @@ h2 {
   left: 72%;
 }
 .ball.basketball {
-  background: linear-gradient(-70deg, transparent 48%, var(--charcoal) 52.5% 53.5%, transparent 50%),
-    radial-gradient(circle at 2% 160%, transparent 56%, var(--charcoal) 57% 58%, transparent 60%),
-    radial-gradient(circle at 88% -60%, transparent 56%, var(--charcoal) 57% 58%, transparent 60%),
-    linear-gradient(20deg, transparent 46%, var(--charcoal) 49.5% 51.5%, transparent 50%), #e88d25;
+  background:
+    linear-gradient(
+      -70deg,
+      transparent 48%,
+      var(--charcoal) 52.5% 53.5%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 2% 160%,
+      transparent 56%,
+      var(--charcoal) 57% 58%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 88% -60%,
+      transparent 56%,
+      var(--charcoal) 57% 58%,
+      transparent 60%
+    ),
+    linear-gradient(
+      20deg,
+      transparent 46%,
+      var(--charcoal) 49.5% 51.5%,
+      transparent 50%
+    ),
+    #e88d25;
 }
 .ball.tennis {
-  background: radial-gradient(circle at 50% -5%, transparent 54%, #fff 55% 59%, transparent 60%),
-    radial-gradient(circle at 50% 105%, transparent 54%, #fff 55% 59%, transparent 60%), #cbe934;
+  background:
+    radial-gradient(
+      circle at 50% -5%,
+      transparent 54%,
+      #fff 55% 59%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 50% 105%,
+      transparent 54%,
+      #fff 55% 59%,
+      transparent 60%
+    ),
+    #cbe934;
 }
 .ball.pingpong {
   background: radial-gradient(circle at 32% 28%, #fff 0 12%, #f2f2f2 13% 100%);
@@ -763,7 +898,11 @@ h2 {
 }
 /* Hard testing surface */
 .surface.hard-surface {
-  background: repeating-linear-gradient(90deg, #d5a56e 0 42px, #c08d55 42px 45px);
+  background: repeating-linear-gradient(
+    90deg,
+    #d5a56e 0 42px,
+    #c08d55 42px 45px
+  );
 }
 
 /* Soft testing surface */
@@ -812,14 +951,6 @@ h2 {
   justify-content: space-between;
   gap: 10px;
   margin-top: 14px;
-}
-.bk3-actions button {
-  padding: 10px 18px;
-  border: 2px solid var(--charcoal);
-  border-radius: 10px;
-  background: #fff;
-  font-weight: 700;
-  cursor: pointer;
 }
 .bk3-actions .primary {
   margin-left: auto;

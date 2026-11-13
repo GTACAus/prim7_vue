@@ -86,6 +86,10 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
     background 0.15s ease;
 }
 
+:where(button, a) p {
+  margin: 0;
+}
+
 .delete-answer {
   --background: var(--soft-orange);
   --color: var(--text);
@@ -128,11 +132,15 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
   color: var(--color-active);
   transform: translateY(var(--translate-amount-active));
   box-shadow: var(--box-shadow-active);
+  border-color: var(--border-color-active);
 }
 
 .reset-btn {
   --background: var(--orange);
   --background-hover: var(--button-hover);
+
+  --background-active: var(--button-hover);
+  --border-color-active: var(--charcoal);
 }
 
 .bounce-symbol {

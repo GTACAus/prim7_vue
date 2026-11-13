@@ -9,6 +9,7 @@ import {
   watch,
 } from "vue";
 import Button from "./Button.vue";
+import ContentBox from "../components/ContentBox.vue";
 
 const props = defineProps({
   name: { type: String, default: "" },
@@ -98,7 +99,7 @@ defineExpose({ locked, completed, complete, reset, next, scrollTo });
 </script>
 
 <template>
-  <section
+  <ContentBox
     ref="element"
     class="section"
     :id="sectionId"
@@ -115,36 +116,10 @@ defineExpose({ locked, completed, complete, reset, next, scrollTo });
         Completed — next activity unlocked.
       </p>
     </template>
-  </section>
+  </ContentBox>
 </template>
 
 <style>
-.section {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  padding: 22px;
-  margin-bottom: 24px;
-  box-shadow: 0 8px 24px rgba(63, 70, 63, 0.07);
-  animation: pop-fade-in 0.5s ease;
-}
-
-.completed-note {
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 0.95rem;
-  display: none;
-  animation: pop-fade-in 0.5s ease;
-}
-
-.section.completed .completed-note {
-  display: block;
-}
-
-.section.completed .next-button {
-  display: none !important;
-}
-
 /* ---------- Main lesson sections ---------- */
 
 .section {
@@ -154,10 +129,8 @@ defineExpose({ locked, completed, complete, reset, next, scrollTo });
   padding: 28px;
 
   background: var(--paper);
-  border: 3px solid var(--charcoal);
-  border-radius: 26px;
 
-  box-shadow: var(--shadow-medium);
+  animation: pop-fade-in 0.5s ease;
 }
 
 .section-title {
@@ -188,6 +161,7 @@ defineExpose({ locked, completed, complete, reset, next, scrollTo });
   --background-hover: var(--purple);
 
   --background-active: var(--purple);
+  --border-color-active: var(--charcoal);
 
   margin-top: 20px;
   width: fit-content;
