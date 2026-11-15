@@ -27,7 +27,8 @@
     { selected: "selected-answer", correct: "correct-answer",
       incorrect: "incorrect-answer" }.
 
-  Slot props: MultipleChoice { reset, complete }, McQuestion { picked,
+  Slot props: MultipleChoice { reset, complete, solved (question key -> true
+  once answered right), questions (every question's key) }, McQuestion { picked,
   answered, correct }, McChoice { selected, correct }.
   @answer gets { question, value, correct } on every pick.
 
@@ -78,7 +79,7 @@ const current = computed(() =>
 );
 
 function select(question, value) {
-  const correct = value === question.answer;
+  const correct = !question.answer || value === question.answer;
   picked.value = { ...picked.value, [question.key]: value };
   if (correct) solved.value = { ...solved.value, [question.key]: true };
   emit("answer", { question: question.key, value, correct });
@@ -115,6 +116,11 @@ defineExpose({ reset, isComplete });
     :state="saved"
     @reset="reset"
   >
-    <slot :reset="reset" :complete="isComplete" />
+    <slot
+      :reset="reset"
+      :complete="isComplete"
+      :solved="solved"
+      :questions="questions.map((q) => q.key)"
+    />
   </Activity>
 </template>

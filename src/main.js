@@ -5,10 +5,11 @@ import App from "./App.vue";
 // in place for the plain scripts that still need them
 import "./composables/useClassroomLanguageFilter.js";
 
-// Each page is a view. Links between pages are plain absolute paths (e.g. /lesson4-2)
+// Each page is a view. Links between pages are plain absolute paths (e.g. /lesson4)
 // and do a full page load, so a page's global styles and scripts never leak into the next.
 // meta drives the page header in App.vue: header:false hides it, save shows
-// "Save my work" instead of Home, backHref adds the back-to-Part-A button.
+// "Save my work" instead of Home, backHref / backLabel add a button back to the
+// previous lesson.
 const routes = [
   {
     path: "/",
@@ -70,9 +71,10 @@ const routes = [
     path: "/lesson4",
     meta: {
       backHref: "/lesson3",
+      backLabel: "Lesson 3",
       stylesheets: ["/styles/lesson3_styles/lesson3.css"],
     },
-    component: () => import("./views/Lesson3_2View.vue"),
+    component: () => import("./views/Lesson4View.vue"),
   },
   {
     path: "/lesson5",
@@ -83,19 +85,20 @@ const routes = [
         "/styles/lesson4_styles/spotlight-game.css",
       ],
     },
-    component: () => import("./views/Lesson4View.vue"),
+    component: () => import("./views/Lesson5View.vue"),
   },
   {
     path: "/lesson6",
     meta: {
       backHref: "/lesson5",
+      backLabel: "Lesson 5",
       stylesheets: [
         "/styles/drag_and_drop_base.css",
         "/styles/lesson4_styles/lesson4.css",
         "/styles/lesson4_styles/number-line-activity.css",
       ],
     },
-    component: () => import("./views/Lesson4_2View.vue"),
+    component: () => import("./views/Lesson6View.vue"),
   },
   {
     path: "/lesson7",
@@ -106,11 +109,14 @@ const routes = [
         "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap",
       ],
     },
-    component: () => import("./views/Lesson5View.vue"),
+    component: () => import("./views/Lesson7View.vue"),
   },
 ];
 
-const router = createRouter({ history: createWebHistory(import.meta.env.BASE_URL), routes });
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+});
 const stylesheetLoads = new Map();
 
 function loadStylesheet(href) {

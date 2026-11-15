@@ -49,6 +49,12 @@ const groups = reactive([]);
 let activity = null;
 let ready = false;
 
+// Saved through <Activity :state> when inside a <Section>: { groupKey: [answers] }.
+// The groups register after <Activity> restores, so the restore waits for mount.
+const savedAnswers = ref({});
+const saved = { answers: savedAnswers };
+let pendingRestore = null;
+
 provide("inputResponse", {
   register: (group) => groups.push(group),
   unregister: (group) => {
@@ -125,6 +131,7 @@ watch(
     if (!ready) return;
 
     const answers = getAnswers();
+    savedAnswers.value = answers;
     if (typeof activity.options.onChange === "function")
       activity.options.onChange(answers);
     root.value?.$el.dispatchEvent(
@@ -134,6 +141,8 @@ watch(
 );
 
 onMounted(() => {
+  if (pendingRestore) restore(pendingRestore);
+
   activity = new ActivityBase(root.value?.$el, { ...props.options });
 
   Object.assign(activity, {
@@ -152,11 +161,24 @@ onBeforeUnmount(() => {
   activity = null;
 });
 
-defineExpose({ getActivity: () => activity });
+defineExpose({
+  getActivity: () => activity,
+  getAnswers,
+  reset,
+  isCorrect: () => allCorrect.value,
+  complete,
+});
 </script>
 
 <template>
-  <Activity :tag="tag" ref="root">
+  <Activity
+    :tag="tag"
+    ref="root"
+    :complete="complete"
+    :state="saved"
+    @restore="pendingRestore = $event.answers"
+    @reset="reset"
+  >
     <slot />
   </Activity>
 </template>

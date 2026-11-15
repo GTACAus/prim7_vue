@@ -10,6 +10,7 @@ const route = useRoute()
     v-if="route.meta.header !== false"
     :save="route.meta.save"
     :back-href="route.meta.backHref"
+    :back-label="route.meta.backLabel"
   />
   <RouterView />
 </template>

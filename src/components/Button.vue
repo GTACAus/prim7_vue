@@ -109,6 +109,16 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
   line-height: 1;
 }
 
+.watch-video-button {
+  --color: var(--charcoal);
+  --background: var(--soft-green);
+  --border-radius: 6px;
+  --padding: 5px;
+
+  --background-hover: var(--soft-yellow);
+  --color-hover: var(--charcoal);
+}
+
 :is(button, a):hover {
   background: var(--background-hover);
   color: var(--color-hover);

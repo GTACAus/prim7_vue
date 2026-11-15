@@ -1075,8 +1075,8 @@ function partDRenderStopAndCheckGraph() {
   ];
 
   const teacherBackLink = {
-      label: "← To Part B",
-      href: "/lesson4-2",
+      label: "← To Lesson 6",
+      href: "/lesson6",
   };
 
   document.addEventListener("DOMContentLoaded", function() {

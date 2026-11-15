@@ -1416,8 +1416,8 @@
   ];
 
   const teacherBackLink = {
-      label: "← Back to Part A",
-      href: "/lesson4",
+      label: "← Back to Lesson 5",
+      href: "/lesson5",
   };
 
   document.addEventListener("DOMContentLoaded", function() {

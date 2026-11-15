@@ -1,9 +1,20 @@
 <script setup>
-import ButtonReveal from './activities/ButtonReveal.vue';
+/*
+  "Stop and think" box: a question (#content) and an answer (#answer) shown
+  once the button is pressed. Exposes `pressed` so the page can show more
+  once it has been checked (<StopAndCheck ref="check"> ... v-if="check?.pressed").
+*/
+import { computed, ref } from "vue";
+import ButtonReveal from "./activities/ButtonReveal.vue";
+
+const reveal = ref(null);
+const pressed = computed(() => reveal.value?.pressed ?? false);
+
+defineExpose({ pressed });
 </script>
 
 <template>
-  <ButtonReveal class="stop-and-check" v-slot="{ pressed, press }">
+  <ButtonReveal ref="reveal" class="stop-and-check" v-slot="{ pressed, press }">
     <div class="stop-and-check-content">
       <slot name="content" />
       <p>Click the button below to check your answer.</p>

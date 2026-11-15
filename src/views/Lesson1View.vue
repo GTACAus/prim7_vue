@@ -9,6 +9,7 @@ import PredictionTable from "../components/activities/PredictionTable.vue";
 import LessonIntro from "../components/LessonIntro.vue";
 
 import { openVideo } from "../composables/useModal.js";
+import { downloadLessonPDF } from "../composables/usePrintLesson.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -534,14 +535,13 @@ const sections = [
           </ol>
         </div>
         <PredictionTests :tests="predictionTests" />
-        <button
-          type="button"
+        <Button
           class="save-work-button general-button"
-          onclick="downloadLessonPDF()"
+          symbol="💾"
+          @click="downloadLessonPDF"
         >
-          <p class="bounce-symbol">💾</p>
           <p>Save my work</p>
-        </button>
+        </Button>
       </Section>
     </template>
   </Page>

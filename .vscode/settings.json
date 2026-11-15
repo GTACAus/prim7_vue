@@ -6,6 +6,7 @@
         "useVsCodeApi": true,
         "command": "multiCommand.startAndPreview"
       },
+      {"name": "▶ Start Server", "command": "npm run dev" },
       {
         "name": "■ Stop Server",
         "useVsCodeApi": true,

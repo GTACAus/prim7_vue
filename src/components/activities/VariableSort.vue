@@ -16,6 +16,8 @@
   - options: { independent: [...], dependent: [...], controlled: [...] } -
     any tile in a role's list is valid for it (open). Controlled can't be
     chosen until independent and dependent are both done.
+  - tiles: the tile names in the order to show them (default: the names in
+    answers / options, in that order - which puts the answers first).
   - prompts / messages: override the built-in text (see DEFAULT_* below).
 
   Tiles are the variables named in answers / options ("ball-size" shows as
@@ -101,6 +103,7 @@ const messages = computed(() => ({
 }));
 
 const tiles = computed(() => {
+  if (props.options.tiles) return props.options.tiles;
   if (open.value) return [...new Set(Object.values(open.value).flat())];
   if (fixed.value) {
     const { independent, dependent, controlled } = fixed.value;

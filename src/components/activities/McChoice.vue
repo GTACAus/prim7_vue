@@ -19,11 +19,13 @@ const mc = inject("multipleChoice");
 const question = inject("mcQuestion");
 
 const selected = computed(() => mc.picked.value[question.key] === props.value);
-const correct = computed(() => props.value === question.answer);
+// with no answer on the question, every choice is right
+const correct = computed(() => !question.answer || props.value === question.answer);
 
 const stateClass = computed(() => {
   if (!selected.value) return null;
   const c = mc.classNames.value;
+  if (!question.answer) return c.selected;
   return [c.selected, correct.value ? c.correct : c.incorrect];
 });
 </script>

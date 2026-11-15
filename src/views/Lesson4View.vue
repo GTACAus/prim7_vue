@@ -1,1519 +1,1260 @@
 <template>
-    <!-- Shared glossary modal: opened by common_functions.js -->
-    <Modal label="Lesson 4 &middot; Bar Graphs" :glossary="glossary" pdf-label="Project Possum resource" note="Jumping between activities changes navigation only. Reset student view clears every answer on this page." />
+  <!-- ==================================================
+       VOCABULARY MODAL
+       Placeholder definitions can be refined later.
+       ================================================== -->
+  <Modal
+    label="Lesson 4: Using a Table to Record Data for a Fair Test"
+    :glossary="glossary"
+    note="Jumping between activities changes navigation only. Reset student view clears every answer on this page."
+  />
 
-
-    <!-- Shared PDF modal: uses the same openModal('pdf')/closeModal behaviour as Lesson 3. -->
-
-    <!-- ==================================================
+  <!-- ==================================================
        HIDDEN TEACHER MENU
        Opened by clicking the lesson title five times.
        ================================================== -->
 
-    <main class="page lesson4-page">
-      <LessonIntro label="Lesson 4 &middot; Part A" title="Using Bar Graphs to Visualise Data" worksheet="../worksheets/l4-worksheet.pdf">
-    Bar graphs help scientists turn fair-test data into a visual comparison, making <strong>patterns</strong> and <strong>differences between categories</strong> easier to see.
+  <main class="page lesson3-page">
+    <LessonIntro
+      label="Lesson 4"
+      title="Using a Table to Record Data for a Fair Test"
+      intro-class="lesson3-intro"
+      worksheet="../worksheets/l3b-worksheet.pdf"
+    >
+      Practice what you have learned by doing a ball bounce experiment
+    </LessonIntro>
 
-    <template #actions>
-      <button type="button" class="general-button project-resource-button bar-data-resource-button" onclick="openModal('pdf', { src: '../images/lesson4/types-of-graphs.png', title: 'Types of Data' })" > <span class="bounce-symbol" aria-hidden="true">📄</span> <span>Types of Data</span> </button>
-    </template>
-  </LessonIntro>
+    <section
+      class="intro-card objectives-card objectives-card-wide practice-plan-card"
+    >
+      <p class="intro-eyebrow">Put it into practice</p>
 
-      <div class="intro-grid">
-        <section class="intro-card objectives-card">
-          <p class="intro-eyebrow">Learning objective</p>
+      <h2>Practice what you have learned by doing a ball-bounce experiment</h2>
 
-          <p class="learning-objective-text">
-            We are learning how to represent <strong>fair test data</strong> in a <strong>bar graph</strong>.
-          </p>
-
-          <p class="success-heading">Success criteria</p>
-
-          <ol class="objective-list">
-            <li>I am learning how to <strong>collect and visualise data</strong>.</li>
-            <li>I can <strong>label axes</strong> and <strong>plot data points</strong> as bars on a bar graph.</li>
-            <li>I can use a bar graph to <strong>analyse the results of a fair test</strong>.</li>
-          </ol>
-        </section>
-
-        <section class="intro-card observation-card">
-          <p class="intro-eyebrow">Think like a scientist</p>
-          <h2>Constructing a bar graph</h2>
-          <!-- <p>How to construct a <strong>bar graph</strong> to represent fair test data:</p> -->
-
-          <div class="formula-card">
-            <div class="formula-step">
-              <div class="formula-step-number" id="formula-step-independent">1</div>
-              <div>
-                <strong>On the horizontal x-axis:</strong>
-                <ul>
-                  <li>The categories or groups you are changing or comparing.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="formula-step">
-              <div class="formula-step-number" id="formula-step-dependent">2</div>
-              <div>
-                <strong>On the vertical y-axis:</strong>
-                <ul>
-                  <li>The dependent variable - the thing you measure.</li>
-                  <li>If the test is repeated, use the average value.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="formula-step">
-              <div class="formula-step-number" id="formula-step-units">3</div>
-              <div>
-                <strong>Draw a bar for each category</strong>
-                <ul>
-                  <li>The height of the bar shows the y-axis value for each group or category.</li>
-                  <li>Keep every bar the same width.</li>
-                  <!-- <li>Leave the same amount of space between each bar.</li> -->
-                </ul>
-              </div>
-            </div>
-
-            <div class="formula-step">
-              <div class="formula-step-number">4</div>
-              <div>
-                <strong>Give your graph a title</strong>
-                <ul>
-                  <li>The title explains what your fair test is investigating.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      
-      <section id="bar-data-preamble" class="section bar-data-preamble" aria-labelledby="barDataPreambleTitle">
-        <p class="intro-eyebrow">Using bar graphs</p>
-        <h2 id="barDataPreambleTitle">Visualising Fair Test Data</h2>
-        <div class="diagram-activity bar-data-intro-row">
-          <p>
-            Scientists use a <strong>bar graph</strong> when they want to visualise
-            <strong>discrete data</strong> or <strong>categorical data</strong>.
-          </p>
-        </div>
-
-        <!-- Full-width Canva visual placeholder using existing shared lesson elements only. 
-          <div class="image-box">
-            <img
-              src="../../images/lesson4/types-of-graphs.png"
-              alt="Visual comparison of numerical and categorical data"
-            />
-          </div> -->
-        <div class="graph-checklist-container">
-          <div class="wheel-question-checklist bar-example-checklist" aria-label="What to look for in the example bar graphs">
-            <h5>Look at the following 3 bar graphs</h5>
-            <p>Each shows the results of a fair test. As you look, check that each graph has:</p>
-            <label class="check-item">
-              <input type="checkbox" aria-label="Check for a clear graph title" />
-              <span>
-                <strong>A clear title</strong>
-                <small>Explains what the fair test is investigating.</small>
-              </span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" aria-label="Check for an x-axis label and units" />
-              <span>
-                <strong>An x-axis label and units</strong>
-                <small>Shows the categories or groups being compared.</small>
-              </span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" aria-label="Check for a y-axis label and units" />
-              <span>
-                <strong>A y-axis label and units</strong>
-                <small>Shows what was measured or counted.</small>
-              </span>
-            </label>
-          </div>
-          <div class="intro-card bar-example-image-card">
-            <div class="image-box">
-              <img
-                src="../images/lesson4/blank_bar_graph.png"
-                alt="Blank bar graph template showing the parts of a bar graph"
-              />
-            </div>
-          </div>
-          
-        </div>
-
-        <!-- Existing intro-grid/intro-card components give us two responsive columns without new CSS. -->
-        <div class="intro-card bar-example-image-card">
-
-            <div class="image-box">
-              <img
-                src="../images/lesson4/bar_graph_example_1.png"
-                alt="Example of a completed bar graph"
-              />
-            </div>
-
-            <div class="image-box">
-              <img
-                src="../images/lesson4/bar_graph_example_2.png"
-                alt="Example of a completed bar graph"
-              />
-            </div>
-
-          </div>
-
-      <button class="next-button general-button" onclick="unlockSection('bar-practice', 'bar-data-preamble')">
-        Next
-      </button>
-      <p class="completed-note">Completed — next activity unlocked.</p>
-      </section>
-
-        <!-- ==================================================
-             BAR GRAPH STUDENT CHALLENGE
-             ================================================== -->
-        <Section id="bar-practice" title="Part A: A Fair Test to Compare Two Forest Sites" next-id="bar-construction" next-button-id="collectingVisualisingNext" locked hide-next class="student-challenge">
-
-          <div class="project-possum-flow">
-            <article class="project-step-card">
-              <div class="project-step-heading">
-                <span class="project-step-number">1</span>
-                <div>
-                  <h3>Project Possum</h3>
-                    <!-- <p><strong>Your mission:</strong> Conduct a fair test to compare animals living in two forest sites</p> -->
-                </div>
-              </div>
-
-              <p class="diagram-activity project-mission-copy">
-                Your mission: You work for Parks Victoria as a ranger in the Toolangi State Forest.
-                You are working with an environmental group called <i>Friends of the Leadbeater's Possum</i>.
-                <strong>You will set up a fair test to carry out a survey of 5 animals living in two forest areas:
-                Site 1 and Site 2</strong>.
-                A survey the year before recorded a family of Leadbeater's Possums living at each site.
-              </p>
-
-              <div class="project-species-layout">
-                <div class="project-species-copy">
-                  <p class="project-species-lead">
-                    Leadbeater's Possums live in forests in Victoria, Australia.
-                    They are listed as <strong>critically endangered</strong>.
-                    Conservation groups are trying to help them to survive.
-                    To do this they investigate where and how they live.
-                  </p>
-
-                  <div class="project-learn-block">
-                    <h4>Learn more about Leadbeater's Possum</h4>
-                    <p>Open the Leadbeater's possum flyer to find out more about where they live and how they behave.</p>
-                    <button
-                      type="button"
-                      class="general-button project-resource-button"
-                      onclick="openModal('pdf', { src: '../downloads/lesson4/leadbeaters-possum-flyer.pdf', title: 'Meet the Leadbeater\'s Possum' })"
-                    >
-                      <span class="bounce-symbol" aria-hidden="true">📄</span>
-                      <span>Open Leadbeater's Flyer</span>
-                    </button>
-                  </div>
-
-                </div>
-
-                <aside class="project-species-portrait" aria-label="Leadbeater's Possum">
-                  <span class="project-status-chip">Critically endangered</span>
-                  <img src="../images/lesson4/leadbeaters_possum_1.png" alt="Leadbeater's Possum" />
-                  <strong>Leadbeater's Possum</strong>
-                  <small>Species that Project Possum wants to protect</small>
-                </aside>
-              
-              </div>
-
-            </article>
-
-            <article class="project-step-card">
-              <div class="project-step-heading">
-                <span class="project-step-number">2</span>
-                <div>
-                  <h3>Compare Site 1 with Site 2</h3>
-                  <p>List any differences you can see</p>
-                </div>
-              </div>
-
-              <!-- Site 1 is designed to contain more Leadbeater's Possums than Site 2. Do not reveal that result before students collect the evidence. -->
-              <div class="project-site-rail" aria-label="Two-site Project Possum investigation">
-                <div class="project-site-card current">
-                  <div class="project-site-copy">
-                    <h4>Site 1</h4>
-                  </div>
-                  <div class="project-site-image" role="img" aria-label="Placeholder for a daytime image of Site 1">
-                    <img src="../images/lesson4/site_1_day.png" alt="Site 1" />
-                  </div>
-                </div>
-
-                <div class="project-site-arrow" aria-hidden="true">→</div>
-
-                <div class="project-site-card future">
-                  <div class="project-site-copy">
-                    <h4>Site 2</h4>
-                  </div>
-                  <div class="project-site-image" role="img" aria-label="Placeholder for a daytime image of Site 2">
-                    <img src="../images/lesson4/site_2_day.png" alt="Site 2" />
-                  </div>
-                </div>
-              </div>
-
-              <div class="project-question-grid">
-                <div class="project-question-card">
-                  <h4>Testable question</h4>
-                  <p><strong>Does a change in the understory affect the number of Leadbeater’s possums in the forest?</strong></p>
-                  <!-- <p class="project-prompt-note">Collect the evidence from both sites before deciding what it shows.</p> -->
-                </div>
-
-                <div class="project-question-card">
-                  <h4>Reasoned prediction</h4>
-                  <p><strong>When there is more understory the number of Leadbeaters possums will increase.</strong></p>
-                  <!-- <p class="project-prompt-note">You will return to this prediction after both site surveys are complete.</p> -->
-                </div>
-              </div>
-            </article>
-
-            <article class="project-step-card">
-              <div class="project-step-heading">
-                <span class="project-step-number">3</span>
-                <div>
-                  <h3>Plan Your Fair Test</h3>
-                  <!-- <p>You will conduct a survey at two different sites in the Toolangi forest.</p> -->
-                </div>
-              </div>
-
-              <div class="variable-type-grid" aria-label="Variables in the Site 1 and Site 2 fair test">
-                <article class="variable-type-card independent">
-                  <p class="intro-eyebrow">Change</p>
-                  <h3>Independent variable</h3>
-                  <p>Compare numbers of 5 different animals at Site 1 and Site 2.</p>
-                </article>
-
-                <article class="variable-type-card dependent">
-                  <p class="intro-eyebrow">Measure</p>
-                  <h3>Dependent variable</h3>
-                  <p>Measure the number of each animal.</p>
-                </article>
-
-                <article class="variable-type-card controlled">
-                  <p class="intro-eyebrow">Keep the same</p>
-                  <h3>Controlled variables</h3>
-                  <ul>
-                    <li>
-                      Controlled size: Each site is the size of the Melbourne Cricket Ground.
-                      This is the size of the territory of a family of Leadbeater's possums.
-                    </li>
-                    <li>
-                      Controlled time: You will count animals between 7pm and 9pm at night.
-                    </li>
-                    <li>
-                      Controlled equipment: You will use the same equipment to count the animals.
-                    </li>
-                    <li>
-                      Controlled people: You will have the same team carry out the count at each site.
-                    </li>
-                  </ul>
-                </article>
-              </div>
-
-              <div class="diagram-activity lesson4-spaced-block">
-                <p>
-                  You start by training your team to recognise these 5 animals at night:
-                  <!-- Between 9pm and 10pm at night, use a spotlight to count the number of each animal in your area. -->
-                </p>
-              </div>
-
-              <div class="project-animal-grid" aria-label="Animals to count at Site 1">
-                <div class="project-animal-card">
-                  <div class="project-animal-picture">
-                    <img src="../images/lesson4/leadbeaters_possum_1.png" alt="" />
-                  </div>
-                  <strong>Leadbeater's Possum</strong>
-                </div>
-
-                <div class="project-animal-card">
-                  <div class="project-animal-picture">
-                    <img src="../images/lesson4/YBGlider_2.png" alt="" />
-                  </div>
-                  <strong>Yellow-bellied Glider</strong>
-                </div>
-
-                <div class="project-animal-card">
-                  <div class="project-animal-picture">
-                    <img src="../images/lesson4/ringtail_1.png" alt="" />
-                  </div>
-                  <strong>Ringtail Possum</strong>
-                </div>
-
-                <div class="project-animal-card">
-                  <div class="project-animal-picture">
-                    <img src="../images/lesson4/powerful_owl_1.png" alt="" />
-                  </div>
-                  <strong>Powerful Owl</strong>
-                </div>
-
-                <div class="project-animal-card">
-                  <div class="project-animal-picture">
-                    <img src="../images/lesson4/male_deer_1.png" alt="" />
-                  </div>
-                  <strong>Feral deer</strong>
-                </div>
-              </div>
-
-              <div class="project-survey-tip">
-                <strong>Remember:</strong> Zero is still data. If you do not observe one of the target animals, record <strong>0</strong>.
-              </div>
-            </article>
-          </div>
+      <div class="practice-plan">
+        <div class="yeast-results-step-heading practice-plan-step">
+          <span>STEP 1</span>
 
           <div>
-            <div class="project-spotlight-intro">
-              <span class="project-step-number">4</span>
-              <div>
-                <h3>Spotlighting activity - Survey Site 1</h3>
-                <p>Wait until night, then use the spotlight to find animals. Click on animals as you see them. Use the "Check my count" button
-                  to see if you have counted all the animals. If not, keep searching.
-                </p>
-              </div>
-              <span class="project-site-one-badge">Site 1</span>
+            <h3>Plan a fair test</h3>
+          </div>
+        </div>
+
+        <div class="yeast-results-step-heading practice-plan-step">
+          <span>STEP 2</span>
+
+          <div>
+            <h3>Collect results into a table</h3>
+          </div>
+        </div>
+
+        <div class="yeast-results-step-heading practice-plan-step">
+          <span>STEP 3</span>
+
+          <div>
+            <h3>Use the results to check your prediction</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="intro-grid">
+      <section class="intro-card observation-card">
+        <p class="intro-eyebrow">Think like a scientist</p>
+        <h2>The Fair-Test Formula</h2>
+
+        <p>
+          A <strong>fair test</strong> experiment helps us to find out if
+          changing one thing causes a measureable effect in another thing.
+        </p>
+
+        <div class="formula-card">
+          <div class="formula-step">
+            <div id="formula-step-independent" class="formula-step-number">
+              1
             </div>
+            <div>
+              <strong>Change one factor</strong>
+              <span>Choose the independent variable.</span>
+            </div>
+          </div>
 
-              <div class="challenge-spotlight-game noselect" data-progress-reset>
-                <div class="wrap">
-                  <div class="stage" id="stage">
-                    <img id="photoDay" class="" src="../images/lesson4/habitat_day.png" alt="Day Time Habitat">
-                    <img id="photo" class="" src="../images/lesson4/habitat_night.png" alt="Night Time Habitat">
-                    <div class="animal-layer" id="animalLayer">
-                      <!-- Powerful Owl (1) -->
-                      <button type="button" class="animal-hotspot" data-animal="Powerful Owl" style="left: 76%; top: 18%; width: 5%;" aria-label="Powerful Owl">
-                        <img src="../images/lesson4/powerful_owl_1.png" alt="Powerful Owl">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
+          <div class="formula-step">
+            <div id="formula-step-dependent" class="formula-step-number">2</div>
+            <div>
+              <strong>Measure the effect this causes</strong>
+              <span>Measure the dependent variable.</span>
+            </div>
+          </div>
 
-                      <!-- Leadbeater's Possum (5) -->
-                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 55%; top: 10%; width: 7%;" aria-label="Leadbeater's Possum">
-                        <img src="../images/lesson4/leadbeaters_possum_1.png" alt="Leadbeater's Possum" style="transform: scaleX(-1)">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 50.5%; top: 14%; width: 4%;" aria-label="Leadbeater's Possum">
-                        <img src="../images/lesson4/leadbeaters_possum_2.png" alt="Leadbeater's Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 20%; top: 16%; width: 6.5%;" aria-label="Leadbeater's Possum">
-                        <img src="../images/lesson4/leadbeaters_possum_3.png" alt="Leadbeater's Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 26%; top: 14%; width: 4.5%;" aria-label="Leadbeater's Possum">
-                        <img src="../images/lesson4/leadbeaters_possum_4.png" alt="Leadbeater's Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 43%; top: 28%; width: 6%; transform: rotate(-90deg);" aria-label="Leadbeater's Possum">
-                        <img src="../images/lesson4/leadbeaters_possum_5.png" alt="Leadbeater's Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
+          <div class="formula-step">
+            <div id="formula-step-units" class="formula-step-number">3</div>
+            <div>
+              <strong>Keep everything else the same</strong>
+              <span>Control all other variables.</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                      <!-- Yellow Bellied Glider (2) -->
-                      <button type="button" class="animal-hotspot" data-animal="Yellow Bellied Glider" style="left: 12%; top: 11%; width: 7%;" aria-label="Yellow Bellied Glider">
-                        <img src="../images/lesson4/YBGlider_2.png" alt="Yellow Bellied Glider" style="transform: scaleX(-1)">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Yellow Bellied Glider" style="left: 4%; top: 25%; width: 7%;" aria-label="Yellow Bellied Glider">
-                        <img src="../images/lesson4/YBGlider_3.png" alt="Yellow Bellied Glider">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
+      <section class="intro-card observation-card">
+        <p class="intro-eyebrow">Think like a scientist</p>
+        <h2>Scientific Table Formula</h2>
 
-                      <!-- Ringtail Possum (3) -->
-                      <button type="button" class="animal-hotspot" data-animal="Ringtail Possum" style="left: 84%; top: 40%; width: 5%; transform: scaleX(-1);" aria-label="Ringtail Possum">
-                        <img src="../images/lesson4/ringtail_1.png" alt="Ringtail Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Ringtail Possum" style="left: 78%; top: 33%; width: 8%;" aria-label="Ringtail Possum">
-                        <img src="../images/lesson4/ringtail_2.png" alt="Ringtail Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="animal-hotspot" data-animal="Ringtail Possum" style="left: 83%; top: 0%; width: 6%; transform: scaleX(-1);" aria-label="Ringtail Possum">
-                        <img src="../images/lesson4/ringtail_3.png" alt="Ringtail Possum">
-                        <span class="animal-overlay" aria-hidden="true"></span>
-                      </button>
-                    </div>
-                    <div class="glow" id="glow"></div>
-                    <div class="moon-light"></div>
-                    <!-- <div class="vignette"></div> -->
-                    <div class="night-prompt" id="nightPrompt" data-activity>
-                      <button type="button" class="general-button" id="waitForNightButton" data-button-trigger>🌙 Wait until night</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="animal-counter-panel pop-in" id="animalCounterPanel" aria-label="Count the hidden animals" data-progress-reset></div>
+        <p>
+          When scientists carry out fair tests, they use tables to record
+          <strong>data</strong>. This helps them to see patterns, trends, and
+          relationships in the <strong>data</strong>.
+        </p>
 
-              <div class="reset-button-container">
-                <button type="button" class="general-button" id="checkAnimalCountButton" style="display: none;">Check my count</button>
-              </div>
-
-              <div class="challenge-feedback" id="animalCountFeedback" role="status" aria-live="polite">
-                <strong>Use the torch to search first.</strong>
-                Set each counter to how many of that animal you found hiding in the photo.
-              </div>
-
-              <!-- Appears only after all animal counts are correct -->
-              <div
-                class="diagram-activity challenge-hidden"
-                id="visualiseCountsIntro"
-                hidden
+        <div class="formula-card">
+          <div class="formula-step">
+            <div id="formula-step-independent" class="formula-step-number">
+              1
+            </div>
+            <div>
+              <strong
+                >The independent variable and how you will change it</strong
               >
-                <span class="challenge-step-label">Visualise your data</span>
-
-                <p>
-                  Look at the counters that show how many of each animal you found.
-                  Now compare three different ways to visualise or view your data:
-                </p>
-
-                <ul>
-                  <li>
-                    Look at the counters in the circles first.
-                  </li>
-                  <li>
-                    Click <strong>Show counters stacked up</strong>.
-                  </li>
-                  <li>
-                    Click <strong>Show counters laid flat in lines</strong>.
-                  </li>
-                </ul>
-              </div>
-
-              <div class="stack-buttons-row challenge-hidden" id="stackButtonsRow" hidden>
-                <button type="button" class="general-button stack-toggle-button stack-active" id="showBarStackButton">
-                  Show Counters Stacked Up
-                </button>
-                <button type="button" class="general-button stack-toggle-button" id="showCircleStackButton">
-                  Show Counters Laid Flat in Lines
-                </button>
-              </div>
-
-              <div class="animal-stack-visual challenge-hidden" id="animalStackVisual" hidden>
-                <p class="stack-visual-title" id="stackVisualTitle">Each counter is one animal you found</p>
-                <div class="bar-stack-row" id="stackRow"></div>
-              </div>              
+              <span> This goes in the left-hand column of the table </span>
             </div>
-          
-          <div
-            class="stop-and-check"
-            id="collectingVisualisingStopAndCheck"
-            data-activity
-            hidden
-          >
+          </div>
 
+          <div class="formula-step">
+            <div id="formula-step-dependent" class="formula-step-number">2</div>
+            <div>
+              <strong
+                >The dependent variable and the measurements you make</strong
+              >
+              <span> Put in the column to the right </span>
+            </div>
+          </div>
+
+          <div class="formula-step">
+            <div id="formula-step-units" class="formula-step-number">3</div>
+            <div>
+              <strong>Repeat each test three times</strong>
+              <span>
+                Record each repeat as test 1, test 2, and test 3. This helps you
+                to spot errors should they occur
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <Section
+      id="build-your-own-table"
+      title="Complete a Scientific Table for the Ball-Bounce Experiment"
+      last
+    >
+      <!-- ==================================================
+     BALL BOUNCE EXPERIMENT SETUP
+     ================================================== -->
+
+      <div class="ball-bounce-setup">
+        <div class="lesson3-planning-heading">
+          <span>1</span>
+
+          <div>
+            <p class="lesson3-planning-eyebrow">Experiment setup</p>
+
+            <h3>Look at the ball-bounce experiment</h3>
+          </div>
+        </div>
+
+        <p class="lesson3-planning-instruction">
+          A table tennis ball is dropped from the same height onto two different
+          surfaces. The number of bounces is counted before the ball stops.
+        </p>
+
+        <div class="ball-bounce-setup-image">
+          <img
+            src="../images/lesson3/Ball Bounce.png"
+            alt="Ball bounce experiment setup"
+          />
+        </div>
+      </div>
+
+      <!-- ==================================================
+     BALL BOUNCE VARIABLES
+     ================================================== -->
+
+      <div class="ball-bounce-variables" id="ballBounceVariables">
+        <div class="lesson3-planning-heading">
+          <span>2</span>
+
+          <div>
+            <p class="lesson3-planning-eyebrow">Variables</p>
+
+            <h3>Identify the variables in the fair test</h3>
+          </div>
+        </div>
+
+        <p class="lesson3-planning-instruction">
+          Complete the table to identify what is changed, what is measured, and
+          what needs to stay the same.
+        </p>
+
+        <div class="ball-bounce-variables-table">
+          <div class="ball-bounce-variable-row">
+            <div class="ball-bounce-variable-label">
+              <strong>Independent variable</strong>
+              <span>What is changed?</span>
+            </div>
+
+            <div class="ball-bounce-variable-answer">
+              <select id="ballBounceIndependent">
+                <option value="">Choose...</option>
+                <option value="surface">Type of surface</option>
+                <option value="bounces">Number of bounces</option>
+                <option value="ball">Type of ball</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="ball-bounce-variable-row">
+            <div class="ball-bounce-variable-label">
+              <strong>Dependent variable</strong>
+              <span>What is measured?</span>
+            </div>
+
+            <div class="ball-bounce-variable-answer">
+              <select id="ballBounceDependent">
+                <option value="">Choose...</option>
+                <option value="surface">Type of surface</option>
+                <option value="bounces">Number of bounces</option>
+                <option value="height">Drop height</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="ball-bounce-variable-row">
+            <div class="ball-bounce-variable-label">
+              <strong>Controlled variables</strong>
+              <span>What must stay the same?</span>
+            </div>
+
+            <div
+              class="ball-bounce-variable-answer ball-bounce-controlled-options"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                  value="same-ball"
+                  data-ball-control="same-ball"
+                />
+                Same table tennis ball
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  value="same-height"
+                  data-ball-control="same-height"
+                />
+                Same drop height
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  value="same-method"
+                  data-ball-control="same-method"
+                />
+                Same dropping method
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  value="same-surface"
+                  data-ball-control="same-surface"
+                />
+                Same surface
+              </label>
+            </div>
+          </div>
+        </div>
+        <div
+          id="ballBounceVariablesFeedback"
+          class="variable-feedback"
+          role="status"
+          aria-live="polite"
+          hidden
+        >
+          Choose the independent variable, dependent variable and controlled
+          variables.
+        </div>
+
+        <div class="reset-button-container">
+          <button
+            type="button"
+            id="ballBounceVariablesCheck"
+            class="general-button"
+          >
+            Check Answers
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================================================
+          PLAN THE BALL BOUNCE INVESTIGATION
+          ================================================== -->
+
+      <div
+        class="lesson3-planning-activity pop-in"
+        id="ballBouncePlanning"
+        hidden
+      >
+        <!-- ---------- TESTABLE QUESTION ---------- -->
+
+        <div class="lesson3-planning-heading">
+          <span>3</span>
+
+          <div>
+            <p class="lesson3-planning-eyebrow">Testable question</p>
+            <h3>Create your testable question</h3>
+          </div>
+        </div>
+
+        <p class="lesson3-planning-instruction">
+          Choose a question structure, then enter the
+          <strong>independent variable</strong> and
+          <strong>dependent variable</strong> for your ball-bounce experiment.
+        </p>
+
+        <InvestigationQuestion
+          name="ball-bounce-question"
+          input-type="text"
+          @change="question = $event"
+        />
+
+        <!-- ---------- REASONED PREDICTION ---------- -->
+
+        <PredictionTable
+          id="predictionTable"
+          name="ball-bounce-prediction"
+          class="pop-in"
+          data-activity-depends-on="ballBounceQuestion"
+          :context="predictionContext"
+        >
+          <template #before>
+            <div class="lesson3-planning-heading prediction-heading">
+              <span>4</span>
+              <div>
+                <p class="lesson3-planning-eyebrow">Reasoned prediction</p>
+                <h3>Make your reasoned prediction</h3>
+              </div>
+            </div>
+            <p class="lesson3-planning-instruction">
+              Use your testable question to predict what you think will happen
+              and explain why.
+            </p>
+          </template>
+        </PredictionTable>
+
+        <!-- ==================================================
+     WHY REPEAT EACH TEST? - Insertion - initially this was in the yeast section
+     ================================================== -->
+
+        <div class="repeat-tests-inline pop-in" id="repeatTestsInline" hidden>
+          <div class="repeat-tests-card">
+            <div class="repeat-tests-explanation">
+              <h3>Why repeat each test 3 times?</h3>
+
+              <p>
+                In a fair test experiment, we repeat each test
+                <strong>3 times</strong> using the same conditions.
+              </p>
+
+              <p>We do this to:</p>
+
+              <ul>
+                <li>Check for mistakes when setting up each test.</li>
+                <li>Check for errors when making measurements.</li>
+                <li>Spot any strange results.</li>
+                <li>Make the results more reliable and trustworthy.</li>
+              </ul>
+            </div>
+
+            <div class="repeat-tests-example">
+              <p class="repeat-tests-label">Example</p>
+
+              <h3>Three table tennis-ball bounce tests</h3>
+
+              <p>
+                Look at the results from three repeats of the same table
+                tennis-ball test.
+              </p>
+
+              <img
+                class="repeat-tests-image"
+                src="../images/lesson3/Repeat Tests.png"
+                alt="Diagram showing three table tennis-ball bounce tests on grass, with one unusual result"
+              />
+            </div>
+          </div>
+
+          <div id="repeatTestsStop" class="stop-and-check">
             <div class="stop-and-check-content">
               <p>
-                Which one most clearly shows the difference between numbers of each animal?
+                Look at the diagram above. A fair test was repeated 3 times to
+                see how high a table tennis ball bounces on grass.
+              </p>
+
+              <p>
+                <strong>Why is it important to repeat a test 3 times?</strong>
+              </p>
+
+              <p>
+                <strong
+                  >What would happen if you only did the first test?</strong
+                >
               </p>
             </div>
 
-            <div class="stop-and-check-answer" data-button-reveal hidden>
-              You can easily see differences between the numbers of each animal when the counters are laid out in a flat line.
-              This looks like a <strong>bar graph</strong>.
-              It is useful for comparing categories or groups.
+            <div class="stop-and-check-answer" hidden>
+              Repeating a test helps us check whether the results are consistent
+              and makes it easier to spot mistakes or unusual results. If we
+              only used one result, that result might be unusual or affected by
+              an error, so our conclusion could be misleading.
             </div>
 
-            <button type="button" class="stop-and-check-button general-button" data-button-trigger>
+            <button
+              type="button"
+              class="stop-and-check-button general-button"
+              onclick="ballBounceRepeatStopAndCheck(this)"
+            >
               <p>Check Your Answer</p>
               <p class="bounce-symbol">✅</p>
             </button>
-
-          </div>
-          <div class="reset-button-container">
-            <button type="button" class="general-button reset-btn" id="resetBarPracticeButton" data-reset-trigger>Reset</button>
-          </div>
-        </Section>
-
-      <!-- ==================================================
-           PART B - LEARN HOW TO CONSTRUCT A BAR GRAPH
-           ================================================== -->
-      <Section id="bar-construction" title="Part B: Record Data for Site 1 in a Bar Graph" next-id="bar-follow-up" next-button-id="barConstructionNext" locked hide-next>
-
-        <!-- <div class="diagram-box diagram-activity partb-intro-note">
-          <p class="activity-instruction">
-            Your team repeated the survey of animals at site 1 on three different nights. Night 1, Night 2 and Night 3. 
-            Use the button to calculate averages for each animal. 
-            Then use the average values to build a bar graph.  
-          </p>
-        </div> -->
-
-        <div class="lesson4-workbench partb-workbench" id="partBWorkbench">
-        <div class="partb-data-card">
-          <button
-            type="button"
-            style="width: 220px; color: black; background: var(--yellow); float: right;"
-            class="general-button project-resource-button bar-data-resource-button"
-            onclick="openModal('pdf', { src: '../images/lesson4/visualising-data.pdf', title: 'Visualising Fair Test Data' })"
-          >
-            <span class="bounce-symbol" aria-hidden="true">📄</span>
-            <span>How to make a bar graph</span>
-          </button>
-          <span class="challenge-step-label">Step 1 · Get the average values</span>
-          <!-- <h3>Site 1 · Three nights of spotlighting</h3> -->
-          <p>
-            Your team repeated the survey of animals at <strong>Site 1</strong> on three different nights: Night 1, Night 2 and Night 3.
-            Use the button to calculate the average for each animal, then use those average values to build your bar graph.
-          </p>
-
-          <div class="partb-table-wrap">
-            <table class="practice-table partb-data-table" aria-label="Animal counts across three spotlight survey nights at Site 1">
-              <caption>Table 1. Site 1 animal counts across three nights</caption>
-              <thead>
-                <tr>
-                  <th>Type of animal</th>
-                  <th>Night 1</th>
-                  <th>Night 2</th>
-                  <th>Night 3</th>
-                  <th>Average</th>
-                </tr>
-              </thead>
-              <tbody id="partBTableBody"></tbody>
-            </table>
-          </div>
-
-          <div class="partb-table-actions" id="partBAveragesActivity" data-activity data-reveals="#partBConstructionStage">
-            <button type="button" class="general-button" id="partBCalculateAveragesButton" data-button-trigger>Calculate averages</button>
-            <!-- <div class="challenge-feedback" id="partBTableFeedback" role="status" aria-live="polite">
-              <strong>Start with your repeated surveys.</strong>
-              Night 1 matches the animals counted in the forest activity. The graph will use the average across all three nights.
-            </div> -->
           </div>
         </div>
-
-        <div class="partb-construction-stage challenge-hidden" id="partBConstructionStage" hidden>
-          <div class="partb-construction-grid" id="partBAxisActivity" data-activity>
-            <div class="graph-control-card partb-control-panel">
-              <span class="challenge-step-label" id="partBStepLabel">Step 2 · Label the graph axes</span>
-              <!-- <h3 id="partBControlHeading">Label your graph axes</h3> -->
-              <!-- <p id="partBControlText">
-                Look at the possible labels shown here. Choose one label to drag onto the <strong>x-axis</strong>. 
-                This describes the categories or groups you are changing or comparing.
-                Then choose another label to drag onto the <strong>y-axis</strong> to show what you are measuring.
-              </p> -->
-
-              <div class="partb-label-bank" id="partBLabelBank" data-dd-tray aria-label="Bar graph axis label cards">
-                <button type="button" class="partb-axis-card" id="partBCardAnimal" data-dd-item="animal">Type of animal</button>
-                <button type="button" class="partb-axis-card" id="partBCardNumber" data-dd-item="number">Number of animals</button>
-                <button type="button" class="partb-axis-card" id="partBCardNight" data-dd-item="night">Night number</button>
-                <button type="button" class="partb-axis-card" id="partBCardTemperature" data-dd-item="temperature">Temperature</button>
-              </div>
-
-              <div class="partb-unit-check challenge-hidden" id="partBUnitCheck" data-activity data-activity-depends-on="partBAxisActivity" hidden>
-                <div data-mc-question data-mc-answer="hectare">
-                  <p><strong>Unit check:</strong> Does the 'Number of animals' axis label need a measurement unit, and if so, which one?</p>
-                  <div class="partb-unit-buttons" data-mc-choices>
-                    <button type="button" class="challenge-choice" data-mc-choice="none">No unit needed</button>
-                    <button type="button" class="challenge-choice" data-mc-choice="hectare">animals per hectare</button>
-                    <button type="button" class="challenge-choice" data-mc-choice="seconds">seconds</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="partb-builder-prompt challenge-hidden" id="partBBuilderPrompt" hidden>
-                <strong id="partBBuilderPromptTitle">Choose an animal category.</strong>
-                <span id="partBBuilderPromptText">Click one of the animal names on the x-axis to start.</span>
-              </div>
-
-              <div class="challenge-feedback" id="partBFeedback" role="status" aria-live="polite">
-                <strong>Start with the axes.</strong>
-                A bar graph needs clear labels before any bars are drawn.
-              </div>
-            </div>
-
-            <div class="graph-stage-card partb-graph-card pop-in">
-              <div class="graph-stage-heading">
-                <div>
-                  <h3>Average animal counts from spotlight surveys at Site 1</h3>
-                  <!-- <p id="partBGraphHint">First label the graph. Then you will construct each bar from its plotted point.</p> -->
-                </div>
-                <!-- <span class="graph-badge" id="partBGraphBadge">Axes</span> -->
-              </div>
-
-              <div class="graph-svg-wrap" id="partBPlotActivity" data-activity data-plot-enabled-by="partBUnitCheck">
-                <svg class="graph-svg" id="partBGraphSvg" viewBox="0 0 760 500" role="img" aria-label="Interactive bar graph of average animal counts at Site 1">
-                  <rect x="0" y="0" width="760" height="500" rx="18" fill="white"></rect>
-
-                  <g aria-hidden="true" id="partBGridLayer"></g>
-                  <line class="graph-axis" x1="120" y1="370" x2="715" y2="370"></line>
-                  <line class="graph-axis" x1="120" y1="370" x2="120" y2="35"></line>
-
-                  <g id="partBYTicksLayer"></g>
-                  <g id="partBXCategoriesLayer"></g>
-
-                  <text class="axis-label partb-final-axis-label" id="partBXAxisLabel" x="415" y="470" text-anchor="middle">Type of animal</text>
-                  <text class="axis-label partb-final-axis-label" id="partBYAxisLabel" x="32" y="205" text-anchor="middle" transform="rotate(-90 32 205)">Number of animals<tspan id="partBYAxisUnit"></tspan></text>
-
-                  <line class="partb-guide" id="partBVerticalGuide" x1="0" y1="40" x2="0" y2="370"></line>
-                  <line class="partb-guide" id="partBHorizontalGuide" x1="120" y1="0" x2="710" y2="0"></line>
-                  <g id="partBBarsLayer"></g>
-                  <g id="partBOutlinesLayer"></g>
-                  <circle class="partb-intersection-point" id="partBIntersectionPoint" cx="0" cy="0" r="8"></circle>
-                  <g id="partBValuesLayer"></g>
-                </svg>
-                <!-- HTML drop slots laid over the SVG's axis-label positions (see .axis-slot in lesson4.css) -->
-                <div class="axis-slot axis-slot-x" id="partBXAxisSlot" data-dd-slot="x" data-dd-answer="animal" aria-label="Drop the x-axis label here">x-axis label</div>
-                <div class="axis-slot axis-slot-y" id="partBYAxisSlot" data-dd-slot="y" data-dd-answer="number" aria-label="Drop the y-axis label here">y-axis label</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- <div class="challenge-complete partb-complete-note challenge-hidden" id="partBCompleteNote" hidden>
-            <strong>Bar graph constructed.</strong>
-            You have represented all five average survey values. A value of <strong>0</strong> is shown as a zero-height bar on the baseline.
-          </div> -->
-
-          <div class="partb-graph-check challenge-hidden" id="partBGraphCheck" data-activity data-select-required="4" hidden>
-            <span class="challenge-step-label">Before you analyse</span>
-            <h3>Quick bar-graph check</h3>
-            <p>The graph was built using the same construction rules for every category.</p>
-
-            <div class="partb-check-grid" aria-label="Bar graph construction checklist">
-              <label class="partb-check-item" data-select-item>
-                <input type="checkbox" />
-                <span>Every bar starts at <strong>zero</strong>.</span>
-              </label>
-              <label class="partb-check-item" data-select-item>
-                <input type="checkbox" />
-                <span>Every bar has the <strong>same width</strong>.</span>
-              </label>
-              <label class="partb-check-item" data-select-item>
-                <input type="checkbox" />
-                <span>The gaps between bars are <strong>equal</strong>.</span>
-              </label>
-              <label class="partb-check-item" data-select-item>
-                <input type="checkbox" />
-                <span>Each bar height matches the <strong>average</strong> in the table, including a zero-height bar for <strong>feral deer</strong>.</span>
-              </label>
-            </div>
-
-            <button type="button" class="general-button" id="partBStartAnalysisButton" data-select-reveal hidden>Analyse the graph</button>
-          </div>
-
-          <div class="partb-analysis-panel challenge-hidden" id="partBAnalysisPanel" data-activity data-mc-sequence data-mc-feedback-target="#partBAnalysisFeedback" hidden>
-            <span class="challenge-step-label">Step 5 · Analyse the graph</span>
-            <!-- <h3>What does your bar graph tell you?</h3> -->
-            <!-- <p>Use the finished graph to compare the average number of animals observed.</p> -->
-
-            <!-- data-mc-choice is the bar index (0-4, in the order of the graph's x-axis) for animal questions -->
-            <div class="partb-analysis-question" id="partBAnalysisQuestion1" data-mc-question data-incorrect-title="Look for the tallest bar." data-incorrect-text=" Compare the heights of all five bars, then try again." data-mc-answer="0" data-partb-analysis="highest">
-              <span class="partb-analysis-progress">Question 1 of 3</span>
-              <p class="challenge-question"><strong>Which animal was found in the highest average number?</strong></p>
-              <div class="challenge-choice-grid partb-analysis-animal-grid" data-mc-choices>
-                <button type="button" class="challenge-choice" data-mc-choice="0">Leadbeater's Possum</button>
-                <button type="button" class="challenge-choice" data-mc-choice="1">Yellow-bellied Glider</button>
-                <button type="button" class="challenge-choice" data-mc-choice="2">Ringtail Possum</button>
-                <button type="button" class="challenge-choice" data-mc-choice="3">Powerful Owl</button>
-                <button type="button" class="challenge-choice" data-mc-choice="4">Feral deer</button>
-              </div>
-            </div>
-
-            <div class="partb-analysis-question" id="partBAnalysisQuestion2" data-mc-question data-incorrect-title="Read the top of the Leadbeater's Possum bar." data-incorrect-text=" Use the y-axis scale or the value above the bar." data-mc-answer="6" data-partb-analysis="leadbeaters" hidden>
-              <span class="partb-analysis-progress">Question 2 of 3</span>
-              <p class="challenge-question"><strong>On average, how many Leadbeater's Possums were observed?</strong></p>
-              <div class="challenge-choice-grid three-choice" id="partBLeadbeatersChoices" data-mc-choices>
-                <button type="button" class="challenge-choice" data-mc-choice="5">5</button>
-                <button type="button" class="challenge-choice" data-mc-choice="6">6</button>
-                <button type="button" class="challenge-choice" data-mc-choice="7">7</button>
-              </div>
-            </div>
-
-            <div class="partb-analysis-question" id="partBAnalysisQuestion3" data-mc-question data-incorrect-title="Look for the lowest value." data-incorrect-text=" A value of 0 has a zero-height bar, so there may be no coloured bar above the baseline." data-mc-answer="4" data-partb-analysis="lowest" hidden>
-              <span class="partb-analysis-progress">Question 3 of 3</span>
-              <p class="challenge-question"><strong>Which animal was found in the lowest average number?</strong></p>
-              <div class="challenge-choice-grid partb-analysis-animal-grid" data-mc-choices>
-                <button type="button" class="challenge-choice" data-mc-choice="0">Leadbeater's Possum</button>
-                <button type="button" class="challenge-choice" data-mc-choice="1">Yellow-bellied Glider</button>
-                <button type="button" class="challenge-choice" data-mc-choice="2">Ringtail Possum</button>
-                <button type="button" class="challenge-choice" data-mc-choice="3">Powerful Owl</button>
-                <button type="button" class="challenge-choice" data-mc-choice="4">Feral deer</button>
-              </div>
-            </div>
-
-            <div class="challenge-feedback" id="partBAnalysisFeedback" role="status" aria-live="polite">
-              <strong>Read the bar heights.</strong>
-              Start by finding the tallest bar.
-            </div>
-
-            <div class="partb-baseline-summary challenge-hidden" id="partBBaselineSummary" hidden>
-              <span class="challenge-step-label">Site 1 survey complete</span>
-              <h3>These are your Site 1 results</h3>
-
-              <div class="partb-baseline-facts">
-                <div class="partb-baseline-fact"><strong>Highest average</strong><span id="partBBaselineHighest">—</span></div>
-                <div class="partb-baseline-fact"><strong>Number of Leadbeater's Possums</strong><span id="partBBaselineLeadbeaters">—</span></div>
-                <div class="partb-baseline-fact"><strong>Lowest average</strong><span id="partBBaselineLowest">—</span></div>
-                <div class="partb-baseline-fact"><strong>Number of Feral Deers</strong><span id="partBBaselineFeralDeer">—</span></div>
-              </div>
-
-              <p class="partb-story-hook">
-                <strong>Keep this result in mind.</strong> These averages describe <strong>Site 1</strong>.
-                Later, you will survey <strong>Site 2</strong> and compare its results with Site 1.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        </div>
-
-        <div class="reset-button-container">
-          <button type="button" class="general-button reset-btn" id="resetPartBConstructionButton" data-reset-trigger>Reset Part B</button>
-        </div>
-      </Section>
-
-
-      <!-- ==================================================
-           PART C - SITE 2 BAR GRAPH PRACTICE
-           Students receive the three-night Site 2 survey results and graph them.
-           ================================================== -->
-      <Section id="bar-follow-up" title="Part C : Record Data for Site 2 in a Bar Graph" next-id="bar-compare" next-button-id="barFollowUpNext" locked hide-next class="student-challenge partc-site2-workbench">
-
-        <div class="partc-story-card partc-site2-story">
-          <div class="partc-site2-story-copy">
-            <!-- <span class="challenge-step-label">Record Data for Site 2 in a Bar Graph</span> -->
-            <h3>Now investigate the second forest site</h3>
-            <p>
-              Your ranger team has surveyed <strong>Site 2</strong> over three nights. You do not need to repeat the spotlighting activity here —
-              the survey results have already been collected for you. Use the data below to build a bar graph for Site 2.
-            </p>
-          </div>
-        </div>
-
-        <div class="partc-site-image-stage" role="img" aria-label="Large image for a nighttime photograph of Site 2 without animals">
-          <div class="partc-site-image">
-            <img src="../images/lesson4/site_2_night.png" alt="Nighttime forest">
-          </div>
-        </div>
-
-        <div class="lesson4-workbench partc-workbench">
-        <div class="partc-data-card">
-          <span class="challenge-step-label">Survey Results for Site 2</span>
-          <!-- <h3>Site 2 · Three nights of surveying</h3> -->
-          <p>
-            The survey was conducted over three nights. 
-            The average results are shown in Table 2.
-            The averages have already been calculated for this activity.
-            Use the <strong>Average</strong> column when you build each bar.
-          </p>
-
-          <div class="partc-table-wrap">
-            <table class="practice-table partc-data-table" aria-label="Site 2 animal counts across three spotlight survey nights">
-              <caption>Table 2. Site 2 animal counts across three nights</caption>
-              <thead>
-                <tr>
-                  <th>Type of animal</th>
-                  <th>Night 1</th>
-                  <th>Night 2</th>
-                  <th>Night 3</th>
-                  <th>Average</th>
-                </tr>
-              </thead>
-              <tbody id="partCTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="partc-build-grid" id="partCAxisActivity" data-activity>
-          <div class="graph-control-card partc-control-card">
-            <span class="challenge-step-label" id="partCStepLabel">Step 2 · Label your graph axes</span>
-            <!-- <h3 id="partCControlHeading">Set up your Site 2 bar graph</h3> -->
-            <!-- <p id="partCControlText">
-              Use the table to decide what belongs on the x-axis and y-axis.
-              Drag the correct labels onto the graph.
-            </p> -->
-
-            <div class="partc-axis-bank" id="partCAxisBank" data-dd-tray aria-label="Axis label cards">
-              <button type="button" class="partc-axis-card" id="partCCardAnimal" data-dd-item="animal">Type of animal</button>
-              <button type="button" class="partc-axis-card" id="partCCardNumber" data-dd-item="number">Number of animals</button>
-              <button type="button" class="partc-axis-card" id="partCCardNight" data-dd-item="night">Night number</button>
-              <button type="button" class="partc-axis-card" id="partCCardAverage" data-dd-item="average">Average</button>
-            </div>
-
-            <div class="partc-unit-check challenge-hidden" id="partCUnitCheck" data-activity data-activity-depends-on="partCAxisActivity" hidden>
-              <div data-mc-question data-mc-answer="hectare">
-                <p><strong>Do these axes need a measurement unit?</strong> Check the data before the graph is revealed.</p>
-                <div class="partc-unit-buttons" data-mc-choices>
-                  <button type="button" class="challenge-choice" data-mc-choice="none">No unit needed</button>
-                  <button type="button" class="challenge-choice" data-mc-choice="hectare">animals per hectare</button>
-                  <button type="button" class="challenge-choice" data-mc-choice="seconds">seconds</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="partc-slider-stage" id="partCSliderStage" data-activity hidden>
-              <!-- <span class="partc-slider-progress">Step 3 · Build all five bars</span>
-              <h4>Use the averages to set each bar height</h4>
-              <p class="partc-slider-instruction">
-                Move each slider until its bar matches the average in the Site 2 table, then check all five bars.
-              </p> -->
-
-              <div class="bar-builder-controls partc-bar-builder-controls" id="partCBarBuilderControls">
-                <div class="bar-builder-row" data-partc-bar-row="0" data-slider-row data-slider-target="1">
-                  <label for="partCBarPractice0">Leadbeater's Possum</label>
-                  <input id="partCBarPractice0" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="0" data-slider />
-                  <!-- <output for="partCBarPractice0">0</output> -->
-                </div>
-                <div class="bar-builder-row" data-partc-bar-row="1" data-slider-row data-slider-target="1">
-                  <label for="partCBarPractice1">Yellow-bellied Glider</label>
-                  <input id="partCBarPractice1" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="1" data-slider />
-                  <!-- <output for="partCBarPractice1">0</output> -->
-                </div>
-                <div class="bar-builder-row" data-partc-bar-row="2" data-slider-row data-slider-target="4">
-                  <label for="partCBarPractice2">Ringtail Possum</label>
-                  <input id="partCBarPractice2" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="2" data-slider />
-                  <!-- <output for="partCBarPractice2">0</output> -->
-                </div>
-                <div class="bar-builder-row" data-partc-bar-row="3" data-slider-row data-slider-target="1">
-                  <label for="partCBarPractice3">Powerful Owl</label>
-                  <input id="partCBarPractice3" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="3" data-slider />
-                  <!-- <output for="partCBarPractice3">0</output> -->
-                </div>
-                <div class="bar-builder-row" data-partc-bar-row="4" data-slider-row data-slider-target="3">
-                  <label for="partCBarPractice4">Feral deer</label>
-                  <input id="partCBarPractice4" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="4" data-slider />
-                  <!-- <output for="partCBarPractice4">0</output> -->
-                </div>
-              </div>
-
-              <button type="button" class="general-button lesson4-check-button" id="checkPartCBarsButton" data-slider-check>
-                Check my bars
-              </button>
-            </div>
-
-            <!-- <div class="challenge-feedback" id="partCFeedback" role="status" aria-live="polite">
-              <strong>Use the Site 2 table.</strong>
-              The category belongs on one axis and the number counted belongs on the other.
-            </div> -->
-          </div>
-
-          <div class="graph-stage-card partc-graph-card">
-            <div class="graph-stage-heading">
-              <div>
-                <h3>Average animal counts from spotlight surveys at Site 2</h3>
-                <!-- <p id="partCGraphHint">Label the axes first. The categories and scale will appear when the graph is ready.</p> -->
-              </div>
-              <!-- <span class="graph-badge" id="partCGraphBadge">Set up</span> -->
-            </div>
-
-            <div class="graph-svg-wrap">
-              <svg class="graph-svg" id="partCGraphSvg" viewBox="0 0 760 500" role="img" aria-label="Student bar graph of average animal counts at Site 2">
-                <rect x="0" y="0" width="760" height="500" rx="18" fill="white"></rect>
-
-                <g class="partc-scaffold-layer" id="partCScaffoldLayer" aria-hidden="true">
-                  <g id="partCGridLayer"></g>
-                  <g id="partCYTicksLayer"></g>
-                  <g id="partCXCategoriesLayer"></g>
-                </g>
-
-                <line class="graph-axis" x1="120" y1="370" x2="715" y2="370"></line>
-                <line class="graph-axis" x1="120" y1="370" x2="120" y2="35"></line>
-
-                <text class="axis-label partc-final-axis-label" id="partCXAxisLabel" x="415" y="470" text-anchor="middle">Type of animal</text>
-                <text class="axis-label partc-final-axis-label" id="partCYAxisLabel" x="32" y="205" text-anchor="middle" transform="rotate(-90 32 205)">Number of animals<tspan id="partCYAxisUnit"></tspan></text>
-
-                <g id="partCBarsLayer"></g>
-                <g id="partCValuesLayer"></g>
-              </svg>
-              <!-- HTML drop slots laid over the SVG's axis-label positions (see .axis-slot in lesson4.css) -->
-              <div class="axis-slot axis-slot-x" id="partCXAxisSlot" data-dd-slot="x" data-dd-answer="animal" aria-label="Drop the x-axis label here">x-axis label</div>
-              <div class="axis-slot axis-slot-y" id="partCYAxisSlot" data-dd-slot="y" data-dd-answer="number" aria-label="Drop the y-axis label here">y-axis label</div>
-            </div>
-          </div>
-        </div>
-
-        </div>
-
-<div class="partc-analysis-panel challenge-hidden" id="partCAnalysisPanel" data-activity data-mc-sequence data-mc-feedback-target="#partCAnalysisFeedback" hidden>
-  <span class="challenge-step-label">Step 4 · Analyse your graph</span>
-
-  <h3>What does the Site 2 survey show?</h3>
-
-  <p>
-    Use the graph you constructed. The relevant bars will highlight as you answer.
-  </p>
-
-
-  <!-- QUESTION 1 -->
-  <div class="partc-analysis-question" id="partCAnalysisQuestion1" data-mc-question data-incorrect-title="Look at the Leadbeater's Possum bar." data-incorrect-text=" Read its height using the y-axis." data-mc-answer="1" data-partc-analysis="leadbeaters">
-    <span class="partc-analysis-progress">Question 1 of 3</span>
-
-    <p class="challenge-question">
-      <strong>
-        How many Leadbeater's Possums were found on average at Site 2?
-      </strong>
-    </p>
-
-    <div class="challenge-choice-grid three-choice" data-mc-choices>
-      <button type="button" class="challenge-choice" data-mc-choice="0">0 animals</button>
-      <button type="button" class="challenge-choice" data-mc-choice="1">1 animal</button>
-      <button type="button" class="challenge-choice" data-mc-choice="2">2 animals</button>
-    </div>
-  </div>
-
-
-  <!-- QUESTION 2 -->
-  <div class="partc-analysis-question" id="partCAnalysisQuestion2" data-mc-question data-incorrect-title="Look at the feral deer bar." data-incorrect-text=" Read its height using the y-axis." data-mc-answer="3" data-partc-analysis="deer" hidden>
-    <span class="partc-analysis-progress">Question 2 of 3</span>
-
-    <p class="challenge-question">
-      <strong>
-        How many feral deer were found on average at Site 2?
-      </strong>
-    </p>
-
-    <div class="challenge-choice-grid three-choice" data-mc-choices>
-      <button type="button" class="challenge-choice" data-mc-choice="2">2 animals</button>
-      <button type="button" class="challenge-choice" data-mc-choice="3">3 animals</button>
-      <button type="button" class="challenge-choice" data-mc-choice="4">4 animals</button>
-    </div>
-  </div>
-
-
-  <!-- QUESTION 3 -->
-  <div class="partc-analysis-question" id="partCAnalysisQuestion3" data-mc-question data-incorrect-title="Compare the Leadbeater's Possum results." data-incorrect-text=" Site 1 averaged 6 and Site 2 averaged 1." data-mc-answer="site1" data-partc-analysis="site" hidden>
-    <span class="partc-analysis-progress">Question 3 of 3</span>
-
-    <p class="challenge-question">
-      <strong>
-        Which site had more Leadbeater's Possums?
-      </strong>
-    </p>
-
-    <div class="challenge-choice-grid" data-mc-choices>
-      <button type="button" class="challenge-choice" data-mc-choice="site1">Site 1</button>
-      <button type="button" class="challenge-choice" data-mc-choice="site2">Site 2</button>
-    </div>
-  </div>
-
-  <!-- FEEDBACK -->
-  <div
-    class="challenge-feedback"
-    id="partCAnalysisFeedback"
-    role="status"
-    aria-live="polite"
-  >
-    <strong>Read the Leadbeater's Possum bar.</strong>
-    What average value does it reach?
-  </div>
-
-
-  <!-- COMPLETION -->
-  <div
-    class="partc-complete-card challenge-hidden"
-    id="partCCompleteCard"
-    hidden
-  >
-    <span class="challenge-step-label">Site 2 survey complete</span>
-
-    <h3>You now have results from both sites</h3>
-
-    <p class="partc-result-statement" id="partCResultStatement">
-      Leadbeater's Possums averaged <strong>6 at Site 1</strong> and <strong>1 at Site 2</strong>.
-      <strong>Site 1 had more Leadbeater's Possums.</strong>
-    </p>
-
-    <p class="partc-next-hook">
-      <strong>You have now graphed Site 1 and Site 2.</strong><br />
-      Next, you can place the two datasets together on a bar graph.
-      This will make it easier to compare data from the two sites.
-    </p>
-  </div>
-</div>
-
-        <div class="reset-button-container">
-          <button type="button" class="general-button reset-btn" id="resetPartCButton" data-reset-trigger>Reset Part C</button>
-        </div>
-      </Section>
-
-
-      <!-- ==================================================
-           PART D - ADD A SECOND DATA SET TO A BAR GRAPH
-           Compare baseline and follow-up Project Possum data.
-           ================================================== -->
-      <section class="section student-challenge partd-site-compare-workbench partd-edit-site1 locked" id="bar-compare">
-        <h2 class="section-title">Part D : Compare Site 1 and Site 2 on One Graph</h2>
-
-        <div class="partd-intro-card">
-          <div>
-            <!-- <span class="challenge-step-label">Two sites · one comparison</span> -->
-            <h3>Put Both Sites on One Graph</h3>
-            <p>
-              In a fair test, it is best to put all of your data onto one <strong>graph</strong>.
-              This is so you can easily see if the change you made caused any differences in results.
-            </p>
-            <div class="partd-compare-callout">
-              Place the data for site 1 and for site 2 on the same <strong>bar graph</strong>.
-              Each animal will have a pair of bars side by side that you can compare easily.
-            </div>
-          </div>
-        </div>
-
-        <div class="lesson4-workbench partd-workbench">
-        <div class="partd-data-card">
-          <!-- <span class="challenge-step-label">Step 1 · Bring the averages together</span> -->
-          <!-- <h3>Site 1 and Site 2 Averages</h3> -->
-          <p>Put the average results for site 1 and for site 2 in the same table.</p>
-
-          <div class="partd-table-wrap">
-            <table class="practice-table partd-data-table" aria-label="Comparison of average animal counts at Site 1 and Site 2">
-              <caption>Table 3. Comparison of average animal counts at Site 1 and Site 2</caption>
-              <thead>
-                <th style="opacity: 0; border: none;"></th>
-                <th style="background: var(--soft-blue);" colspan="2">Number of animals per hectare</th>
-                <tr>
-                  <th>Type of animal</th>
-                  <th>Site 1</th>
-                  <th>Site 2</th>
-                </tr>
-              </thead>
-              <tbody id="partDComparisonBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="graph-control-card partd-builder-card" id="partDSliders" data-activity>
-          <!-- <span class="challenge-step-label">Step 1 · Build both bars</span> -->
-          <h3>Build the bars for each animal in both sites</h3>
-          <!-- <p>
-            Build the bars for each animal for site 1 and site 2.
-          </p> -->
-
-          <div class="partd-site-switcher" id="partDSiteSwitcher" aria-label="Choose which site to edit">
-            <button type="button" class="partd-site-toggle selected" data-partd-site="site1" data-slider-set="site1" aria-pressed="true">Site 1</button>
-            <button type="button" class="partd-site-toggle" data-partd-site="site2" data-slider-set="site2" aria-pressed="false">Site 2</button>
-          </div>
-
-          <!-- <div class="partd-editing-note" id="partDEditingNote">
-            <strong>Editing Site 1.</strong> Match each slider to the Site 1 average in the table.
-          </div> -->
-
-          <div class="bar-builder-controls partd-builder-controls" id="partDBuilderControls">
-            <div class="bar-builder-row" data-partd-bar-row="0" data-slider-row data-slider-target-site1="6" data-slider-target-site2="1">
-              <label for="partDBar0">Leadbeater's Possum</label>
-              <input id="partDBar0" type="range" min="0" max="10" step="1" value="0" data-partd-bar="0" data-slider />
-              <!-- <output for="partDBar0">0</output> -->
-            </div>
-            <div class="bar-builder-row" data-partd-bar-row="1" data-slider-row data-slider-target-site1="3" data-slider-target-site2="1">
-              <label for="partDBar1">Yellow-bellied Glider</label>
-              <input id="partDBar1" type="range" min="0" max="10" step="1" value="0" data-partd-bar="1" data-slider />
-              <!-- <output for="partDBar1">0</output> -->
-            </div>
-            <div class="bar-builder-row" data-partd-bar-row="2" data-slider-row data-slider-target-site1="4" data-slider-target-site2="4">
-              <label for="partDBar2">Ringtail Possum</label>
-              <input id="partDBar2" type="range" min="0" max="10" step="1" value="0" data-partd-bar="2" data-slider />
-              <!-- <output for="partDBar2">0</output> -->
-            </div>
-            <div class="bar-builder-row" data-partd-bar-row="3" data-slider-row data-slider-target-site1="1" data-slider-target-site2="1">
-              <label for="partDBar3">Powerful Owl</label>
-              <input id="partDBar3" type="range" min="0" max="10" step="1" value="0" data-partd-bar="3" data-slider />
-              <!-- <output for="partDBar3">0</output> -->
-            </div>
-            <div class="bar-builder-row" data-partd-bar-row="4" data-slider-row data-slider-target-site1="0" data-slider-target-site2="3">
-              <label for="partDBar4">Feral deer</label>
-              <input id="partDBar4" type="range" min="0" max="10" step="1" value="0" data-partd-bar="4" data-slider />
-              <!-- <output for="partDBar4">0</output> -->
-            </div>
-          </div>
-
-          <button type="button" class="general-button lesson4-check-button" id="checkPartDBarsButton" data-slider-check>Check both sites</button>
-
-          <div class="partd-builder-complete" id="partDBuilderComplete" hidden>
-            <strong>Both sites are on the graph.</strong><br />
-            Each animal now has a Site 1 bar and a Site 2 bar, so you can compare the sites directly.
-          </div>
-
-          <!-- <div class="challenge-feedback" id="partDFeedback" role="status" aria-live="polite">
-            <strong>Start with either site.</strong>
-            Choose Site 1 or Site 2, then use the table to set its five bar heights. Switch whenever you like.
-          </div> -->
-        </div>
-
-        <div class="graph-stage-card partd-graph-card">
-          <div class="graph-stage-heading">
-            <div>
-              <h3>Average animal counts from spotlight surveys at Site 1 and Site 2</h3>
-              <!-- <p id="partDGraphHint">Editing Site 1. Move the sliders to change the Site 1 bars, then switch sites whenever you like.</p> -->
-            </div>
-            <!-- <span class="graph-badge" id="partDGraphBadge">Site 1</span> -->
-          </div>
-
-          <div class="partd-legend" aria-label="Graph key">
-            <span class="partd-legend-item"><span class="partd-swatch site1" aria-hidden="true"></span>Site 1</span>
-            <span class="partd-legend-item"><span class="partd-swatch site2" aria-hidden="true"></span>Site 2</span>
-          </div>
-
-          <div class="graph-svg-wrap">
-            <svg class="graph-svg" id="partDGraphSvg" viewBox="0 0 760 500" role="img" aria-label="Paired bar graph comparing average animal counts at Site 1 and Site 2">
-              <rect x="0" y="0" width="760" height="500" rx="18" fill="white"></rect>
-              <g id="partDGridLayer"></g>
-              <g id="partDYTicksLayer"></g>
-
-              <line class="graph-axis" x1="120" y1="370" x2="715" y2="370"></line>
-              <line class="graph-axis" x1="120" y1="370" x2="120" y2="35"></line>
-
-              <text class="axis-label" x="415" y="470" text-anchor="middle">Type of animal</text>
-              <text class="axis-label" x="32" y="205" text-anchor="middle" transform="rotate(-90 32 205)">Number of animals (animals per hectare)</text>
-
-              <g id="partDCategoriesLayer"></g>
-              <g id="partDSite1BarsLayer"></g>
-              <g id="partDSite2BarsLayer"></g>
-              <g id="partDValuesLayer"></g>
-              <g class="partd-difference-marker" id="partDDifferenceMarker" aria-hidden="true"></g>
-            </svg>
-          </div>
-        </div>
-
-        </div>
-
-        <div class="partd-analysis-panel" id="partDAnalysisPanel" data-activity data-mc-sequence data-mc-feedback-target="#partDAnalysisFeedback" hidden>
-          <span class="challenge-step-label">Analyse the bar graph</span>
-          <!-- <h3>What is easier to see now?</h3>
-          <p>Analyse your <strong>graphs</strong> and check your reasoned prediction.</p> -->
-
-          <div class="partd-analysis-question" id="partDAnalysisQuestion1" data-mc-question data-incorrect-title="Compare the two Leadbeater's Possum bars." data-incorrect-text=" Which site's bar is taller?" data-mc-answer="site1" data-partd-analysis="lead">
-            <span class="partc-analysis-progress">Question 1 of 3</span>
-            <p class="challenge-question"><strong>Which site had the higher average number of Leadbeater's Possums?</strong></p>
-            <div class="challenge-choice-grid three-choice" data-mc-choices>
-              <button type="button" class="challenge-choice" data-mc-choice="site1">Site 1</button>
-              <button type="button" class="challenge-choice" data-mc-choice="site2">Site 2</button>
-              <button type="button" class="challenge-choice" data-mc-choice="same">They were the same</button>
-            </div>
-          </div>
-
-          <div class="partd-analysis-question" id="partDAnalysisQuestion2" data-mc-question data-correct-title="Correct: the difference is 5 animals." data-correct-text=" Now scan all five pairs and look for equal-height bars." data-mc-answer="5" data-partd-analysis="difference" hidden>
-            <span class="partc-analysis-progress">Question 2 of 3</span>
-            <p class="challenge-question"><strong>What is the difference between the Site 1 and Site 2 Leadbeater's Possum averages?</strong></p>
-            <div class="challenge-choice-grid three-choice" data-mc-choices>
-              <button type="button" class="challenge-choice" data-mc-choice="4">4 animals</button>
-              <button type="button" class="challenge-choice" data-mc-choice="5">5 animals</button>
-              <button type="button" class="challenge-choice" data-mc-choice="6">6 animals</button>
-            </div>
-          </div>
-
-          <div class="partd-analysis-question" id="partDAnalysisQuestion3" data-mc-question data-incorrect-title="Look at the feral deer bars." data-incorrect-text=" Compare the Site 1 and Site 2 values for feral deer." data-mc-answer="zero-three" data-partd-analysis="same-count" hidden>
-            <span class="partc-analysis-progress">Question 3 of 3</span>
-            <p class="challenge-question"><strong>How many feral deer were found at site 1 compared to site 2?</strong></p>
-            <div class="challenge-choice-grid three-choice" data-mc-choices>
-              <button type="button" class="challenge-choice" data-mc-choice="three-zero">3 at site 1 and 0 at site 2</button>
-              <button type="button" class="challenge-choice" data-mc-choice="equal">Equal number at site 1 and site 2</button>
-              <button type="button" class="challenge-choice" data-mc-choice="zero-three">0 at site 1 and 3 at site 2</button>
-            </div>
-          </div>
-          <div class="challenge-feedback" id="partDAnalysisFeedback" role="status" aria-live="polite">
-            <strong>Start with the Leadbeater's Possum pair.</strong>
-            Which of its two bars is taller?
-          </div>
-        </div>
-
-        <div class="prediction-check" id="partDCompleteCard" data-activity hidden>
-          <p class="prediction-label">
-            Interpret the results
-          </p>
-
-          <div class="prediction-reminder">
-            <h3 class="prediction-reminder-label">
-              Reasoned prediction
-            </h3>
-
-            <p>
-              When there is more forest <strong>understory</strong> the number of Leadbeater's possums will increase.
-            </p>
-          </div>
-          <div class="prediction-final" data-mc-question data-mc-answer="supported">
-            <h3>
-              Do the results support the reasoned prediction?
-            </h3>
-
-            <div class="prediction-buttons" data-mc-choices>
-
-              <button
-                id="predictionCheckSupported"
-                type="button"
-                data-mc-choice="supported"
-                class="general-button prediction-button"
-              >
-                Supported
-              </button>
-
-              <button
-                id="predictionCheckUnsupported"
-                type="button"
-                data-mc-choice="unsupported"
-                class="general-button prediction-button"
-              >
-                Not supported
-              </button>
-            </div>
-
-            <div
-              class="challenge-feedback"
-              id="partDPredictionFeedback"
-              role="status"
-              aria-live="polite"
-              hidden
-            >
-              <strong>Look at the evidence again.</strong>
-              Compare the forest understory and Leadbeater's Possum results at the two sites.
-            </div>
-
-          </div>
-        </div>
-        <div class="stop-and-check" id="partDStopAndCheck" data-activity data-activity-depends-on="partDCompleteCard" hidden>
-          <div class="stop-and-check-content">
-            <p>
-              Look at the pictures of each forest site.
-              Then look at your bar graph showing numbers of each animal at each site.
-            </p>
-
-            <p>
-              <strong>
-                What might be causing the drop in Leadbeater's possum numbers between Site 1 and Site 2?
-              </strong>
-            </p>
-          </div>
-
-          <div class="stop-and-check-answer" id="partDMoreLess" data-activity data-button-reveal hidden>
-
-            <!--
-              TODO: this whole block is a placeholder - swap in your
-              own question wording and images. The graph above is
-              filled in automatically by JS (partDRenderStopAndCheckGraph
-              in lesson4.js) and always shows the finished comparison,
-              so leave that div empty.
-            -->
-
-            <div
-              class="graph-stage-card partd-graph-card stop-and-check-graph"
-              aria-hidden="true"
-            >
-
-              <div class="graph-stage-heading">
-                <div>
-                  <h3>Average animal counts from spotlight surveys at Site 1 and Site 2</h3>
-                </div>
-              </div>
-
-              <div class="partd-legend" aria-label="Graph key">
-                <span class="partd-legend-item">
-                  <span class="partd-swatch site1" aria-hidden="true"></span>
-                  Site 1
-                </span>
-
-                <span class="partd-legend-item">
-                  <span class="partd-swatch site2" aria-hidden="true"></span>
-                  Site 2
-                </span>
-              </div>
-
-              <div
-                class="graph-svg-wrap"
-                id="partDStopAndCheckGraph"
-              ></div>
-
-            </div>
-
-            <div class="more-less-question">
-              <div class="more-less-items">
-                <div class="more-less-item" data-mc-question data-mc-answer="less">
-                  <p class="more-less-question-text">
-                    Were the <strong>more</strong> or <strong>less</strong> Leadbeater's possums found at site 2?
-                  </p>
-                  <div class="circle-image-placeholder" role="img" aria-label="Leadbeater's possum image container">
-                    <img src="../images/lesson4/leadbeaters_possum_1.png" alt="Leadbeater's possum" />
-                  </div>
-                  <div class="more-less-buttons" data-mc-choices>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
-                  </div>
-                </div>
-
-                <div class="more-less-item" data-mc-question data-mc-answer="more">
-                  <p class="more-less-question-text">
-                    Were there <strong>more</strong> or <strong>less</strong> feral deer found at site 2?
-                  </p>
-                  <div class="circle-image-placeholder" role="img" aria-label="Feral deer image container">
-                    <img src="../images/lesson4/male_deer_1.png" alt="Feral deer" />
-                  </div>
-                  <div class="more-less-buttons" data-mc-choices>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="more-less-site-images" aria-label="Site 1 and Site 2">
-              <div class="more-less-site-card">
-                <h4>Site 1</h4>
-                <div class="more-less-site-photo" role="img" aria-label="Daytime image of Site 1">
-                  <img src="../images/lesson4/site_1_day.png" alt="Site 1" />
-                </div>
-              </div>
-
-              <div class="more-less-site-card">
-                <h4>Site 2</h4>
-                <div class="more-less-site-photo" role="img" aria-label="Daytime image of Site 2">
-                  <img src="../images/lesson4/site_2_day.png" alt="Site 2" />
-                </div>
-              </div>
-            </div>
-
-            <div class="more-less-question">
-              <div class="more-less-items">
-                <div class="more-less-item" data-mc-question data-mc-answer="less">
-                  <p class="more-less-question-text">
-                    Were there <strong>more</strong> or <strong>less</strong> plants in the undergrowth at site 2?
-                  </p>
-                  <div class="circle-image-placeholder" role="img" aria-label="Placeholder image">
-                    <img src="../images/lesson4/undergrowth.png" alt="Placeholder" />
-                  </div>
-                  <div class="more-less-buttons" data-mc-choices>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
-                  </div>
-                </div>
-
-                <div class="more-less-item" data-mc-question data-mc-answer="less">
-                  <p class="more-less-question-text">
-                    Were there <strong>more</strong> or <strong>less</strong> old hollow-bearing trees at site 2?
-                  </p>
-                  <div class="circle-image-placeholder" role="img" aria-label="Placeholder image">
-                    <img src="../images/lesson4/tree.png" alt="Placeholder" />
-                  </div>
-                  <div class="more-less-buttons" data-mc-choices>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
-                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!--
-              TODO: add downloads/lesson4/protect-leadbeaters-possum.pdf -
-              this button already points at that filename (same pattern as
-              the flyer button in Part A) but the file doesn't exist yet.
-            -->
-            <div class="project-learn-block more-less-protect-block">
-              <h4>What can we do to protect Leadbeater's Possum?
-                Open the protection guide to learn more.
-              </h4>
-              <button
-                type="button"
-                class="general-button project-resource-button"
-                onclick="openModal('pdf', { src: '../downloads/lesson4/protect-leadbeaters-possum.pdf', title: 'Protecting Leadbeater\'s Possum' })"
-              >
-                <span class="bounce-symbol" aria-hidden="true">📄</span>
-                <span>Open Protection Guide</span>
-              </button>
-            </div>
-
-          </div>
-
-          <button
-            type="button"
-            class="stop-and-check-button general-button"
-            data-button-trigger
-          >
-            <p>Check Your Answer</p>
-            <p class="bounce-symbol">✅</p>
-          </button>
-        </div>
-        <!-- <div class="partd-complete-card" id="partDCompleteCard" hidden>
-          <span class="challenge-step-label">Comparison complete</span>
-          <h3>Use the paired graph to describe the evidence</h3>
-          <p class="partd-result-statement" id="partDResultStatement"></p>
-          <p class="partd-conclusion-note">
-            <strong>Why put the two sites on one graph?</strong><br />
-            The paired bars let you compare the same animal at Site 1 and Site 2 directly, without scrolling between two separate graphs.
-          </p>
-          <p class="partd-prediction-reflection">
-            <strong>Return to your Part A prediction.</strong><br />
-            Did the evidence match which site you expected to have more Leadbeater's Possums?
-          </p>
-        </div> -->
-
-        <div class="reset-button-container">
-          <button type="button" class="general-button reset-btn" id="resetPartDButton" data-reset-trigger>Reset Part D</button>
-        </div>
-        <button
-          id="barCompareNext"
-          class="next-page-button general-button"
-          onclick="window.location.href='/lesson4-2'"
-          hidden
-        >
-          Next: Part B
-        </button>
-        <p class="completed-note">Completed — next activity unlocked.</p>
-      </section>
-
-
-      <div class="return-to-top">
-        <a class="return-to-top-button general-button" href="#">
-          <p class="bounce-symbol">↑</p>
-          <p>Return to Top</p>
-        </a>
+        <!-- ---------- OBSERVE THE EXPERIMENT ---------- -->
       </div>
-    </main>
+      <div id="ballBounceTests" class="lesson3-planning-activity pop-in" hidden>
+        <div class="lesson3-planning-heading observation-heading">
+          <span>5</span>
 
-    <!-- Shared site functions, spotlight activity, and Lesson 4 page behaviour. -->
+          <div>
+            <p class="lesson3-planning-eyebrow">Observe the experiment</p>
+            <h3>Watch the ball-bounce tests</h3>
+          </div>
+        </div>
+
+        <p class="lesson3-planning-instruction">
+          Watch both videos and record the number of bounces from each test in
+          your data table below.
+        </p>
+
+        <div class="ball-bounce-video-grid">
+          <div class="ball-bounce-video-card">
+            <p class="ball-bounce-video-label">Condition 1</p>
+            <h3>Hard surface</h3>
+            <p>Watch all three tests and record the number of bounces.</p>
+
+            <button
+              type="button"
+              class="general-button watch-video-button"
+              onclick="
+                openLesson3Video(
+                  this,
+                  '../videos/lesson3/Hard Trial 2.mp4',
+                  'Ball Bounce Experiment - Hard Surface',
+                )
+              "
+            >
+              <p class="bounce-symbol">▶</p>
+              <p>Watch</p>
+            </button>
+          </div>
+
+          <div class="ball-bounce-video-card">
+            <p class="ball-bounce-video-label">Condition 2</p>
+            <h3>Soft surface</h3>
+            <p>Watch all three tests and record the number of bounces.</p>
+
+            <button
+              type="button"
+              class="general-button watch-video-button"
+              onclick="
+                openLesson3Video(
+                  this,
+                  '../videos/lesson3/Soft Trial 2.mp4',
+                  'Ball Bounce Experiment - Soft Surface',
+                )
+              "
+            >
+              <p class="bounce-symbol">▶</p>
+              <p>Watch</p>
+            </button>
+          </div>
+        </div>
+
+        <div class="data-table-card bounce-table-card">
+          <div class="custom-table-note">
+            <p>Number boxes only accept numbers.</p>
+            <p class="custom-table-note-detail">
+              The variables in this experiment have no units, so you can leave
+              the units boxes empty.
+            </p>
+          </div>
+          <div class="experiment-table-scroll">
+            <table
+              class="experiment-table experiment-table-average custom-table"
+              aria-label="Student-built experiment table"
+            >
+              <thead>
+                <tr>
+                  <th class="independent-heading" rowspan="2">
+                    <div class="table-heading-fields">
+                      <input
+                        class="table-text-input axis-text-input lesson3-filtered-text"
+                        type="text"
+                        maxlength="50"
+                        placeholder="Independent variable"
+                        aria-label="Independent variable"
+                      />
+
+                      <input
+                        class="table-text-input table-units-input lesson3-filtered-text"
+                        type="text"
+                        maxlength="15"
+                        placeholder="Units"
+                        aria-label="Independent variable units"
+                      />
+                    </div>
+                  </th>
+
+                  <th class="dependent-heading bounce-dependent" colspan="4">
+                    <div class="table-heading-fields">
+                      <input
+                        class="table-text-input table-heading-input lesson3-filtered-text"
+                        type="text"
+                        maxlength="70"
+                        placeholder="Dependent variable"
+                        aria-label="Dependent variable"
+                      />
+
+                      <input
+                        class="table-text-input table-units-input lesson3-filtered-text"
+                        type="text"
+                        maxlength="15"
+                        placeholder="Units"
+                        aria-label="Dependent variable units"
+                      />
+                    </div>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th class="test-heading bounce-heading">
+                    <input
+                      class="table-text-input lesson3-filtered-text"
+                      type="text"
+                      maxlength="30"
+                      placeholder="Test 1"
+                      aria-label="First test heading"
+                    />
+                  </th>
+
+                  <th class="test-heading bounce-heading">
+                    <input
+                      class="table-text-input lesson3-filtered-text"
+                      type="text"
+                      maxlength="30"
+                      placeholder="Test 2"
+                      aria-label="Second test heading"
+                    />
+                  </th>
+
+                  <th class="test-heading bounce-heading">
+                    <input
+                      class="table-text-input lesson3-filtered-text"
+                      type="text"
+                      maxlength="30"
+                      placeholder="Test 3"
+                      aria-label="Third test heading"
+                    />
+                  </th>
+
+                  <th class="average-heading">Average</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-input-average-row>
+                  <th class="independent-value bounce-value">
+                    <input
+                      class="table-text-input lesson3-filtered-text"
+                      type="text"
+                      maxlength="35"
+                      placeholder="Row label"
+                      aria-label="First row label"
+                    />
+                  </th>
+                  <td>
+                    <input
+                      class="table-number-input"
+                      type="number"
+                      step="any"
+                      inputmode="decimal"
+                      aria-label="First row test 1"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="table-number-input"
+                      type="number"
+                      step="any"
+                      inputmode="decimal"
+                      aria-label="First row test 2"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="table-number-input"
+                      type="number"
+                      step="any"
+                      inputmode="decimal"
+                      aria-label="First row test 3"
+                    />
+                  </td>
+                  <td class="average-cell">
+                    <button
+                      class="average-button general-button"
+                      type="button"
+                      onclick="calculateInputAverage(this)"
+                    >
+                      Calculate
+                    </button>
+                  </td>
+                </tr>
+                <tr data-input-average-row>
+                  <th class="independent-value bounce-value">
+                    <input
+                      class="table-text-input lesson3-filtered-text"
+                      type="text"
+                      maxlength="35"
+                      placeholder="Row label"
+                      aria-label="Second row label"
+                    />
+                  </th>
+                  <td>
+                    <input
+                      class="table-number-input"
+                      type="number"
+                      step="any"
+                      inputmode="decimal"
+                      aria-label="Second row test 1"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="table-number-input"
+                      type="number"
+                      step="any"
+                      inputmode="decimal"
+                      aria-label="Second row test 2"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="table-number-input"
+                      type="number"
+                      step="any"
+                      inputmode="decimal"
+                      aria-label="Second row test 3"
+                    />
+                  </td>
+                  <td class="average-cell">
+                    <button
+                      class="average-button general-button"
+                      type="button"
+                      onclick="calculateInputAverage(this)"
+                    >
+                      Calculate
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="reset-button-container lesson3-reset-container">
+            <button
+              type="button"
+              class="general-button reset-btn"
+              onclick="resetBallBounceTable()"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+        <div
+          class="activity-feedback table-activity-feedback"
+          id="customTableFeedback"
+          hidden
+        ></div>
+
+        <MultipleChoice
+          class="prediction-check"
+          id="ballBouncePredictionCheck"
+          hidden
+          :options="ballBouncePredictionCheckOptions"
+        >
+          <p class="prediction-label">Interpret the results</p>
+
+          <h3>Use your averages to interpret the results</h3>
+
+          <div class="ball-bounce-interpretation">
+            <div class="ball-bounce-interpretation-row">
+              <span
+                >The average number of bounces on a
+                <strong>hard surface</strong> was</span
+              >
+
+              <input
+                type="number"
+                class="table-number-input result-average-input"
+                step="any"
+                inputmode="decimal"
+                aria-label="Average number of bounces on the hard surface"
+              />
+
+              <span>bounces.</span>
+            </div>
+
+            <div class="ball-bounce-interpretation-row">
+              <span
+                >The average number of bounces on a
+                <strong>soft surface</strong> was</span
+              >
+
+              <input
+                type="number"
+                class="table-number-input result-average-input"
+                step="any"
+                inputmode="decimal"
+                aria-label="Average number of bounces on the soft surface"
+              />
+
+              <span>bounces.</span>
+            </div>
+
+            <div class="ball-bounce-prediction-result" data-mc-question>
+              <strong>My reasoned prediction was</strong>
+
+              <div class="prediction-buttons" data-mc-choices>
+                <button
+                  id="ballBouncePredictionSupported"
+                  type="button"
+                  data-mc-choice="supported"
+                  class="general-button prediction-button"
+                >
+                  Supported
+                </button>
+
+                <button
+                  id="ballBouncePredictionUnsupported"
+                  type="button"
+                  data-mc-choice="unsupported"
+                  class="general-button prediction-button"
+                >
+                  Not supported
+                </button>
+              </div>
+            </div>
+          </div>
+        </MultipleChoice>
+      </div>
+      <button
+        type="button"
+        class="save-work-button general-button"
+        onclick="downloadLessonPDF()"
+      >
+        <p class="bounce-symbol">💾</p>
+        <p>Save my work</p>
+      </button>
+    </Section>
+    <!-- Lesson 4 inline video panel for data-entry videos -->
+    <div class="video-dropdown-panel" id="lesson3VideoPanel" hidden>
+      <div class="video-dropdown-header">
+        <h2 id="lesson3VideoTitle">Video guide</h2>
+
+        <button
+          type="button"
+          class="close-button"
+          onclick="closeLesson3Video()"
+          aria-label="Close video"
+        >
+          ×
+        </button>
+      </div>
+
+      <video
+        id="lesson3VideoPlayer"
+        class="video-modal-player"
+        controls
+        preload="metadata"
+      >
+        Your browser does not support video playback.
+      </video>
+    </div>
+
+    <div class="return-to-top">
+      <a class="return-to-top-button general-button" href="#">
+        <p class="bounce-symbol">↑</p>
+        <p>Return to Top</p>
+      </a>
+    </div>
+  </main>
+
+  <!-- Shared functions include section unlocking, PDF printing and the cypher-based classroom language filter. -->
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import PageHeader from '../components/PageHeader.vue'
-import Modal from '../components/Modal.vue'
-import Section from '../components/Section.vue'
-import LessonIntro from '../components/LessonIntro.vue'
+import { computed, onMounted, ref } from "vue";
+import Modal from "../components/Modal.vue";
+import Section from "../components/Section.vue";
+import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
+import MultipleChoice from "../components/activities/MultipleChoice.vue";
+import PredictionTable from "../components/activities/PredictionTable.vue";
+
+// The student's testable question fills in the prediction table's
+// change / measure.
+const question = ref({
+  structure: "",
+  firstAnswer: "",
+  secondAnswer: "",
+  text: "",
+});
+const predictionContext = computed(() => ({
+  structure: question.value.structure,
+  change: question.value.firstAnswer,
+  measure: question.value.secondAnswer,
+}));
+
+// Options passed to the activity components
+
+const ballBouncePredictionCheckOptions = {
+  classes: {
+    selected: "selected-answer",
+    correct: "mc-correct",
+    incorrect: "mc-incorrect",
+  },
+};
+import LessonIntro from "../components/LessonIntro.vue";
 
 // Terms shown in the vocabulary modal: { word: description }
 const glossary = {
-  "Graph": "A visual way of showing data so patterns, comparisons and relationships are easier to see.",
-  "X-axis": "The horizontal axis. In a fair test line graph, this often shows the independent variable — what was changed.",
-  "Y-axis": "The vertical axis. In a fair test graph, this often shows the dependent variable — what was measured.",
-  "Line graph": "A graph that uses points and lines to show how a measured value changes across ordered or continuous values.",
-  "Bar graph": "A graph that uses separate bars to compare amounts across different categories.",
-}
+  Data: "The observations or measurements you collect during an investigation. Data can be numbers (e.g. temperature, height) or descriptions (e.g. colour, texture).",
+  Units:
+    "The standard amount or portion of something that is measured, e.g. cm for length, kg for weight, minutes for time.",
+  Table: "An organised arrangement of columns and rows used to display data.",
+  "Repeat tests":
+    "The same test carried out two or more times under exactly the same conditions, to check that your results are consistent.",
+  "Independent variable":
+    "The one variable changed during a fair test experiment.",
+  "Dependent variable":
+    "The result that is observed or measured during a fair test experiment.",
+};
 
-// Original <head>/<body> resources of lesson4/lesson4.html, loaded in document order.
+// Original <head>/<body> resources of lesson3/lesson3-2.html, loaded in document order.
 const scripts = [
   { src: "../scripts/common_functions.js" },
   { src: "../scripts/lesson_progress.js", type: "module" },
-  { src: "../scripts/lesson4_scripts/lesson4_shared.js" },
-  { src: "../scripts/lesson4_scripts/spotlight_game.js" },
-  { src: "../scripts/lesson4_scripts/lesson4.js" },
-  { src: "../scripts/lesson4_scripts/lesson4_activities.js", type: "module" },
-]
+  {
+    type: "module",
+    code: String.raw`
+
+            /* ==================================================
+               VIDEO PANEL
+               ================================================== */
+
+            function openLesson3Video(button, videoSource, videoTitle) {
+                const panel = document.getElementById("lesson3VideoPanel");
+                const player = document.getElementById("lesson3VideoPlayer");
+
+                player.pause();
+                player.src = videoSource;
+                document.getElementById("lesson3VideoTitle").textContent = videoTitle || "Video guide";
+
+                button.closest(".ball-bounce-video-grid").insertAdjacentElement("afterend", panel);
+
+                panel.hidden = false;
+                player.load();
+                panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+
+            function closeLesson3Video() {
+                const player = document.getElementById("lesson3VideoPlayer");
+
+                player.pause();
+                player.removeAttribute("src");
+                player.load();
+
+                document.getElementById("lesson3VideoPanel").hidden = true;
+            }
+
+            /* ==================================================
+               BALL BOUNCE - IDENTIFY THE VARIABLES
+               ================================================== */
+
+            function initialiseBallBounceVariables() {
+                const independent = document.getElementById("ballBounceIndependent");
+                const dependent = document.getElementById("ballBounceDependent");
+                const checkButton = document.getElementById("ballBounceVariablesCheck");
+                const feedback = document.getElementById("ballBounceVariablesFeedback");
+
+                checkButton.addEventListener("click", function () {
+                    const controls = Array.from(document.querySelectorAll("[data-ball-control]:checked")).map(
+                        function (checkbox) {
+                            return checkbox.dataset.ballControl;
+                        }
+                    );
+
+                    const correct =
+                        independent.value === "surface" &&
+                        dependent.value === "bounces" &&
+                        ["same-ball", "same-height", "same-method"].every(function (control) {
+                            return controls.includes(control);
+                        }) &&
+                        !controls.includes("same-surface");
+
+                    feedback.hidden = false;
+                    feedback.className = "variable-feedback " + (correct ? "feedback-success" : "feedback-try-again");
+                    feedback.textContent = correct
+                        ? "Correct! You identified the variables in the ball-bounce fair test."
+                        : "Not quite. Check what is changed, what is measured, and what needs to stay the same.";
+
+                    if (!correct) return;
+
+                    const planning = document.getElementById("ballBouncePlanning");
+
+                    planning.hidden = false;
+                    planning.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    checkButton.disabled = true;
+                });
+            }
+
+            /* ==================================================
+               BALL BOUNCE - TESTABLE QUESTION AND REASONED PREDICTION
+               The question feeds the prediction (it is unavailable until
+               the question is complete); the "why repeat" block appears
+               once the prediction is complete.
+               ================================================== */
+
+            let ballBounceQuestion = null;
+            let ballBouncePrediction = null;
+
+            function initialiseBallBounceQuestionAndPrediction() {
+                ballBouncePrediction = getActivity("predictionTable");
+
+                const repeatTests = document.getElementById("repeatTestsInline");
+
+                document.addEventListener("activity:change", function (event) {
+                    if (event.detail.id !== "predictionTable") return;
+
+                    const wasHidden = repeatTests.hidden;
+
+                    repeatTests.hidden = !event.detail.complete;
+
+                    if (wasHidden && event.detail.complete) {
+                        repeatTests.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
+                });
+            }
+
+            /* Reveals the data table after the "why repeat" check. */
+            function ballBounceRepeatStopAndCheck(button) {
+                showStopAndCheckAnswer(button, function () {
+                    const tests = document.getElementById("ballBounceTests");
+
+                    tests.hidden = false;
+                    tests.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                });
+            }
+
+            /* ==================================================
+               BALL BOUNCE - SAVED TABLE ENTRIES
+               Every text and number box in the table (and the averages
+               below it) turns into a saved answer with a clear button.
+               The number stays on the hidden input so averages can read it.
+               ================================================== */
+
+            function initialiseTableEntries() {
+                const inputs = document.querySelectorAll(
+                    "#build-your-own-table .lesson3-filtered-text, #build-your-own-table .table-number-input"
+                );
+
+                inputs.forEach(function (input) {
+                    const isNumber = input.type === "number";
+
+                    const control = document.createElement("div");
+                    control.className = "table-entry-control" + (isNumber ? " table-number-control" : "");
+
+                    const inputRow = document.createElement("div");
+                    inputRow.className = "table-entry-input-row";
+
+                    const answerBox = document.createElement("div");
+                    answerBox.className = "table-entry-answer" + (isNumber ? " table-number-answer" : "");
+                    answerBox.setAttribute("aria-live", "polite");
+
+                    input.parentElement.insertBefore(control, input);
+                    control.appendChild(inputRow);
+                    inputRow.appendChild(input);
+                    control.appendChild(answerBox);
+
+                    function saveEntry() {
+                        let value;
+
+                        if (isNumber) {
+                            value = input.value.trim();
+
+                            if (value === "") return;
+
+                            if (!Number.isFinite(Number(value))) {
+                                input.focus();
+                                return;
+                            }
+                        } else {
+                            value = getValidStudentInput(input);
+
+                            if (value === null) return;
+                        }
+
+                        const answerText = document.createElement("span");
+                        answerText.className = "table-entry-answer-text";
+                        answerText.textContent = value;
+
+                        const deleteButton = createDeleteAnswerButton("Clear " + value, function () {
+                            answerBox.classList.remove("visible");
+                            answerBox.innerHTML = "";
+                            inputRow.style.display = "block";
+                            input.value = "";
+
+                            if (isNumber) resetAverageForNumberInput(input);
+
+                            input.focus();
+                        });
+
+                        answerBox.innerHTML = "";
+                        answerBox.appendChild(answerText);
+                        answerBox.appendChild(deleteButton);
+
+                        inputRow.style.display = "none";
+                        answerBox.classList.add("visible");
+
+                        if (!isNumber) input.value = "";
+                    }
+
+                    connectEnterAndBlurSave(input, saveEntry);
+                });
+            }
+
+            /* ==================================================
+               BALL BOUNCE - AVERAGES
+               ================================================== */
+
+            function formatAverage(value) {
+                return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+            }
+
+            function createCalculateButton() {
+                const button = document.createElement("button");
+
+                button.type = "button";
+                button.classList.add("average-button", "general-button");
+                button.textContent = "Calculate";
+                button.addEventListener("click", function () {
+                    calculateInputAverage(button);
+                });
+
+                return button;
+            }
+
+            /* Put a Calculate button back in place of a calculated average. */
+            function restoreCalculateButton(cell) {
+                cell.classList.remove("average-result");
+                cell.innerHTML = "";
+                cell.appendChild(createCalculateButton());
+            }
+
+            function resetAverageForNumberInput(input) {
+                const row = input.closest("[data-input-average-row]");
+                const cell = row && row.querySelector(".average-cell");
+
+                if (cell && cell.classList.contains("average-result")) {
+                    restoreCalculateButton(cell);
+                }
+            }
+
+            function showAverageValue(button, average) {
+                const cell = button.closest(".average-cell");
+
+                cell.innerHTML = "";
+                cell.classList.add("average-result");
+
+                const resultWrapper = document.createElement("div");
+                resultWrapper.className = "average-result-wrapper";
+
+                const resultText = document.createElement("span");
+                resultText.className = "average-result-value";
+                resultText.textContent = formatAverage(average);
+
+                const clearButton = document.createElement("button");
+                clearButton.type = "button";
+                clearButton.className = "average-clear-button";
+                clearButton.textContent = "×";
+                clearButton.setAttribute("aria-label", "Clear calculated average");
+                clearButton.addEventListener("click", function () {
+                    restoreCalculateButton(cell);
+                });
+
+                resultWrapper.appendChild(resultText);
+                resultWrapper.appendChild(clearButton);
+                cell.appendChild(resultWrapper);
+            }
+
+            function calculateInputAverage(button) {
+                const row = button.closest("[data-input-average-row]");
+                const feedback = document.getElementById("customTableFeedback");
+
+                const values = Array.from(row.querySelectorAll(".table-number-input")).map(function (input) {
+                    return input.value.trim() === "" ? NaN : Number(input.value);
+                });
+
+                if (values.some(Number.isNaN)) {
+                    feedback.hidden = false;
+                    feedback.className = "activity-feedback table-activity-feedback feedback-try-again";
+                    feedback.innerHTML =
+                        "<strong>Add all three results first.</strong><span>The average can be calculated once each test has a number.</span>";
+                    return;
+                }
+
+                if (feedback.classList.contains("feedback-try-again")) {
+                    feedback.hidden = true;
+                }
+
+                const total = values.reduce(function (sum, value) {
+                    return sum + value;
+                }, 0);
+
+                showAverageValue(button, total / values.length);
+
+                /* Once every average is calculated, the interpretation panel appears. */
+                if (!document.querySelector("#build-your-own-table .average-button")) {
+                    document.getElementById("ballBouncePredictionCheck").hidden = false;
+                }
+            }
+
+            /* ==================================================
+               BALL BOUNCE - INTERPRET THE RESULTS
+               ================================================== */
+
+            /* No right answer here: the activity only records which button is picked. */
+            let ballBouncePredictionActivity = null;
+
+            function initialisePredictionCheck() {
+                ballBouncePredictionActivity = getActivity("ballBouncePredictionCheck");
+            }
+
+            /* ==================================================
+               BALL BOUNCE - RESET
+               ================================================== */
+
+            function clearTableEntries(scope) {
+                scope.querySelectorAll(".table-entry-control").forEach(function (control) {
+                    control.querySelector("input").value = "";
+                    control.querySelector(".table-entry-input-row").style.display = "block";
+
+                    const answerBox = control.querySelector(".table-entry-answer");
+
+                    answerBox.classList.remove("visible");
+                    answerBox.innerHTML = "";
+                });
+            }
+
+            function resetBallBounceTable() {
+                const tableCard = document.querySelector("#build-your-own-table .bounce-table-card");
+
+                clearTableEntries(tableCard);
+
+                tableCard.querySelectorAll(".average-cell").forEach(restoreCalculateButton);
+
+                const feedback = document.getElementById("customTableFeedback");
+
+                feedback.hidden = true;
+                feedback.innerHTML = "";
+
+                /* The interpretation panel copies numbers from the table, so it goes back too. */
+                const predictionCheck = document.getElementById("ballBouncePredictionCheck");
+
+                predictionCheck.hidden = true;
+                clearTableEntries(predictionCheck);
+
+                ballBouncePredictionActivity.reset();
+            }
+
+            const DEV_MODE = false;
+            if (DEV_MODE) window.addEventListener("DOMContentLoaded", teacherShowAll);
+
+            const sectionIds = [
+                { id: "build-your-own-table", label: "Ball bounce experiment: complete the table" },
+                { id: "ballBouncePlanning", label: "Create Your Testable Question and Make Your Reasoned Prediction" },
+                { id: "ballBounceTests", label: "Why Do We Repeat Experiments 3 Times?" },
+            ];
+
+            const teacherBackLink = {
+                label: "← Back to Lesson 3",
+                href: "/lesson3",
+            };
+
+            document.addEventListener("DOMContentLoaded", function () {
+                initialiseTeacherMenu(sectionIds, "build-your-own-table", teacherBackLink);
+
+                initialiseTableEntries();
+                initialiseBallBounceVariables();
+                initialiseBallBounceQuestionAndPrediction();
+                initialisePredictionCheck();
+            });
+
+          /* Called from inline handlers / shared scripts, which cannot see module scope. */
+          Object.assign(window, { openLesson3Video, closeLesson3Video, ballBounceRepeatStopAndCheck, calculateInputAverage, resetBallBounceTable });`,
+  },
+];
 
 function loadScript(def) {
   return new Promise((resolve) => {
-    const el = document.createElement('script')
-    if (def.type) el.type = def.type
+    const el = document.createElement("script");
+    if (def.type) el.type = def.type;
     if (def.src) {
-      el.src = def.src
-      el.onload = el.onerror = resolve
-      document.body.appendChild(el)
+      el.src = def.src;
+      el.onload = el.onerror = resolve;
+      document.body.appendChild(el);
     } else {
-      if (def.type === 'module') {
+      if (def.type === "module") {
         // inline module scripts run async: wait until this one has finished
-        window.__inlineScriptDone = resolve
-        el.onerror = resolve
-        el.textContent = def.code + '\n;window.__inlineScriptDone()'
-        document.body.appendChild(el)
+        window.__inlineScriptDone = resolve;
+        el.onerror = resolve;
+        el.textContent = def.code + "\n;window.__inlineScriptDone()";
+        document.body.appendChild(el);
       } else {
-        el.textContent = def.code
-        document.body.appendChild(el)
-        resolve()
+        el.textContent = def.code;
+        document.body.appendChild(el);
+        resolve();
       }
     }
-  })
+  });
 }
 
 onMounted(async () => {
-  document.title = "Lesson 4 - Understanding Graphs"
-  for (const def of scripts) await loadScript(def)
+  document.title =
+    "Lesson 4 - Using a Table to Record Data for a Fair Test";
+  for (const def of scripts) await loadScript(def);
   // the original scripts wait for DOMContentLoaded, which has already fired
-  document.dispatchEvent(new Event('DOMContentLoaded'))
-  window.dispatchEvent(new Event('DOMContentLoaded'))
-})
+  document.dispatchEvent(new Event("DOMContentLoaded"));
+  window.dispatchEvent(new Event("DOMContentLoaded"));
+});
 </script>

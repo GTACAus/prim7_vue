@@ -1,110 +1,53 @@
-<template>
-  <main class="page">
-    <header class="lesson-heading">
-      <h1 id="hero">
-        <span>Scientific Inquiry</span>
-        <span>starts here</span>
-      </h1>
-    </header>
-
-    <section class="carousel" aria-label="Choose a lesson">
-      <button
-        class="carousel-control carousel-control--previous"
-        type="button"
-        aria-label="Show previous lesson"
-      ></button>
-      <div class="carousel-track">
-        <Card
-          v-for="lesson in lessons"
-          :key="lesson.number"
-          :href="lesson.href"
-          :img="lesson.img"
-          :stage="lesson.stage"
-          :accent="lesson.accent"
-        >
-          <template #number>Lesson {{ lesson.number }}</template>
-          <template #subtitle>{{ lesson.subtitle }}</template>
-        </Card>
-      </div>
-      <button
-        class="carousel-control carousel-control--next"
-        type="button"
-        aria-label="Show next lesson"
-      ></button>
-      <div
-        id="description"
-        aria-label="Description of the current lesson"
-      ></div>
-    </section>
-    <p class="carousel-status" aria-live="polite"></p>
-  </main>
-</template>
 <script setup>
 import { onMounted, onBeforeUnmount } from "vue";
 import Card from "../components/homepage/Card.vue";
 
 const lessons = [
   {
-    number: 1,
     href: "lesson1/",
     img: "/images/index/lesson1.png",
-    stage: 1,
     accent: "var(--purple)",
     subtitle: "Asking Scientific Questions & Making Predictions",
   },
   {
-    number: 2,
     href: "lesson2/",
     img: "/images/index/lesson2.png",
-    stage: 2,
     accent: "var(--orange)",
     subtitle: "Planning a Fair Test",
   },
   {
-    number: 3,
     href: "lesson3/",
     img: "/images/index/lesson3.png",
-    stage: 3,
     accent: "var(--green)",
     subtitle: "Organising Fair Test Data into a Table",
   },
   {
-    number: 4,
     href: "lesson4/",
     img: "/images/index/lesson3.png",
-    stage: 3,
     accent: "var(--purple)",
     subtitle: "Science Inquiry Lab - Skills Check!",
   },
   {
-    number: 5,
     href: "lesson5/",
     img: "/images/index/lesson4.png",
-    stage: 4,
     accent: "var(--blue)",
     subtitle: "Using Bar Graphs to Visualise Data",
   },
   {
-    number: 6,
     href: "lesson6/",
     img: "/images/index/lesson4.png",
-    stage: 4,
     accent: "var(--blue)",
     subtitle: "Using Line Graphs to Visualise Data",
   },
   {
-    number: 7,
     href: "lesson7/",
     img: "/images/index/lesson4.png",
-    stage: 5,
     accent: "var(--green)",
     subtitle: "Drawing Scientific Diagrams",
   },
   {
-    number: 8,
     href: "lesson8/",
     img: "/images/index/lesson4.png",
-    stage: 6,
     accent: "var(--green)",
     subtitle: "Communicating Science",
   },
@@ -780,7 +723,49 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style>
+<template>
+  <main class="page">
+    <header class="lesson-heading">
+      <h1 id="hero">
+        <span>Scientific Inquiry</span>
+        <span>starts here</span>
+      </h1>
+    </header>
+
+    <section class="carousel" aria-label="Choose a lesson">
+      <button
+        class="carousel-control carousel-control--previous"
+        type="button"
+        aria-label="Show previous lesson"
+      ></button>
+      <div class="carousel-track">
+        <Card
+          v-for="[number, lesson] of lessons.entries()"
+          :key="number + 1"
+          :href="lesson.href"
+          :img="lesson.img"
+          :stage="number + 1"
+          :accent="lesson.accent"
+        >
+          <template #number>Lesson {{ number + 1 }}</template>
+          <template #subtitle>{{ lesson.subtitle }}</template>
+        </Card>
+      </div>
+      <button
+        class="carousel-control carousel-control--next"
+        type="button"
+        aria-label="Show next lesson"
+      ></button>
+      <div
+        id="description"
+        aria-label="Description of the current lesson"
+      ></div>
+    </section>
+    <p class="carousel-status" aria-live="polite"></p>
+  </main>
+</template>
+
+<style scoped>
 body {
   min-height: 100vh;
   background: radial-gradient(ellipse at 50% 48%, #fffdf4 0, var(--cream) 68%);

@@ -85,7 +85,8 @@ function next() {
   page?.completeSection(sectionId.value);
 }
 function scrollTo() {
-  element.value?.scrollIntoView({ behavior: "smooth", block: "start" });
+  // element is the <ContentBox> component, so scroll its root element
+  element.value?.$el?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 page?.registerSection(sectionId.value, { reset, scrollTo });
 onUnmounted(() => page?.unregisterSection(sectionId.value));

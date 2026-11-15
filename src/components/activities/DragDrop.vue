@@ -35,7 +35,7 @@
     back (the slot gets .dd-rejected briefly) and emits "incorrect".
 
   Complete (for the section's Next button) once every slot is filled and every
-  answer is correct.
+  answer is correct. The placements are saved through <Activity :state>.
 
   Slot props: { done, filled, correct, trayEmpty, placements, reset }.
   Events: change(placements), incorrect({ item, slot }). A "dd:change" DOM event
@@ -63,6 +63,7 @@ const DRAG_THRESHOLD = 5 // px of movement before a press becomes a drag
 /* ---------- state ---------- */
 
 const placements = reactive({}) // slot name -> item name
+const saved = { placements } // saved / restored through <Activity :state>
 const slots = reactive(new Map()) // slot name -> { answers, el }
 const items = reactive(new Map()) // item name -> { reusable }
 
@@ -372,7 +373,7 @@ defineExpose({ ...api, reset, done })
     ref="activity"
     :tag="tag"
     :complete="done"
-    :api="api"
+    :state="saved"
     :class="{ 'dd-has-selection': selected, 'dd-is-dragging': dragging }"
     @reset="reset"
   >

@@ -1,13 +1,14 @@
 <script setup>
 import Button from "./Button.vue";
 import { openGlossary } from "../composables/useModal.js";
+import { downloadLessonPDF } from "../composables/usePrintLesson.js";
 
 defineProps({
   // show "Save my work" instead of "Home" (pretask)
   save: { type: Boolean, default: false },
   // optional link back to the first part of a lesson
   backHref: { type: String, default: "" },
-  backLabel: { type: String, default: "Part A" },
+  backLabel: { type: String, default: "Back" },
 });
 </script>
 
@@ -18,7 +19,7 @@ defineProps({
         v-if="save"
         class="save-work-button"
         style="margin-top: 0"
-        onclick="downloadLessonPDF()"
+        @click="downloadLessonPDF"
         symbol="💾"
       >
         Save my work
@@ -26,7 +27,7 @@ defineProps({
 
       <Button v-else class="home-button" to="/" symbol="🏠">Home</Button>
 
-      <!-- link to the other part of a two-part lesson, e.g. Lesson 3 Part B -> Part A -->
+      <!-- link back to the previous lesson, e.g. Lesson 4 -> Lesson 3 (route meta backHref / backLabel) -->
       <Button
         v-if="backHref"
         id="back-to-part1-button"

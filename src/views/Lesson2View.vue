@@ -93,6 +93,7 @@ function resetQuestionAndPrediction() {
 }
 import LessonIntro from "../components/LessonIntro.vue";
 import Button from "../components/Button.vue";
+import { downloadLessonPDF } from "../composables/usePrintLesson.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -319,7 +320,7 @@ const sections = [
       <!-- ==================================================
              4. SORT VARIABLES - FLOOR SURFACE
              ================================================== -->
-      <Section name="sort-variables-one" class="sort-variables-section">
+      <Section name="sort-variables-one">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Read the testable question for a ball bounce fair test.
@@ -361,7 +362,7 @@ const sections = [
       <!-- ==================================================
            5. SORT VARIABLES - BALL SIZE
            ================================================== -->
-      <Section name="sort-variables-two" class="sort-variables-section">
+      <Section name="sort-variables-two">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             Follow the steps to identify the <strong>variables</strong> in this
@@ -455,7 +456,7 @@ const sections = [
       <!-- ==================================================
              OPEN VARIABLE SELECTION
              ================================================== -->
-      <Section name="sort-variables-three" class="sort-variables-section">
+      <Section name="sort-variables-three">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             What will you change? What will you measure? What will you keep the
@@ -498,14 +499,13 @@ const sections = [
           </ol>
         </div>
         <FairTestBuilder />
-        <button
-          type="button"
+        <Button
           class="save-work-button general-button"
-          onclick="downloadLessonPDF()"
+          symbol="💾"
+          @click="downloadLessonPDF"
         >
-          <p class="bounce-symbol">💾</p>
           <p>Save my work</p>
-        </button>
+        </Button>
       </Section>
     </template>
   </Page>

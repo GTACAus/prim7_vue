@@ -11,11 +11,13 @@
     </McQuestion>
 
   name: the key its pick is saved under (defaults to its order).
+  answer: leave it out for a question with no right answer - any pick counts
+  as answered (and is only given the selected class).
 */
 import { computed, inject, onBeforeUnmount, provide, reactive } from "vue";
 
 const props = defineProps({
-  answer: { type: String, required: true },
+  answer: { type: String, default: "" },
   name: { type: String, default: "" },
   tag: { type: String, default: "div" },
 });
@@ -28,7 +30,9 @@ onBeforeUnmount(() => mc.unregister(question));
 
 const picked = computed(() => mc.picked.value[question.key]);
 const answered = computed(() => picked.value !== undefined);
-const correct = computed(() => picked.value === question.answer);
+const correct = computed(
+  () => answered.value && (!question.answer || picked.value === question.answer),
+);
 
 provide("mcQuestion", question);
 </script>

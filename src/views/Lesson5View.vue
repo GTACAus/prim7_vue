@@ -1,1817 +1,1488 @@
 <template>
-  <!-- Shared PDF modal: uses the same openModal('pdf')/closeModal behaviour as Lesson 3. -->
-  <Modal title="Key science language" :glossary="glossary" pdf-label="Project Possum resource" note="Jumping between activities changes navigation only. Reset student view clears every answer on this page." />
+    <!-- Shared glossary modal: opened by common_functions.js -->
+    <Modal label="Lesson 5 &middot; Bar Graphs" :glossary="glossary" pdf-label="Project Possum resource" note="Jumping between activities changes navigation only. Reset student view clears every answer on this page." />
 
-  <!-- Shared image zoom modal: used by the stage reference-image boxes (e.g. mission 4 batfish/frogfish). -->
 
-  <!-- Frogfish reference example: shown after students submit their own six labels. -->
-  <div id="frogfishExampleModal" role="dialog" aria-modal="true" aria-labelledby="frogfishExampleTitle" aria-hidden="true">
-    <div class="frogfish-example-content">
-      <div class="frogfish-example-header">
-        <div>
-          <h2 id="frogfishExampleTitle">Compare with an example</h2>
-          <p>Your labels are not automatically marked right or wrong. Compare your descriptions with this example and notice any scientific terms you may want to remember.</p>
-        </div>
-        <button type="button" class="frogfish-example-close" onclick="closeFrogfishExampleModal()" aria-label="Close example">×</button>
-      </div>
+    <!-- Shared PDF modal: uses the same openModal('pdf')/closeModal behaviour as Lesson 3. -->
 
-      <img
-        class="frogfish-example-image"
-        src="../images/lesson5/mission4/frogfish_answers.png"
-        alt="Example frogfish scientific diagram with labels"
-      >
+    <!-- ==================================================
+       HIDDEN TEACHER MENU
+       Opened by clicking the lesson title five times.
+       ================================================== -->
 
-      <div class="frogfish-example-actions">
-        <button type="button" class="expedition-button" onclick="closeFrogfishExampleModal()"><span>Continue</span></button>
-      </div>
-    </div>
-  </div>
+    <main class="page lesson4-page">
+      <LessonIntro label="Lesson 5" title="Using Bar Graphs to Visualise Data" worksheet="../worksheets/l4-worksheet.pdf">
+    Bar graphs help scientists turn fair-test data into a visual comparison, making <strong>patterns</strong> and <strong>differences between categories</strong> easier to see.
 
-  <!-- ==================================================
-      HIDDEN TEACHER MENU
-      Opened by clicking the lesson title five times.
-      ================================================== -->
-
-  <main class="page expedition-page">
-
-    <div class="expedition-intro">
-      <LessonIntro label="Lesson 5" title="Scientific Drawings" worksheet="../worksheets/l5-worksheet.pdf">
-    Scientific drawings help scientists to record and communicate their observations. In this lesson, we will learn how to create a scientific drawing of a specimen.
+    <template #actions>
+      <button type="button" class="general-button project-resource-button bar-data-resource-button" onclick="openModal('pdf', { src: '../images/lesson4/types-of-graphs.png', title: 'Types of Data' })" > <span class="bounce-symbol" aria-hidden="true">📄</span> <span>Types of Data</span> </button>
+    </template>
   </LessonIntro>
 
-        <!-- Learning objectives, success criteria-->
-        <div class="intro-grid">
-          <section class="intro-card objectives-card">
-            <p class="intro-eyebrow">Learning objective</p>
-            <p class="learning-objective-text">
-              We are learning how to create <strong>scientific drawings</strong> of specimens.
-            </p>
-            <p class="success-heading">Success criteria</p>
-            <ol class="objective-list">
-              <li>I am learning how to observe and record details in my drawings.</li>
-              <li>I can label parts of a specimen in my drawing.</li>
-              <li>I can use a scientific drawing to communicate my observations.</li>
-            </ol>
-          </section>
+      <div class="intro-grid">
+        <section class="intro-card objectives-card">
+          <p class="intro-eyebrow">Learning objective</p>
 
-          <section class="intro-card observation-card">
-            <p class="intro-eyebrow">Think like a scientist</p>
-            <h2>Constructing a scientific drawing</h2>
-            <p>How to construct a <strong>scientific drawing</strong> to represent observations:</p>
-            <div class="formula-card">
-              <div class="formula-step">
-                <div class="formula-step-number">1</div>
-                <div>
-                  <strong>Identify the specimen</strong>
-                </div>
-              </div>
-              <div class="formula-step">
-                <div class="formula-step-number">2</div>
-                <div>
-                  <strong>Observe and record details</strong>
-                </div>
-              </div>
-              <div class="formula-step">
-                <div class="formula-step-number">3</div>
-                <div>
-                  <strong>Label the parts of the specimen</strong>
-                </div>
+          <p class="learning-objective-text">
+            We are learning how to represent <strong>fair test data</strong> in a <strong>bar graph</strong>.
+          </p>
+
+          <p class="success-heading">Success criteria</p>
+
+          <ol class="objective-list">
+            <li>I am learning how to <strong>collect and visualise data</strong>.</li>
+            <li>I can <strong>label axes</strong> and <strong>plot data points</strong> as bars on a bar graph.</li>
+            <li>I can use a bar graph to <strong>analyse the results of a fair test</strong>.</li>
+          </ol>
+        </section>
+
+        <section class="intro-card observation-card">
+          <p class="intro-eyebrow">Think like a scientist</p>
+          <h2>Constructing a bar graph</h2>
+          <!-- <p>How to construct a <strong>bar graph</strong> to represent fair test data:</p> -->
+
+          <div class="formula-card">
+            <div class="formula-step">
+              <div class="formula-step-number" id="formula-step-independent">1</div>
+              <div>
+                <strong>On the horizontal x-axis:</strong>
+                <ul>
+                  <li>The categories or groups you are changing or comparing.</li>
+                </ul>
               </div>
             </div>
-          </section>
-        </div>
 
-    </div>
+            <div class="formula-step">
+              <div class="formula-step-number" id="formula-step-dependent">2</div>
+              <div>
+                <strong>On the vertical y-axis:</strong>
+                <ul>
+                  <li>The dependent variable - the thing you measure.</li>
+                  <li>If the test is repeated, use the average value.</li>
+                </ul>
+              </div>
+            </div>
 
-    <div class="expedition-zoom-stage">
+            <div class="formula-step">
+              <div class="formula-step-number" id="formula-step-units">3</div>
+              <div>
+                <strong>Draw a bar for each category</strong>
+                <ul>
+                  <li>The height of the bar shows the y-axis value for each group or category.</li>
+                  <li>Keep every bar the same width.</li>
+                  <!-- <li>Leave the same amount of space between each bar.</li> -->
+                </ul>
+              </div>
+            </div>
 
-    <div id="expedition-main">
-      <header class="expedition-banner" aria-label="Expedition Log header">
-        <div class="submarine-container" id="submarineContainer">
-          <div class="submarine-glow"></div>
-          <model-viewer
-            id="submarineViewer"
-            src="../images/lesson5/models/cartoon_submarine_animated.glb"
-            alt="Animated cartoon submarine"
-            autoplay
-            disable-zoom
-            shadow-intensity="3"
-            exposure="0.5"
-            camera-target="auto"
-            camera-orbit="135deg 75deg auto"
-            field-of-view="40deg"
-            >
-          </model-viewer>
-        </div>
-        <div class="banner-copy">
-          <h1>Expedition Log</h1>
-          <h2>Deep Sea Explorers</h2>
-        </div>
-        <div style="display: inline-flex; flex-direction: column; gap: 10px; align-items: center;">
-          <button type="button" id="fullScreenButton" class="expedition-button" onclick="openFullscreen()">
-            <span>Full Screen</span>
-          </button>
-          <button type="button" class="expedition-button field-guide-button" onclick="openModal('glossary')">
-            <span>Field guide</span>
-          </button>
-        </div>
-      </header>
-      <div class="game-shell">
-
-        <!-- ==================================================
-             LEFT: mission navigation / game progress
-             ================================================== -->
-
-        <aside class="console-panel mission-nav" aria-label="Mission log">
-          <h2 class="console-heading"><span class="light" aria-hidden="true"></span>Mission log</h2>
-          <nav class="mission-list" id="missionList">
-            <button class="mission-button" data-mission="mission-1" data-number="01" type="button">
-              <strong>Mission 1</strong>
-              <span>Briefing</span>
-            </button>
-            <button class="mission-button" data-mission="mission-2" data-number="02" type="button" disabled>
-              <strong>Mission 2</strong>
-              <span>Experiment Set-Up: Rust Prevention</span>
-            </button>
-            <button class="mission-button" data-mission="mission-4" data-number="03" type="button" disabled>
-              <strong>Mission 3</strong>
-              <span>Shallow-Water Camera Trials</span>
-            </button>
-            <button class="mission-button" data-mission="mission-5" data-number="04" type="button" disabled>
-              <strong>Mission 4</strong>
-              <span>Unknown Species Detected</span>
-            </button>
-          </nav>
-          <div class="substage-nav" id="substageNav" hidden aria-label="Current mission stages"></div>
-          <div class="mission-nav-footer">
-            <strong>Expedition depth</strong>
-            <div class="depth-meter">
-              <span id="depthLabel">0%</span>
-              <div class="depth-track" aria-hidden="true">
-                <div class="depth-fill" id="depthFill"></div>
+            <div class="formula-step">
+              <div class="formula-step-number">4</div>
+              <div>
+                <strong>Give your graph a title</strong>
+                <ul>
+                  <li>The title explains what your fair test is investigating.</li>
+                </ul>
               </div>
             </div>
           </div>
-        </aside>
+        </section>
+      </div>
+      
+      <section id="bar-data-preamble" class="section bar-data-preamble" aria-labelledby="barDataPreambleTitle">
+        <p class="intro-eyebrow">Using bar graphs</p>
+        <h2 id="barDataPreambleTitle">Visualising Fair Test Data</h2>
+        <div class="diagram-activity bar-data-intro-row">
+          <p>
+            Scientists use a <strong>bar graph</strong> when they want to visualise
+            <strong>discrete data</strong> or <strong>categorical data</strong>.
+          </p>
+        </div>
+
+        <!-- Full-width Canva visual placeholder using existing shared lesson elements only. 
+          <div class="image-box">
+            <img
+              src="../../images/lesson4/types-of-graphs.png"
+              alt="Visual comparison of numerical and categorical data"
+            />
+          </div> -->
+        <div class="graph-checklist-container">
+          <div class="wheel-question-checklist bar-example-checklist" aria-label="What to look for in the example bar graphs">
+            <h5>Look at the following 3 bar graphs</h5>
+            <p>Each shows the results of a fair test. As you look, check that each graph has:</p>
+            <label class="check-item">
+              <input type="checkbox" aria-label="Check for a clear graph title" />
+              <span>
+                <strong>A clear title</strong>
+                <small>Explains what the fair test is investigating.</small>
+              </span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" aria-label="Check for an x-axis label and units" />
+              <span>
+                <strong>An x-axis label and units</strong>
+                <small>Shows the categories or groups being compared.</small>
+              </span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" aria-label="Check for a y-axis label and units" />
+              <span>
+                <strong>A y-axis label and units</strong>
+                <small>Shows what was measured or counted.</small>
+              </span>
+            </label>
+          </div>
+          <div class="intro-card bar-example-image-card">
+            <div class="image-box">
+              <img
+                src="../images/lesson4/blank_bar_graph.png"
+                alt="Blank bar graph template showing the parts of a bar graph"
+              />
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Existing intro-grid/intro-card components give us two responsive columns without new CSS. -->
+        <div class="intro-card bar-example-image-card">
+
+            <div class="image-box">
+              <img
+                src="../images/lesson4/bar_graph_example_1.png"
+                alt="Example of a completed bar graph"
+              />
+            </div>
+
+            <div class="image-box">
+              <img
+                src="../images/lesson4/bar_graph_example_2.png"
+                alt="Example of a completed bar graph"
+              />
+            </div>
+
+          </div>
+
+      <button class="next-button general-button" onclick="unlockSection('bar-practice', 'bar-data-preamble')">
+        Next
+      </button>
+      <p class="completed-note">Completed — next activity unlocked.</p>
+      </section>
 
         <!-- ==================================================
-             CENTRE: one reusable stage; missions swap inside it
+             BAR GRAPH STUDENT CHALLENGE
              ================================================== -->
-        <section class="console-panel stage-panel" aria-label="Mission stage">
-          <div class="stage-screen" id="stageScreen">
-            <section class="start-screen" id="startScreen">
-              <div class="start-card pop-in">
-                <p class="start-eyebrow">Expedition systems online</p>
-                <h3>Click start to dive into the deep</h3>
+        <Section id="bar-practice" title="Part A: A Fair Test to Compare Two Forest Sites" next-id="bar-construction" next-button-id="collectingVisualisingNext" locked hide-next class="student-challenge">
+
+          <div class="project-possum-flow">
+            <article class="project-step-card">
+              <div class="project-step-heading">
+                <span class="project-step-number">1</span>
+                <div>
+                  <h3>Project Possum</h3>
+                    <!-- <p><strong>Your mission:</strong> Conduct a fair test to compare animals living in two forest sites</p> -->
+                </div>
+              </div>
+
+              <p class="diagram-activity project-mission-copy">
+                Your mission: You work for Parks Victoria as a ranger in the Toolangi State Forest.
+                You are working with an environmental group called <i>Friends of the Leadbeater's Possum</i>.
+                <strong>You will set up a fair test to carry out a survey of 5 animals living in two forest areas:
+                Site 1 and Site 2</strong>.
+                A survey the year before recorded a family of Leadbeater's Possums living at each site.
+              </p>
+
+              <div class="project-species-layout">
+                <div class="project-species-copy">
+                  <p class="project-species-lead">
+                    Leadbeater's Possums live in forests in Victoria, Australia.
+                    They are listed as <strong>critically endangered</strong>.
+                    Conservation groups are trying to help them to survive.
+                    To do this they investigate where and how they live.
+                  </p>
+
+                  <div class="project-learn-block">
+                    <h4>Learn more about Leadbeater's Possum</h4>
+                    <p>Open the Leadbeater's possum flyer to find out more about where they live and how they behave.</p>
+                    <button
+                      type="button"
+                      class="general-button project-resource-button"
+                      onclick="openModal('pdf', { src: '../downloads/lesson4/leadbeaters-possum-flyer.pdf', title: 'Meet the Leadbeater\'s Possum' })"
+                    >
+                      <span class="bounce-symbol" aria-hidden="true">📄</span>
+                      <span>Open Leadbeater's Flyer</span>
+                    </button>
+                  </div>
+
+                </div>
+
+                <aside class="project-species-portrait" aria-label="Leadbeater's Possum">
+                  <span class="project-status-chip">Critically endangered</span>
+                  <img src="../images/lesson4/leadbeaters_possum_1.png" alt="Leadbeater's Possum" />
+                  <strong>Leadbeater's Possum</strong>
+                  <small>Species that Project Possum wants to protect</small>
+                </aside>
+              
+              </div>
+
+            </article>
+
+            <article class="project-step-card">
+              <div class="project-step-heading">
+                <span class="project-step-number">2</span>
+                <div>
+                  <h3>Compare Site 1 with Site 2</h3>
+                  <p>List any differences you can see</p>
+                </div>
+              </div>
+
+              <!-- Site 1 is designed to contain more Leadbeater's Possums than Site 2. Do not reveal that result before students collect the evidence. -->
+              <div class="project-site-rail" aria-label="Two-site Project Possum investigation">
+                <div class="project-site-card current">
+                  <div class="project-site-copy">
+                    <h4>Site 1</h4>
+                  </div>
+                  <div class="project-site-image" role="img" aria-label="Placeholder for a daytime image of Site 1">
+                    <img src="../images/lesson4/site_1_day.png" alt="Site 1" />
+                  </div>
+                </div>
+
+                <div class="project-site-arrow" aria-hidden="true">→</div>
+
+                <div class="project-site-card future">
+                  <div class="project-site-copy">
+                    <h4>Site 2</h4>
+                  </div>
+                  <div class="project-site-image" role="img" aria-label="Placeholder for a daytime image of Site 2">
+                    <img src="../images/lesson4/site_2_day.png" alt="Site 2" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="project-question-grid">
+                <div class="project-question-card">
+                  <h4>Testable question</h4>
+                  <p><strong>Does a change in the understory affect the number of Leadbeater’s possums in the forest?</strong></p>
+                  <!-- <p class="project-prompt-note">Collect the evidence from both sites before deciding what it shows.</p> -->
+                </div>
+
+                <div class="project-question-card">
+                  <h4>Reasoned prediction</h4>
+                  <p><strong>When there is more understory the number of Leadbeaters possums will increase.</strong></p>
+                  <!-- <p class="project-prompt-note">You will return to this prediction after both site surveys are complete.</p> -->
+                </div>
+              </div>
+            </article>
+
+            <article class="project-step-card">
+              <div class="project-step-heading">
+                <span class="project-step-number">3</span>
+                <div>
+                  <h3>Plan Your Fair Test</h3>
+                  <!-- <p>You will conduct a survey at two different sites in the Toolangi forest.</p> -->
+                </div>
+              </div>
+
+              <div class="variable-type-grid" aria-label="Variables in the Site 1 and Site 2 fair test">
+                <article class="variable-type-card independent">
+                  <p class="intro-eyebrow">Change</p>
+                  <h3>Independent variable</h3>
+                  <p>Compare numbers of 5 different animals at Site 1 and Site 2.</p>
+                </article>
+
+                <article class="variable-type-card dependent">
+                  <p class="intro-eyebrow">Measure</p>
+                  <h3>Dependent variable</h3>
+                  <p>Measure the number of each animal.</p>
+                </article>
+
+                <article class="variable-type-card controlled">
+                  <p class="intro-eyebrow">Keep the same</p>
+                  <h3>Controlled variables</h3>
+                  <ul>
+                    <li>
+                      Controlled size: Each site is the size of the Melbourne Cricket Ground.
+                      This is the size of the territory of a family of Leadbeater's possums.
+                    </li>
+                    <li>
+                      Controlled time: You will count animals between 7pm and 9pm at night.
+                    </li>
+                    <li>
+                      Controlled equipment: You will use the same equipment to count the animals.
+                    </li>
+                    <li>
+                      Controlled people: You will have the same team carry out the count at each site.
+                    </li>
+                  </ul>
+                </article>
+              </div>
+
+              <div class="diagram-activity lesson4-spaced-block">
                 <p>
-                  Move through each mission one stage at a time. CHECK confirms the current stage,
-                  RESET clears the current response, and NEXT advances only after the stage is complete.
+                  You start by training your team to recognise these 5 animals at night:
+                  <!-- Between 9pm and 10pm at night, use a spotlight to count the number of each animal in your area. -->
                 </p>
-                <button type="button" class="expedition-button start-button" onclick="startExpedition()">
-                  <span>Start expedition</span>
+              </div>
+
+              <div class="project-animal-grid" aria-label="Animals to count at Site 1">
+                <div class="project-animal-card">
+                  <div class="project-animal-picture">
+                    <img src="../images/lesson4/leadbeaters_possum_1.png" alt="" />
+                  </div>
+                  <strong>Leadbeater's Possum</strong>
+                </div>
+
+                <div class="project-animal-card">
+                  <div class="project-animal-picture">
+                    <img src="../images/lesson4/YBGlider_2.png" alt="" />
+                  </div>
+                  <strong>Yellow-bellied Glider</strong>
+                </div>
+
+                <div class="project-animal-card">
+                  <div class="project-animal-picture">
+                    <img src="../images/lesson4/ringtail_1.png" alt="" />
+                  </div>
+                  <strong>Ringtail Possum</strong>
+                </div>
+
+                <div class="project-animal-card">
+                  <div class="project-animal-picture">
+                    <img src="../images/lesson4/powerful_owl_1.png" alt="" />
+                  </div>
+                  <strong>Powerful Owl</strong>
+                </div>
+
+                <div class="project-animal-card">
+                  <div class="project-animal-picture">
+                    <img src="../images/lesson4/male_deer_1.png" alt="" />
+                  </div>
+                  <strong>Feral deer</strong>
+                </div>
+              </div>
+
+              <div class="project-survey-tip">
+                <strong>Remember:</strong> Zero is still data. If you do not observe one of the target animals, record <strong>0</strong>.
+              </div>
+            </article>
+          </div>
+
+          <div>
+            <div class="project-spotlight-intro">
+              <span class="project-step-number">4</span>
+              <div>
+                <h3>Spotlighting activity - Survey Site 1</h3>
+                <p>Wait until night, then use the spotlight to find animals. Click on animals as you see them. Use the "Check my count" button
+                  to see if you have counted all the animals. If not, keep searching.
+                </p>
+              </div>
+              <span class="project-site-one-badge">Site 1</span>
+            </div>
+
+              <div class="challenge-spotlight-game noselect" data-progress-reset>
+                <div class="wrap">
+                  <div class="stage" id="stage">
+                    <img id="photoDay" class="" src="../images/lesson4/habitat_day.png" alt="Day Time Habitat">
+                    <img id="photo" class="" src="../images/lesson4/habitat_night.png" alt="Night Time Habitat">
+                    <div class="animal-layer" id="animalLayer">
+                      <!-- Powerful Owl (1) -->
+                      <button type="button" class="animal-hotspot" data-animal="Powerful Owl" style="left: 76%; top: 18%; width: 5%;" aria-label="Powerful Owl">
+                        <img src="../images/lesson4/powerful_owl_1.png" alt="Powerful Owl">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+
+                      <!-- Leadbeater's Possum (5) -->
+                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 55%; top: 10%; width: 7%;" aria-label="Leadbeater's Possum">
+                        <img src="../images/lesson4/leadbeaters_possum_1.png" alt="Leadbeater's Possum" style="transform: scaleX(-1)">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 50.5%; top: 14%; width: 4%;" aria-label="Leadbeater's Possum">
+                        <img src="../images/lesson4/leadbeaters_possum_2.png" alt="Leadbeater's Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 20%; top: 16%; width: 6.5%;" aria-label="Leadbeater's Possum">
+                        <img src="../images/lesson4/leadbeaters_possum_3.png" alt="Leadbeater's Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 26%; top: 14%; width: 4.5%;" aria-label="Leadbeater's Possum">
+                        <img src="../images/lesson4/leadbeaters_possum_4.png" alt="Leadbeater's Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Leadbeater's Possum" style="left: 43%; top: 28%; width: 6%; transform: rotate(-90deg);" aria-label="Leadbeater's Possum">
+                        <img src="../images/lesson4/leadbeaters_possum_5.png" alt="Leadbeater's Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+
+                      <!-- Yellow Bellied Glider (2) -->
+                      <button type="button" class="animal-hotspot" data-animal="Yellow Bellied Glider" style="left: 12%; top: 11%; width: 7%;" aria-label="Yellow Bellied Glider">
+                        <img src="../images/lesson4/YBGlider_2.png" alt="Yellow Bellied Glider" style="transform: scaleX(-1)">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Yellow Bellied Glider" style="left: 4%; top: 25%; width: 7%;" aria-label="Yellow Bellied Glider">
+                        <img src="../images/lesson4/YBGlider_3.png" alt="Yellow Bellied Glider">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+
+                      <!-- Ringtail Possum (3) -->
+                      <button type="button" class="animal-hotspot" data-animal="Ringtail Possum" style="left: 84%; top: 40%; width: 5%; transform: scaleX(-1);" aria-label="Ringtail Possum">
+                        <img src="../images/lesson4/ringtail_1.png" alt="Ringtail Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Ringtail Possum" style="left: 78%; top: 33%; width: 8%;" aria-label="Ringtail Possum">
+                        <img src="../images/lesson4/ringtail_2.png" alt="Ringtail Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="animal-hotspot" data-animal="Ringtail Possum" style="left: 83%; top: 0%; width: 6%; transform: scaleX(-1);" aria-label="Ringtail Possum">
+                        <img src="../images/lesson4/ringtail_3.png" alt="Ringtail Possum">
+                        <span class="animal-overlay" aria-hidden="true"></span>
+                      </button>
+                    </div>
+                    <div class="glow" id="glow"></div>
+                    <div class="moon-light"></div>
+                    <!-- <div class="vignette"></div> -->
+                    <div class="night-prompt" id="nightPrompt" data-activity>
+                      <button type="button" class="general-button" id="waitForNightButton" data-button-trigger>🌙 Wait until night</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="animal-counter-panel pop-in" id="animalCounterPanel" aria-label="Count the hidden animals" data-progress-reset></div>
+
+              <div class="reset-button-container">
+                <button type="button" class="general-button" id="checkAnimalCountButton" style="display: none;">Check my count</button>
+              </div>
+
+              <div class="challenge-feedback" id="animalCountFeedback" role="status" aria-live="polite">
+                <strong>Use the torch to search first.</strong>
+                Set each counter to how many of that animal you found hiding in the photo.
+              </div>
+
+              <!-- Appears only after all animal counts are correct -->
+              <div
+                class="diagram-activity challenge-hidden"
+                id="visualiseCountsIntro"
+                hidden
+              >
+                <span class="challenge-step-label">Visualise your data</span>
+
+                <p>
+                  Look at the counters that show how many of each animal you found.
+                  Now compare three different ways to visualise or view your data:
+                </p>
+
+                <ul>
+                  <li>
+                    Look at the counters in the circles first.
+                  </li>
+                  <li>
+                    Click <strong>Show counters stacked up</strong>.
+                  </li>
+                  <li>
+                    Click <strong>Show counters laid flat in lines</strong>.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="stack-buttons-row challenge-hidden" id="stackButtonsRow" hidden>
+                <button type="button" class="general-button stack-toggle-button stack-active" id="showBarStackButton">
+                  Show Counters Stacked Up
+                </button>
+                <button type="button" class="general-button stack-toggle-button" id="showCircleStackButton">
+                  Show Counters Laid Flat in Lines
                 </button>
               </div>
-            </section>
 
- <!-- ==================================================
-     MISSION 1: BRIEFING (2 stages)
-     ================================================== -->
-<section class="section expedition-mission" id="mission-1" data-mission-index="0">
-
-  <!-- ==================================================
-       STAGE 1: DEEP-SEA EXPLORATION
-       ================================================== -->
-  <div class="mission-stage" data-stage-id="m1-exploration">
-    <div class="mission-window">
-
-      <div class="mission-window-bar">
-        <strong>Deep field terminal // mission 1: briefing</strong>
-
-        <div class="window-dots" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-
-      <div class="mission-window-body">
-
-        <div class="stage-progress-row">
-          <p class="mission-label">Mission 01</p>
-          <span class="stage-progress-chip">Stage 1 of 2</span>
-        </div>
-
-        <h3>What is deep sea exploration?</h3>
-
-        <p class="mission-subtitle">
-          <strong>Did you know?</strong>
-          We know more about the surface of Mars than we do
-          about the deepest parts of our own ocean!
-          Deep sea exploration is how scientists use submarines,
-          robots and underwater cameras to explore the ocean floor.
-        </p>
-
-
-        <!-- ROW 1 -->
-        <div class="story-grid">
-
-          <figure class="media-card">
-            <img
-              src="../images/lesson5/mission1/deep-sea.png"
-              alt="Deep-sea camera used to observe the ocean floor"
-            >
-            <figcaption>The deep-sea</figcaption>
-          </figure>
-
-          <div class="story-copy">
-
-            <p>
-              The deep sea has tough conditions: it is extremely dark, cold
-              and has many layers that challenge animals to survive.
-            </p>
-          </div>
-
-        </div>
-
-
-        <!-- ROW 2 -->
-        <div class="story-grid">
-
-          <div class="story-copy">
-            <h4>Where does the deep sea begin?</h4>
-
-            <p>
-              The deep sea begins where sunlight can no longer reach underwater.
-              This is generally around <strong>200 metres deep</strong>.
-            </p>
-          </div>
-
-          <figure class="media-card">
-            <img
-              src="../images/lesson5/mission1/hercules-rov.jpg"
-              alt="Remotely operated vehicle Hercules exploring underwater"
-            >
-
-            <figcaption>
-              Remotely operated vehicle “Hercules”
-            </figcaption>
-          </figure>
-
-        </div>
-
-
-        <p class="activity-prompt">
-          When you have reviewed the briefing, press <strong>CHECK</strong>.
-        </p>
-
-        <div
-          class="variable-feedback stage-feedback"
-          data-feedback="m1-exploration"
-          role="status"
-          aria-live="polite">
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================================================
-       STAGE 2: WHAT CAN GO WRONG?
-       ================================================== -->
-  <div class="mission-stage" data-stage-id="m1-failure">
-
-    <div class="mission-window">
-
-      <div class="mission-window-bar">
-        <strong>Deep field terminal // mission 1: equipment failure</strong>
-
-        <div class="window-dots" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-
-      <div class="mission-window-body">
-
-        <div class="stage-progress-row">
-          <p class="mission-label">Mission 01</p>
-          <span class="stage-progress-chip">Stage 2 of 2</span>
-        </div>
-
-
-        <h3>What can go wrong?</h3>
-
-        <p class="mission-subtitle">
-          Technology does not always work perfectly in the deep sea.
-          Cameras can fail, footage can become corrupted, and the extreme
-          pressure can damage equipment.
-        </p>
-
-
-        <div class="media-compare">
-
-          <!-- DAMAGED / GLITCHED FEED -->
-          <figure class="media-card">
-
-            <img
-              data-glitch
-              src="../images/lesson5/mission1/camera-footage.webp"
-              alt="Corrupted camera footage from the remotely operated vehicle Hercules"
-            >
-
-            <figcaption>
-              Corrupted camera feed
-            </figcaption>
-
-          </figure>
-
-
-          <!-- NORMAL FEED -->
-          <figure class="media-card">
-
-            <img
-              src="../images/lesson5/mission1/camera-footage.webp"
-              alt="Clear camera footage from the remotely operated vehicle Hercules"
-            >
-
-            <figcaption>
-              Clear camera feed
-            </figcaption>
-
-          </figure>
-
-        </div>
-
-
-        <div class="story-copy" style="margin-top:16px;">
-
-          <h4>What happens if the image is lost?</h4>
-
-          <p>
-            If a camera fails, scientists still need a way to preserve
-            what they observed. Careful observations and
-            <strong>scientific drawings</strong> can provide a visual record
-            when photographs or video are unavailable.
-          </p>
-
-        </div>
-
-
-        <p class="activity-prompt">
-          Press <strong>CHECK</strong> when you understand why scientists
-          need another way to record their observations.
-        </p>
-
-        <div
-          class="variable-feedback stage-feedback"
-          data-feedback="m1-failure"
-          role="status"
-          aria-live="polite">
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ==================================================
-     MISSION 2: RUST INVESTIGATION
-     ================================================== -->
-<section class="section expedition-mission locked" id="mission-2" data-mission-index="1">
-
-  <!-- ==================================================
-     STAGE 1: INSPECT THE DAMAGED CAMERA
-     ================================================== -->
-
-  <div class="mission-stage" data-stage-id="m2-rust-alert">
-    <div class="mission-window">
-
-      <div class="mission-window-bar">
-        <strong>Deep field terminal // mission 2: camera damage</strong>
-        <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-      </div>
-
-      <div class="mission-window-body">
-
-        <div class="stage-progress-row">
-          <p class="mission-label">Mission 02</p>
-          <span class="stage-progress-chip">Stage 1 of 8</span>
-        </div>
-
-        <h3>New mission alert</h3>
-
-        <p class="mission-subtitle">
-          <strong>The submersible camera has been damaged!</strong>
-          Inspect the camera closely and see if you can identify what is happening.
-        </p>
-
-        <div class="story-copy">
-          <h4>Inspect the camera</h4>
-          <p>
-            Click the camera to switch between the working camera and the damaged camera.
-            Click it again to switch back.
-          </p>
-          <p style="margin-top:12px;"><strong>Can you identify what is going on?</strong></p>
-        </div>
-
-        <!-- Reuses the existing mission-image-container CSS; the rust-camera-stack
-             wrapper below keeps the gif confined to this box and layered over
-             the static rusted-hercules.png instead of overlapping anything else. -->
-        <div class="mission-image-container">
-          <div class="rust-camera-stack">
-            <img class="rust-camera-base" src="../images/lesson5/mission2/rusted-hercules.png" alt="Rusted hercules vessel">
-            <img
-              id="rustCameraImage"
-              class="rust-camera-gif"
-              src="../images/lesson5/animations/camera_shutter.gif"
-              data-working-src="../images/lesson5/animations/camera_shutter.gif"
-              data-rusted-src="../images/lesson5/rusted-camera.png"
-              data-rusted="false"
-              alt="Working submersible camera animation"
-              role="button"
-              tabindex="0"
-              aria-pressed="false"
-              title="Click to inspect the camera"
-              style="cursor:pointer;"
-              onclick="toggleRustCamera(this)"
-              onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleRustCamera(this); }"
-            >
-          </div>
-        </div>
-
-        <p class="activity-prompt">
-          When you have inspected the camera, press <strong>CHECK</strong> to reveal the answer.
-        </p>
-
-        <div
-          class="variable-feedback stage-feedback"
-          data-feedback="m2-rust-alert"
-          role="status"
-          aria-live="polite">
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ==================================================
-     STAGE 2: RUST EXPERIMENT
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-rust-experiment">
-
-  <div class="mission-window">
-
-    <div class="mission-window-bar">
-      <strong>Deep field terminal // mission 2: rust experiment</strong>
-
-      <div class="window-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div class="mission-window-body">
-
-      <div class="stage-progress-row">
-        <p class="mission-label">Mission 02</p>
-        <span class="stage-progress-chip">Stage 2 of 8</span>
-      </div>
-
-      <h3>Rust experiment</h3>
-
-      <p class="mission-subtitle">
-        You will be investigating what happens to metal when it reacts
-        with different liquids.
-      </p>
-
-      <figure class="media-card">
-        <img
-          src="../images/lesson5/mission2/rust-experiment.png"
-          alt="Three jars containing iron wool in water, saltwater and oil"
-        >
-
-        <figcaption>
-          Iron wool in water, saltwater and oil
-        </figcaption>
-      </figure>
-
-      <div class="story-copy" style="margin-top:16px;">
-        <p>
-          This experiment uses <strong>iron wool</strong> to represent
-          the metal of the deep-sea camera.
-        </p>
-
-        <p>
-          You will observe what happens to the iron in
-          <strong>three different liquids</strong> over time.
-        </p>
-      </div>
-
-      <p class="activity-prompt">
-        Review the experiment set-up, then press <strong>CHECK</strong>.
-      </p>
-
-      <div
-        class="variable-feedback stage-feedback"
-        data-feedback="m2-rust-experiment"
-        role="status"
-        aria-live="polite">
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ==================================================
-     STAGE 3: SELECT SCIENTIFIC SYMBOLS
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-symbol-match">
-
-  <div class="mission-window">
-
-    <div class="mission-window-bar">
-      <strong>Deep field terminal // mission 2: scientific symbols</strong>
-
-      <div class="window-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div class="mission-window-body">
-
-      <div class="stage-progress-row">
-        <p class="mission-label">Mission 02</p>
-        <span class="stage-progress-chip">Stage 3 of 8</span>
-      </div>
-
-      <h3>Draw the experiment using scientific symbols</h3>
-
-      <p class="mission-subtitle">
-        <strong>Your task:</strong>
-        Identify each highlighted part of the experiment and select
-        the scientific symbol that best represents it.
-      </p>
-
-
-      <div class="item-match-activity" id="m2RustSymbolMatchTest" data-activity>
-
-        <!-- MAIN DIAGRAM FRAME: fills in with each correctly matched symbol.
-             viewBox is the coordinate space every diagramPosition in
-             RUST_SYMBOL_OPTION_POOL (lesson5.js) is measured against - keep
-             them in sync if you resize this. -->
-        <div class="item-match-diagram-frame">
-          <svg
-            class="item-match-diagram"
-            data-im-diagram
-            viewBox="0 0 240 220"
-            role="img"
-            aria-label="Rust experiment diagram, built up as parts are matched">
-
-            <!-- Static background art (outlines, labels) can live here -
-                 the script only ever adds/removes its own .im-diagram-piece
-                 groups, so anything else you put in this <svg> is left alone. -->
-
-          </svg>
-          <p class="item-match-diagram-placeholder" data-im-diagram-placeholder>
-            Match each highlighted part to build the diagram.
-          </p>
-        </div>
-
-        <div class="item-match-row" data-im-row>
-
-          <!-- 1st item: the highlighted part of the experiment to match -->
-          <div class="dd-reference item-match-reference" data-im-prompt>
-
-            <span class="dd-caption">
-              <span data-im-item-label></span>
-              ·
-              <span data-im-round-label></span>
-            </span>
-
-            <div data-im-prompt-content></div>
-
-          </div>
-
-          <!-- 2nd-4th items: this round's symbol choices -->
+              <div class="animal-stack-visual challenge-hidden" id="animalStackVisual" hidden>
+                <p class="stack-visual-title" id="stackVisualTitle">Each counter is one animal you found</p>
+                <div class="bar-stack-row" id="stackRow"></div>
+              </div>              
+            </div>
+          
           <div
-            class="item-match-options"
-            data-im-options
-            role="group"
-            aria-label="Scientific symbol choices"
-          ></div>
-
-        </div>
-
-      </div>
-
-       <div
-        class="variable-feedback stage-feedback"
-        data-feedback="m2-symbol-match"
-        role="status"
-        aria-live="polite">
-      </div>
-
-      <p class="activity-prompt">
-        Match all four parts of the experiment.
-        When all four are complete, press <strong>CHECK</strong>.
-      </p>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ==================================================
-     STAGE 4: LABEL THE SCIENTIFIC DIAGRAM (DRAG AND DROP)
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-drag-and-drop">
-
-  <div class="mission-window">
-
-    <div class="mission-window-bar">
-      <strong>Deep field terminal // mission 2: label the diagram</strong>
-
-      <div class="window-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div class="mission-window-body">
-
-      <div class="stage-progress-row">
-        <p class="mission-label">Mission 02</p>
-        <span class="stage-progress-chip">Stage 4 of 8</span>
-      </div>
-
-      <h3>Label the scientific diagram</h3>
-
-      <p class="mission-subtitle">
-        <strong>Your task:</strong>
-        Here is the diagram you built. Drag each label to the end of the
-        line that points to it.
-      </p>
-
-      <div class="dd-activity diagram-label-dd" id="m2DiagramLabel" data-activity>
-
-        <div class="diagram-label-board">
-
-          <!-- Filled in with a copy of the completed diagram from the
-               previous stage (#m2RustSymbolMatchTest) - see
-               syncDiagramLabelBoard() in lesson5.js. -->
-          <svg
-            class="diagram-label-diagram"
-            data-dl-diagram
-            viewBox="-120 -110 480 440"
-            role="img"
-            aria-label="Completed rust experiment diagram">
-          </svg>
-
-          <svg class="diagram-label-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <line data-dl-line="jar-lid" x1="90" y1="35" x2="74" y2="35"></line>
-            <line data-dl-line="jar" x1="90" y1="50" x2="74" y2="50"></line>
-            <line data-dl-line="steel-wool" x1="90" y1="65" x2="70" y2="58"></line>
-          </svg>
-
-          <div data-dd-slot="label-jar-lid" data-dd-answer="jar-lid" style="--dd-x: 90%; --dd-y: 35%;" aria-label="Drop the label for the jar lid here"></div>
-          <div data-dd-slot="label-jar" data-dd-answer="jar" style="--dd-x: 90%; --dd-y: 50%;" aria-label="Drop the label for the jar here"></div>
-          <div data-dd-slot="label-steel-wool" data-dd-answer="steel-wool" style="--dd-x: 90%; --dd-y: 65%;" aria-label="Drop the label for the steel wool here"></div>
-
-        </div>
-
-        <div class="dd-tray diagram-label-tray" data-dd-tray aria-label="Diagram labels">
-          <div class="m4-label-token" data-dd-item="jar">Jar</div>
-          <div class="m4-label-token" data-dd-item="jar-lid">Jar Lid</div>
-          <div class="m4-label-token" data-dd-item="steel-wool">Steel Wool</div>
-        </div>
-
-      </div>
-
-      <p class="activity-prompt">
-        Place all three labels, then press <strong>CHECK</strong>.
-      </p>
-
-      <div
-        class="variable-feedback stage-feedback"
-        data-feedback="m2-drag-and-drop"
-        role="status"
-        aria-live="polite">
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ==================================================
-     STAGE 5: DRAW THE RUST EXPERIMENT
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-draw-rust-experiment">
-
-  <div class="mission-window">
-
-    <div class="mission-window-bar">
-      <strong>Deep field terminal // mission 2: scientific drawing</strong>
-
-      <div class="window-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div class="mission-window-body">
-
-      <div class="stage-progress-row">
-        <p class="mission-label">Mission 02</p>
-        <span class="stage-progress-chip">Stage 5 of 8</span>
-      </div>
-
-      <h3>Draw the rust experiment</h3>
-
-      <p class="mission-subtitle">
-        <strong>Your task:</strong>
-        Draw a scientific diagram of this experiment.
-      </p>
-
-      <figure class="media-card">
-        <img
-          src="../images/lesson5/mission2/rust-experiment.png"
-          alt="Rust experiment showing iron wool in water, saltwater and oil"
-        >
-
-        <figcaption>
-          Use this experiment set-up as the reference for your scientific drawing.
-        </figcaption>
-      </figure>
-
-      <div class="story-copy" style="margin-top:16px;">
-        <h4>Use your Science Check</h4>
-
-        <p>
-          Use the checklist you unlocked earlier to help you create
-          your scientific diagram.
-        </p>
-
-        <p style="margin-top:10px;">
-          Remember to use the scientific symbols you identified in the previous stage.
-        </p>
-      </div>
-
-      <p class="activity-prompt">
-        When you have finished your scientific drawing,
-        press <strong>CHECK</strong>.
-      </p>
-
-      <div
-        class="variable-feedback stage-feedback"
-        data-feedback="m2-draw-rust-experiment"
-        role="status"
-        aria-live="polite">
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ==================================================
-     STAGE 6: CHOOSE THE SCIENTIFIC DRAWING
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-choose-scientific-drawing">
-
-  <div class="mission-window">
-
-    <div class="mission-window-bar">
-      <strong>Deep field terminal // mission 2: scientific drawing check</strong>
-
-      <div class="window-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div class="mission-window-body">
-
-      <div class="stage-progress-row">
-        <p class="mission-label">Mission 02</p>
-        <span class="stage-progress-chip">Stage 6 of 8</span>
-      </div>
-
-      <h3>Which is the correct scientific drawing?</h3>
-
-      <p class="mission-subtitle">
-        Compare the drawings below with the experiment.
-        Select the option that best follows the rules of a scientific drawing.
-      </p>
-
-
-      <!-- Small reference image -->
-      <div class="mission-image-container">
-        <img
-          src="../images/lesson5/mission2/rust-experiment.png"
-          alt="Reference image of the rust experiment with iron wool in water, saltwater and oil"
-          style="max-width:420px;"
-        >
-      </div>
-
-
-      <p class="activity-prompt">
-        <strong>Your task:</strong>
-        Select the correct scientific drawing of this experiment.
-      </p>
-
-
-      <div id="m2ChooseDrawing" data-activity>
-        <div data-mc-question data-mc-answer="option-2">
-          <div
-            class="choice-grid"
-            data-mc-choices
-            role="group"
-            aria-label="Scientific drawing options"
+            class="stop-and-check"
+            id="collectingVisualisingStopAndCheck"
+            data-activity
+            hidden
           >
 
-            <button
-              type="button"
-              class="choice-card media-choice"
-              data-mc-choice="option-1"
-            >
-              <img
-                class="choice-image"
-                src="../images/lesson5/mission2/choose_drawing/rust-drawing-option-1.png"
-                alt="Scientific drawing option 1"
-              >
-              <h4>Option A</h4>
-            </button>
+            <div class="stop-and-check-content">
+              <p>
+                Which one most clearly shows the difference between numbers of each animal?
+              </p>
+            </div>
 
+            <div class="stop-and-check-answer" data-button-reveal hidden>
+              You can easily see differences between the numbers of each animal when the counters are laid out in a flat line.
+              This looks like a <strong>bar graph</strong>.
+              It is useful for comparing categories or groups.
+            </div>
 
-            <button
-              type="button"
-              class="choice-card media-choice"
-              data-mc-choice="option-2"
-            >
-              <img
-                class="choice-image"
-                src="../images/lesson5/mission2/choose_drawing/rust-drawing-option-3.png"
-                alt="Scientific drawing option 2"
-              >
-              <h4>Option B</h4>
-            </button>
-
-
-            <button
-              type="button"
-              class="choice-card media-choice"
-              data-mc-choice="option-3"
-            >
-              <img
-                class="choice-image"
-                src="../images/lesson5/mission2/choose_drawing/rust-drawing-option-2.png"
-                alt="Scientific drawing option 3"
-              >
-              <h4>Option C</h4>
+            <button type="button" class="stop-and-check-button general-button" data-button-trigger>
+              <p>Check Your Answer</p>
+              <p class="bounce-symbol">✅</p>
             </button>
 
           </div>
-        </div>
-      </div>
+          <div class="reset-button-container">
+            <button type="button" class="general-button reset-btn" id="resetBarPracticeButton" data-reset-trigger>Reset</button>
+          </div>
+        </Section>
 
+      <!-- ==================================================
+           PART B - LEARN HOW TO CONSTRUCT A BAR GRAPH
+           ================================================== -->
+      <Section id="bar-construction" title="Part B: Record Data for Site 1 in a Bar Graph" next-id="bar-follow-up" next-button-id="barConstructionNext" locked hide-next>
 
-      <p class="activity-prompt">
-        Select one drawing, then press <strong>CHECK</strong>.
-      </p>
-
-
-      <div
-        class="variable-feedback stage-feedback"
-        data-feedback="m2-choose-scientific-drawing"
-        role="status"
-        aria-live="polite">
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ==================================================
-     STAGE 7: RUST EXPERIMENT RESULTS
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-rust-results">
-
-  <div class="mission-window">
-
-    <div class="mission-window-bar">
-      <strong>Deep field terminal // mission 2: experiment results</strong>
-
-      <div class="window-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-
-    <div class="mission-window-body">
-
-      <div class="stage-progress-row">
-        <p class="mission-label">Mission 02</p>
-        <span class="stage-progress-chip">Stage 7 of 8</span>
-      </div>
-
-      <h3>Rust experiment results</h3>
-
-      <p class="mission-subtitle">
-        Here are the results from the rust experiment after
-        <strong>24 hours</strong>.
-      </p>
-
-      <figure class="media-card">
-        <img
-          src="../images/lesson5/mission2/rust-experiment-after.png"
-          alt="Rust experiment after 24 hours showing iron wool in water, saltwater and oil"
-        >
-
-        <figcaption>
-          Rust experiment after 24 hours
-        </figcaption>
-      </figure>
-
-      <div class="story-copy" style="margin-top:16px;">
-        <h4>What can you conclude?</h4>
-
-        <p>
-          Compare the iron wool in the three jars.
-          Which liquid caused the most rust?
-        </p>
-
-        <p style="margin-top:10px;">
-          Which liquid appears to protect the iron from rusting?
-        </p>
-      </div>
-
-      <p class="activity-prompt">
-        Think about your conclusion, then press <strong>CHECK</strong>
-        to reveal the answer.
-      </p>
-
-      <div
-        class="variable-feedback stage-feedback"
-        data-feedback="m2-rust-results"
-        role="status"
-        aria-live="polite">
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ==================================================
-     STAGE 8: CAMERA IS FIXED
-     ================================================== -->
-<div class="mission-stage" data-stage-id="m2-camera-fixed">
-    <div class="mission-window">
-
-      <div class="mission-window-bar">
-        <strong>Deep field terminal // mission 2: fixed camera</strong>
-        <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-      </div>
-
-      <div class="mission-window-body">
-
-        <div class="stage-progress-row">
-          <p class="mission-label">Mission 02</p>
-          <span class="stage-progress-chip">Stage 8 of 8</span>
-        </div>
-
-        <h3>Mission 2 Complete</h3>
-
-        <div class="story-copy">
-          <h4>The camera is fixed!</h4>
-          <p>
-            We used oil on the camera to keep it from rusting.
+        <!-- <div class="diagram-box diagram-activity partb-intro-note">
+          <p class="activity-instruction">
+            Your team repeated the survey of animals at site 1 on three different nights. Night 1, Night 2 and Night 3. 
+            Use the button to calculate averages for each animal. 
+            Then use the average values to build a bar graph.  
           </p>
-        </div>
+        </div> -->
 
-        <div id="m2GoShallowWaters" data-activity>
-          <div id="goShallowWatersVideoContainer" class="shallow-waters-media" data-button-reveal hidden></div>
-
-          <div
-            role="group"
-            aria-label="Go to shallow waters"
-            style="display: flex; justify-content: center; margin-top: 20px;"
+        <div class="lesson4-workbench partb-workbench" id="partBWorkbench">
+        <div class="partb-data-card">
+          <button
+            type="button"
+            style="width: 220px; color: black; background: var(--yellow); float: right;"
+            class="general-button project-resource-button bar-data-resource-button"
+            onclick="openModal('pdf', { src: '../images/lesson4/visualising-data.pdf', title: 'Visualising Fair Test Data' })"
           >
-            <button
-              type="button"
-              class="choice-card media-choice"
-              data-button-trigger
-              style="width: 30%"
-            >
-              <h4>Press to Go to Shallow Waters</h4>
-            </button>
+            <span class="bounce-symbol" aria-hidden="true">📄</span>
+            <span>How to make a bar graph</span>
+          </button>
+          <span class="challenge-step-label">Step 1 · Get the average values</span>
+          <!-- <h3>Site 1 · Three nights of spotlighting</h3> -->
+          <p>
+            Your team repeated the survey of animals at <strong>Site 1</strong> on three different nights: Night 1, Night 2 and Night 3.
+            Use the button to calculate the average for each animal, then use those average values to build your bar graph.
+          </p>
+
+          <div class="partb-table-wrap">
+            <table class="practice-table partb-data-table" aria-label="Animal counts across three spotlight survey nights at Site 1">
+              <caption>Table 1. Site 1 animal counts across three nights</caption>
+              <thead>
+                <tr>
+                  <th>Type of animal</th>
+                  <th>Night 1</th>
+                  <th>Night 2</th>
+                  <th>Night 3</th>
+                  <th>Average</th>
+                </tr>
+              </thead>
+              <tbody id="partBTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="partb-table-actions" id="partBAveragesActivity" data-activity data-reveals="#partBConstructionStage">
+            <button type="button" class="general-button" id="partBCalculateAveragesButton" data-button-trigger>Calculate averages</button>
+            <!-- <div class="challenge-feedback" id="partBTableFeedback" role="status" aria-live="polite">
+              <strong>Start with your repeated surveys.</strong>
+              Night 1 matches the animals counted in the forest activity. The graph will use the average across all three nights.
+            </div> -->
           </div>
         </div>
 
-        <p class="activity-prompt">
-          Before we go to the deep sea, let's make sure that you can use the camera to capture some animals in the shallow ocean waters.
-        </p>
+        <div class="partb-construction-stage challenge-hidden" id="partBConstructionStage" hidden>
+          <div class="partb-construction-grid" id="partBAxisActivity" data-activity>
+            <div class="graph-control-card partb-control-panel">
+              <span class="challenge-step-label" id="partBStepLabel">Step 2 · Label the graph axes</span>
+              <!-- <h3 id="partBControlHeading">Label your graph axes</h3> -->
+              <!-- <p id="partBControlText">
+                Look at the possible labels shown here. Choose one label to drag onto the <strong>x-axis</strong>. 
+                This describes the categories or groups you are changing or comparing.
+                Then choose another label to drag onto the <strong>y-axis</strong> to show what you are measuring.
+              </p> -->
 
-        <div
-          class="variable-feedback stage-feedback"
-          data-feedback="m2-camera-fixed"
-          role="status"
-          aria-live="polite">
+              <div class="partb-label-bank" id="partBLabelBank" data-dd-tray aria-label="Bar graph axis label cards">
+                <button type="button" class="partb-axis-card" id="partBCardAnimal" data-dd-item="animal">Type of animal</button>
+                <button type="button" class="partb-axis-card" id="partBCardNumber" data-dd-item="number">Number of animals</button>
+                <button type="button" class="partb-axis-card" id="partBCardNight" data-dd-item="night">Night number</button>
+                <button type="button" class="partb-axis-card" id="partBCardTemperature" data-dd-item="temperature">Temperature</button>
+              </div>
+
+              <div class="partb-unit-check challenge-hidden" id="partBUnitCheck" data-activity data-activity-depends-on="partBAxisActivity" hidden>
+                <div data-mc-question data-mc-answer="hectare">
+                  <p><strong>Unit check:</strong> Does the 'Number of animals' axis label need a measurement unit, and if so, which one?</p>
+                  <div class="partb-unit-buttons" data-mc-choices>
+                    <button type="button" class="challenge-choice" data-mc-choice="none">No unit needed</button>
+                    <button type="button" class="challenge-choice" data-mc-choice="hectare">animals per hectare</button>
+                    <button type="button" class="challenge-choice" data-mc-choice="seconds">seconds</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="partb-builder-prompt challenge-hidden" id="partBBuilderPrompt" hidden>
+                <strong id="partBBuilderPromptTitle">Choose an animal category.</strong>
+                <span id="partBBuilderPromptText">Click one of the animal names on the x-axis to start.</span>
+              </div>
+
+              <div class="challenge-feedback" id="partBFeedback" role="status" aria-live="polite">
+                <strong>Start with the axes.</strong>
+                A bar graph needs clear labels before any bars are drawn.
+              </div>
+            </div>
+
+            <div class="graph-stage-card partb-graph-card pop-in">
+              <div class="graph-stage-heading">
+                <div>
+                  <h3>Average animal counts from spotlight surveys at Site 1</h3>
+                  <!-- <p id="partBGraphHint">First label the graph. Then you will construct each bar from its plotted point.</p> -->
+                </div>
+                <!-- <span class="graph-badge" id="partBGraphBadge">Axes</span> -->
+              </div>
+
+              <div class="graph-svg-wrap" id="partBPlotActivity" data-activity data-plot-enabled-by="partBUnitCheck">
+                <svg class="graph-svg" id="partBGraphSvg" viewBox="0 0 760 500" role="img" aria-label="Interactive bar graph of average animal counts at Site 1">
+                  <rect x="0" y="0" width="760" height="500" rx="18" fill="white"></rect>
+
+                  <g aria-hidden="true" id="partBGridLayer"></g>
+                  <line class="graph-axis" x1="120" y1="370" x2="715" y2="370"></line>
+                  <line class="graph-axis" x1="120" y1="370" x2="120" y2="35"></line>
+
+                  <g id="partBYTicksLayer"></g>
+                  <g id="partBXCategoriesLayer"></g>
+
+                  <text class="axis-label partb-final-axis-label" id="partBXAxisLabel" x="415" y="470" text-anchor="middle">Type of animal</text>
+                  <text class="axis-label partb-final-axis-label" id="partBYAxisLabel" x="32" y="205" text-anchor="middle" transform="rotate(-90 32 205)">Number of animals<tspan id="partBYAxisUnit"></tspan></text>
+
+                  <line class="partb-guide" id="partBVerticalGuide" x1="0" y1="40" x2="0" y2="370"></line>
+                  <line class="partb-guide" id="partBHorizontalGuide" x1="120" y1="0" x2="710" y2="0"></line>
+                  <g id="partBBarsLayer"></g>
+                  <g id="partBOutlinesLayer"></g>
+                  <circle class="partb-intersection-point" id="partBIntersectionPoint" cx="0" cy="0" r="8"></circle>
+                  <g id="partBValuesLayer"></g>
+                </svg>
+                <!-- HTML drop slots laid over the SVG's axis-label positions (see .axis-slot in lesson4.css) -->
+                <div class="axis-slot axis-slot-x" id="partBXAxisSlot" data-dd-slot="x" data-dd-answer="animal" aria-label="Drop the x-axis label here">x-axis label</div>
+                <div class="axis-slot axis-slot-y" id="partBYAxisSlot" data-dd-slot="y" data-dd-answer="number" aria-label="Drop the y-axis label here">y-axis label</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="challenge-complete partb-complete-note challenge-hidden" id="partBCompleteNote" hidden>
+            <strong>Bar graph constructed.</strong>
+            You have represented all five average survey values. A value of <strong>0</strong> is shown as a zero-height bar on the baseline.
+          </div> -->
+
+          <div class="partb-graph-check challenge-hidden" id="partBGraphCheck" data-activity data-select-required="4" hidden>
+            <span class="challenge-step-label">Before you analyse</span>
+            <h3>Quick bar-graph check</h3>
+            <p>The graph was built using the same construction rules for every category.</p>
+
+            <div class="partb-check-grid" aria-label="Bar graph construction checklist">
+              <label class="partb-check-item" data-select-item>
+                <input type="checkbox" />
+                <span>Every bar starts at <strong>zero</strong>.</span>
+              </label>
+              <label class="partb-check-item" data-select-item>
+                <input type="checkbox" />
+                <span>Every bar has the <strong>same width</strong>.</span>
+              </label>
+              <label class="partb-check-item" data-select-item>
+                <input type="checkbox" />
+                <span>The gaps between bars are <strong>equal</strong>.</span>
+              </label>
+              <label class="partb-check-item" data-select-item>
+                <input type="checkbox" />
+                <span>Each bar height matches the <strong>average</strong> in the table, including a zero-height bar for <strong>feral deer</strong>.</span>
+              </label>
+            </div>
+
+            <button type="button" class="general-button" id="partBStartAnalysisButton" data-select-reveal hidden>Analyse the graph</button>
+          </div>
+
+          <div class="partb-analysis-panel challenge-hidden" id="partBAnalysisPanel" data-activity data-mc-sequence data-mc-feedback-target="#partBAnalysisFeedback" hidden>
+            <span class="challenge-step-label">Step 5 · Analyse the graph</span>
+            <!-- <h3>What does your bar graph tell you?</h3> -->
+            <!-- <p>Use the finished graph to compare the average number of animals observed.</p> -->
+
+            <!-- data-mc-choice is the bar index (0-4, in the order of the graph's x-axis) for animal questions -->
+            <div class="partb-analysis-question" id="partBAnalysisQuestion1" data-mc-question data-incorrect-title="Look for the tallest bar." data-incorrect-text=" Compare the heights of all five bars, then try again." data-mc-answer="0" data-partb-analysis="highest">
+              <span class="partb-analysis-progress">Question 1 of 3</span>
+              <p class="challenge-question"><strong>Which animal was found in the highest average number?</strong></p>
+              <div class="challenge-choice-grid partb-analysis-animal-grid" data-mc-choices>
+                <button type="button" class="challenge-choice" data-mc-choice="0">Leadbeater's Possum</button>
+                <button type="button" class="challenge-choice" data-mc-choice="1">Yellow-bellied Glider</button>
+                <button type="button" class="challenge-choice" data-mc-choice="2">Ringtail Possum</button>
+                <button type="button" class="challenge-choice" data-mc-choice="3">Powerful Owl</button>
+                <button type="button" class="challenge-choice" data-mc-choice="4">Feral deer</button>
+              </div>
+            </div>
+
+            <div class="partb-analysis-question" id="partBAnalysisQuestion2" data-mc-question data-incorrect-title="Read the top of the Leadbeater's Possum bar." data-incorrect-text=" Use the y-axis scale or the value above the bar." data-mc-answer="6" data-partb-analysis="leadbeaters" hidden>
+              <span class="partb-analysis-progress">Question 2 of 3</span>
+              <p class="challenge-question"><strong>On average, how many Leadbeater's Possums were observed?</strong></p>
+              <div class="challenge-choice-grid three-choice" id="partBLeadbeatersChoices" data-mc-choices>
+                <button type="button" class="challenge-choice" data-mc-choice="5">5</button>
+                <button type="button" class="challenge-choice" data-mc-choice="6">6</button>
+                <button type="button" class="challenge-choice" data-mc-choice="7">7</button>
+              </div>
+            </div>
+
+            <div class="partb-analysis-question" id="partBAnalysisQuestion3" data-mc-question data-incorrect-title="Look for the lowest value." data-incorrect-text=" A value of 0 has a zero-height bar, so there may be no coloured bar above the baseline." data-mc-answer="4" data-partb-analysis="lowest" hidden>
+              <span class="partb-analysis-progress">Question 3 of 3</span>
+              <p class="challenge-question"><strong>Which animal was found in the lowest average number?</strong></p>
+              <div class="challenge-choice-grid partb-analysis-animal-grid" data-mc-choices>
+                <button type="button" class="challenge-choice" data-mc-choice="0">Leadbeater's Possum</button>
+                <button type="button" class="challenge-choice" data-mc-choice="1">Yellow-bellied Glider</button>
+                <button type="button" class="challenge-choice" data-mc-choice="2">Ringtail Possum</button>
+                <button type="button" class="challenge-choice" data-mc-choice="3">Powerful Owl</button>
+                <button type="button" class="challenge-choice" data-mc-choice="4">Feral deer</button>
+              </div>
+            </div>
+
+            <div class="challenge-feedback" id="partBAnalysisFeedback" role="status" aria-live="polite">
+              <strong>Read the bar heights.</strong>
+              Start by finding the tallest bar.
+            </div>
+
+            <div class="partb-baseline-summary challenge-hidden" id="partBBaselineSummary" hidden>
+              <span class="challenge-step-label">Site 1 survey complete</span>
+              <h3>These are your Site 1 results</h3>
+
+              <div class="partb-baseline-facts">
+                <div class="partb-baseline-fact"><strong>Highest average</strong><span id="partBBaselineHighest">—</span></div>
+                <div class="partb-baseline-fact"><strong>Number of Leadbeater's Possums</strong><span id="partBBaselineLeadbeaters">—</span></div>
+                <div class="partb-baseline-fact"><strong>Lowest average</strong><span id="partBBaselineLowest">—</span></div>
+                <div class="partb-baseline-fact"><strong>Number of Feral Deers</strong><span id="partBBaselineFeralDeer">—</span></div>
+              </div>
+
+              <p class="partb-story-hook">
+                <strong>Keep this result in mind.</strong> These averages describe <strong>Site 1</strong>.
+                Later, you will survey <strong>Site 2</strong> and compare its results with Site 1.
+              </p>
+            </div>
+          </div>
         </div>
 
-      </div>
+        </div>
+
+        <div class="reset-button-container">
+          <button type="button" class="general-button reset-btn" id="resetPartBConstructionButton" data-reset-trigger>Reset Part B</button>
+        </div>
+      </Section>
+
+
+      <!-- ==================================================
+           PART C - SITE 2 BAR GRAPH PRACTICE
+           Students receive the three-night Site 2 survey results and graph them.
+           ================================================== -->
+      <Section id="bar-follow-up" title="Part C : Record Data for Site 2 in a Bar Graph" next-id="bar-compare" next-button-id="barFollowUpNext" locked hide-next class="student-challenge partc-site2-workbench">
+
+        <div class="partc-story-card partc-site2-story">
+          <div class="partc-site2-story-copy">
+            <!-- <span class="challenge-step-label">Record Data for Site 2 in a Bar Graph</span> -->
+            <h3>Now investigate the second forest site</h3>
+            <p>
+              Your ranger team has surveyed <strong>Site 2</strong> over three nights. You do not need to repeat the spotlighting activity here —
+              the survey results have already been collected for you. Use the data below to build a bar graph for Site 2.
+            </p>
+          </div>
+        </div>
+
+        <div class="partc-site-image-stage" role="img" aria-label="Large image for a nighttime photograph of Site 2 without animals">
+          <div class="partc-site-image">
+            <img src="../images/lesson4/site_2_night.png" alt="Nighttime forest">
+          </div>
+        </div>
+
+        <div class="lesson4-workbench partc-workbench">
+        <div class="partc-data-card">
+          <span class="challenge-step-label">Survey Results for Site 2</span>
+          <!-- <h3>Site 2 · Three nights of surveying</h3> -->
+          <p>
+            The survey was conducted over three nights. 
+            The average results are shown in Table 2.
+            The averages have already been calculated for this activity.
+            Use the <strong>Average</strong> column when you build each bar.
+          </p>
+
+          <div class="partc-table-wrap">
+            <table class="practice-table partc-data-table" aria-label="Site 2 animal counts across three spotlight survey nights">
+              <caption>Table 2. Site 2 animal counts across three nights</caption>
+              <thead>
+                <tr>
+                  <th>Type of animal</th>
+                  <th>Night 1</th>
+                  <th>Night 2</th>
+                  <th>Night 3</th>
+                  <th>Average</th>
+                </tr>
+              </thead>
+              <tbody id="partCTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="partc-build-grid" id="partCAxisActivity" data-activity>
+          <div class="graph-control-card partc-control-card">
+            <span class="challenge-step-label" id="partCStepLabel">Step 2 · Label your graph axes</span>
+            <!-- <h3 id="partCControlHeading">Set up your Site 2 bar graph</h3> -->
+            <!-- <p id="partCControlText">
+              Use the table to decide what belongs on the x-axis and y-axis.
+              Drag the correct labels onto the graph.
+            </p> -->
+
+            <div class="partc-axis-bank" id="partCAxisBank" data-dd-tray aria-label="Axis label cards">
+              <button type="button" class="partc-axis-card" id="partCCardAnimal" data-dd-item="animal">Type of animal</button>
+              <button type="button" class="partc-axis-card" id="partCCardNumber" data-dd-item="number">Number of animals</button>
+              <button type="button" class="partc-axis-card" id="partCCardNight" data-dd-item="night">Night number</button>
+              <button type="button" class="partc-axis-card" id="partCCardAverage" data-dd-item="average">Average</button>
+            </div>
+
+            <div class="partc-unit-check challenge-hidden" id="partCUnitCheck" data-activity data-activity-depends-on="partCAxisActivity" hidden>
+              <div data-mc-question data-mc-answer="hectare">
+                <p><strong>Do these axes need a measurement unit?</strong> Check the data before the graph is revealed.</p>
+                <div class="partc-unit-buttons" data-mc-choices>
+                  <button type="button" class="challenge-choice" data-mc-choice="none">No unit needed</button>
+                  <button type="button" class="challenge-choice" data-mc-choice="hectare">animals per hectare</button>
+                  <button type="button" class="challenge-choice" data-mc-choice="seconds">seconds</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="partc-slider-stage" id="partCSliderStage" data-activity hidden>
+              <!-- <span class="partc-slider-progress">Step 3 · Build all five bars</span>
+              <h4>Use the averages to set each bar height</h4>
+              <p class="partc-slider-instruction">
+                Move each slider until its bar matches the average in the Site 2 table, then check all five bars.
+              </p> -->
+
+              <div class="bar-builder-controls partc-bar-builder-controls" id="partCBarBuilderControls">
+                <div class="bar-builder-row" data-partc-bar-row="0" data-slider-row data-slider-target="1">
+                  <label for="partCBarPractice0">Leadbeater's Possum</label>
+                  <input id="partCBarPractice0" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="0" data-slider />
+                  <!-- <output for="partCBarPractice0">0</output> -->
+                </div>
+                <div class="bar-builder-row" data-partc-bar-row="1" data-slider-row data-slider-target="1">
+                  <label for="partCBarPractice1">Yellow-bellied Glider</label>
+                  <input id="partCBarPractice1" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="1" data-slider />
+                  <!-- <output for="partCBarPractice1">0</output> -->
+                </div>
+                <div class="bar-builder-row" data-partc-bar-row="2" data-slider-row data-slider-target="4">
+                  <label for="partCBarPractice2">Ringtail Possum</label>
+                  <input id="partCBarPractice2" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="2" data-slider />
+                  <!-- <output for="partCBarPractice2">0</output> -->
+                </div>
+                <div class="bar-builder-row" data-partc-bar-row="3" data-slider-row data-slider-target="1">
+                  <label for="partCBarPractice3">Powerful Owl</label>
+                  <input id="partCBarPractice3" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="3" data-slider />
+                  <!-- <output for="partCBarPractice3">0</output> -->
+                </div>
+                <div class="bar-builder-row" data-partc-bar-row="4" data-slider-row data-slider-target="3">
+                  <label for="partCBarPractice4">Feral deer</label>
+                  <input id="partCBarPractice4" type="range" min="0" max="10" step="1" value="0" data-partc-bar-practice="4" data-slider />
+                  <!-- <output for="partCBarPractice4">0</output> -->
+                </div>
+              </div>
+
+              <button type="button" class="general-button lesson4-check-button" id="checkPartCBarsButton" data-slider-check>
+                Check my bars
+              </button>
+            </div>
+
+            <!-- <div class="challenge-feedback" id="partCFeedback" role="status" aria-live="polite">
+              <strong>Use the Site 2 table.</strong>
+              The category belongs on one axis and the number counted belongs on the other.
+            </div> -->
+          </div>
+
+          <div class="graph-stage-card partc-graph-card">
+            <div class="graph-stage-heading">
+              <div>
+                <h3>Average animal counts from spotlight surveys at Site 2</h3>
+                <!-- <p id="partCGraphHint">Label the axes first. The categories and scale will appear when the graph is ready.</p> -->
+              </div>
+              <!-- <span class="graph-badge" id="partCGraphBadge">Set up</span> -->
+            </div>
+
+            <div class="graph-svg-wrap">
+              <svg class="graph-svg" id="partCGraphSvg" viewBox="0 0 760 500" role="img" aria-label="Student bar graph of average animal counts at Site 2">
+                <rect x="0" y="0" width="760" height="500" rx="18" fill="white"></rect>
+
+                <g class="partc-scaffold-layer" id="partCScaffoldLayer" aria-hidden="true">
+                  <g id="partCGridLayer"></g>
+                  <g id="partCYTicksLayer"></g>
+                  <g id="partCXCategoriesLayer"></g>
+                </g>
+
+                <line class="graph-axis" x1="120" y1="370" x2="715" y2="370"></line>
+                <line class="graph-axis" x1="120" y1="370" x2="120" y2="35"></line>
+
+                <text class="axis-label partc-final-axis-label" id="partCXAxisLabel" x="415" y="470" text-anchor="middle">Type of animal</text>
+                <text class="axis-label partc-final-axis-label" id="partCYAxisLabel" x="32" y="205" text-anchor="middle" transform="rotate(-90 32 205)">Number of animals<tspan id="partCYAxisUnit"></tspan></text>
+
+                <g id="partCBarsLayer"></g>
+                <g id="partCValuesLayer"></g>
+              </svg>
+              <!-- HTML drop slots laid over the SVG's axis-label positions (see .axis-slot in lesson4.css) -->
+              <div class="axis-slot axis-slot-x" id="partCXAxisSlot" data-dd-slot="x" data-dd-answer="animal" aria-label="Drop the x-axis label here">x-axis label</div>
+              <div class="axis-slot axis-slot-y" id="partCYAxisSlot" data-dd-slot="y" data-dd-answer="number" aria-label="Drop the y-axis label here">y-axis label</div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+
+<div class="partc-analysis-panel challenge-hidden" id="partCAnalysisPanel" data-activity data-mc-sequence data-mc-feedback-target="#partCAnalysisFeedback" hidden>
+  <span class="challenge-step-label">Step 4 · Analyse your graph</span>
+
+  <h3>What does the Site 2 survey show?</h3>
+
+  <p>
+    Use the graph you constructed. The relevant bars will highlight as you answer.
+  </p>
+
+
+  <!-- QUESTION 1 -->
+  <div class="partc-analysis-question" id="partCAnalysisQuestion1" data-mc-question data-incorrect-title="Look at the Leadbeater's Possum bar." data-incorrect-text=" Read its height using the y-axis." data-mc-answer="1" data-partc-analysis="leadbeaters">
+    <span class="partc-analysis-progress">Question 1 of 3</span>
+
+    <p class="challenge-question">
+      <strong>
+        How many Leadbeater's Possums were found on average at Site 2?
+      </strong>
+    </p>
+
+    <div class="challenge-choice-grid three-choice" data-mc-choices>
+      <button type="button" class="challenge-choice" data-mc-choice="0">0 animals</button>
+      <button type="button" class="challenge-choice" data-mc-choice="1">1 animal</button>
+      <button type="button" class="challenge-choice" data-mc-choice="2">2 animals</button>
     </div>
   </div>
 
-</section>
 
-            <!-- ==================================================
-                 MISSION 4: SHALLOW-WATER CAMERA TRIALS (4 activities)
-                 Activity 1: identify fish using visible features
-                 Activity 2: choose a good scientific drawing
-                 Activity 3: drag-and-drop labels on a batfish drawing
-                 Activity 4: independently label a frogfish
-                 ================================================== -->
-            <section class="section expedition-mission locked" id="mission-4" data-mission-index="2">
-
-              <!-- ACTIVITY 1 ------------------------------------------------ -->
-              <div class="mission-stage" data-stage-id="m4-identify">
-
-                <div class="mission-window">
-
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // mission 3: shallow-water camera test</strong>
-
-                    <div class="window-dots" aria-hidden="true">
-                      <span></span><span></span><span></span>
-                    </div>
-                  </div>
-
-
-                  <div class="mission-window-body">
-
-                    <div class="stage-progress-row">
-                      <p class="mission-label">Mission 03 · Activity 1</p>
-                      <span class="stage-progress-chip">Activity 1 of 4</span>
-                    </div>
-
-
-                    <h3>Camera repaired — test it in shallow water</h3>
-
-
-                    <div class="m4-preamble">
-                      <strong>System update:</strong>
-                      The camera repairs are complete. Before taking it back into the deep sea,
-                      test it in shallow water where the animals are easier to observe.
-
-                      Watch the camera footage carefully, then identify the fish by comparing
-                      its <strong>observable features</strong>.
-                    </div>
-
-
-                    <div class="m4-feature-cues" aria-label="Features to compare">
-                      <span>Body shape</span>
-                      <span>Fin shape &amp; position</span>
-                      <span>Mouth shape</span>
-                      <span>Markings</span>
-                    </div>
-
-
-                    <article class="shallow-fish-question">
-
-                      <h4>Live camera observation</h4>
-
-                      <p>
-                        Watch the footage, then select the reference fish that best matches
-                        the animal shown by the camera.
-                      </p>
-
-
-                      <!-- UNDERWATER VIDEO -->
-                      <div class="fish-question-image">
-
-                        <video
-                          src="../videos/lesson5/visdeurbel-fish-1.mp4"
-                          autoplay
-                          muted
-                          loop
-                          playsinline
-                          controls
-                          preload="metadata"
-                          aria-label="Underwater camera footage showing a fish to identify"
-                          style="width:100%; display:block;"
-                        >
-                          Your browser does not support the video element.
-                        </video>
-
-                      </div>
-
-                      <div class="m4-fish-preview pop-in" id="m4FishPreview" hidden>
-                        <p><strong id="m4FishPreviewLabel">Selected reference</strong></p>
-                        <img id="m4FishPreviewImage" src="" alt="">
-                      </div>
-
-                      <!-- THREE ANSWER CHOICES -->
-                      <div id="m4IdentifyFish" data-activity>
-                        <div data-mc-question data-mc-answer="rudd">
-                          <div
-                            class="choice-grid"
-                            data-mc-choices
-                            role="group"
-                            aria-label="Choose the fish that matches the underwater footage"
-                          >
-
-                            <button
-                              type="button"
-                              class="choice-card media-choice"
-                              data-mc-choice="perch"
-                              onclick="showM4FishPreview(this)"
-                            >
-                              <img
-                                class="choice-image"
-                                src="../images/lesson5/mission4/yellowfin-tuna.png"
-                                alt="Reference fish A"
-                              >
-                              <h4>Reference A</h4>
-                            </button>
-
-
-                            <button
-                              type="button"
-                              class="choice-card media-choice"
-                              data-mc-choice="pike-perch"
-                              onclick="showM4FishPreview(this)"
-                            >
-                              <img
-                                class="choice-image"
-                                src="../images/lesson5/mission4/yellowperch.png"
-                                alt="Reference fish B"
-                              >
-                              <h4>Reference B</h4>
-                            </button>
-
-
-                            <button
-                              type="button"
-                              class="choice-card media-choice"
-                              data-mc-choice="rudd"
-                              onclick="showM4FishPreview(this)"
-                            >
-                              <img
-                                class="choice-image"
-                                src="../images/lesson5/mission4/bluestripe-snapper.png"
-                                alt="Reference fish C"
-                              >
-                              <h4>Reference C</h4>
-                            </button>
-
-                          </div>
-                        </div>
-                      </div>
-
-                    </article>
-
-
-                    <p class="activity-prompt">
-                      Select the fish that best matches the footage,
-                      then press <strong>CHECK</strong>.
-                    </p>
-
-
-                    <div
-                      class="variable-feedback stage-feedback"
-                      data-feedback="m4-identify"
-                      role="status"
-                      aria-live="polite">
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              <!-- ACTIVITY 2 ------------------------------------------------ -->
-              <div class="mission-stage" data-stage-id="m4-clownfish">
-                <div class="mission-window">
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // mission 3: scientific drawing test</strong>
-                    <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                  </div>
-
-                  <div class="mission-window-body">
-                    <div class="stage-progress-row">
-                      <p class="mission-label">Mission 03 · Activity 2</p>
-                      <span class="stage-progress-chip">Activity 2 of 4</span>
-                    </div>
-
-                    <div class="mission-image-zoom-container">
-                      <button
-                        type="button"
-                        class="mission-image-trigger"
-                        onclick="openModal('image', { src: '../images/lesson5/mission4/clownfish.png', title: 'Clownfish', alt: 'Photo of a clownfish' })"
-                        aria-label="Zoom in on a photo of the clownfish"
-                      >
-                        <img src="../images/lesson5/mission4/clownfish.png" alt="">
-                      </button>
-                      <p>Click the image to zoom in</p>
-                    </div>
-
-                    <h3>Which clownfish is drawn like a scientist?</h3>
-                    <p class="mission-subtitle">
-                      A scientific drawing should show the important observable structures clearly. It is not an artwork:
-                      colour, decorative shading and unnecessary detail can make the record harder to interpret.
-                    </p>
-
-                    <div id="m4ClownfishDrawing" data-activity>
-                      <div data-mc-question data-mc-answer="scientific">
-                        <div class="drawing-choice-grid" data-mc-choices>
-
-                          <button type="button" class="choice-card m4-clownfish-choice" data-mc-choice="colour">
-                            <img
-                              class="choice-image"
-                              src="../images/lesson5/mission4/clownfish3.png"
-                              alt="Clownfish drawing option A with colour"
-                            >
-                            <h4>Drawing A</h4>
-                            <p>A colourful representation.</p>
-                          </button>
-
-                          <button type="button" class="choice-card m4-clownfish-choice" data-mc-choice="over-detailed">
-                            <img
-                              class="choice-image"
-                              src="../images/lesson5/mission4/clownfish2.png"
-                              alt="Clownfish drawing option B with heavy texture and shading"
-                            >
-                            <h4>Drawing B</h4>
-                            <p>Lots of texture and decorative detail.</p>
-                          </button>
-
-                          <button type="button" class="choice-card m4-clownfish-choice" data-mc-choice="scientific">
-                            <img
-                              class="choice-image"
-                              src="../images/lesson5/mission4/clownfish1.png"
-                              alt="Clownfish drawing option C using clear simple lines and main observable features"
-                            >
-                            <h4>Drawing C</h4>
-                            <p>Clear lines and the main visible features only.</p>
-                          </button>
-
-                        </div>
-                      </div>
-                    </div>
-
-                    <p class="activity-prompt">Choose the best scientific drawing, then press <strong>CHECK</strong>.</p>
-                    <div class="variable-feedback stage-feedback" data-feedback="m4-clownfish" role="status" aria-live="polite"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- ACTIVITY 3 ------------------------------------------------ -->
-              <div class="mission-stage" data-stage-id="m4-batfish-labels">
-                <div class="mission-window">
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // mission 3: guided labelling</strong>
-                    <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                  </div>
-                  <div class="mission-window-body">
-                    <div class="stage-progress-row">
-                      <p class="mission-label">Mission 03 · Activity 3</p>
-                      <span class="stage-progress-chip">Activity 3 of 4</span>
-                    </div>
-
-                    <div class="mission-image-zoom-container">
-                      <button
-                        type="button"
-                        class="mission-image-trigger"
-                        onclick="openModal('image', { src: '../images/lesson5/mission4/red-lipped-batfish.jpg', title: 'Red-lipped batfish', alt: 'Photo of a red-lipped batfish' })"
-                        aria-label="Zoom in on a photo of the red-lipped batfish"
-                      >
-                        <img src="../images/lesson5/mission4/red-lipped-batfish.jpg" alt="">
-                      </button>
-                      <p>Click the image to zoom in</p>
-                    </div>
-
-                    <h3>Label the red-lipped batfish</h3>
-                    <p class="mission-subtitle">
-                      The labels are provided for you this time. Follow each leader line from the fish to its end,
-                      then drag the correct label beside that line. This is guided practice before you label the next organism independently.
-                    </p>
-
-                    <div class="dd-activity m4-batfish-dd" id="m4BatfishDragDrop" data-activity>
-                      <div class="dd-board">
-                        <div class="dd-target m4-batfish-target">
-                          <span class="dd-caption">Scientific drawing</span>
-                          <img
-                            class="m4-batfish-diagram"
-                            src="../images/lesson5/mission4/red-lipped-batfish-diagram.png"
-                            alt="Front-view scientific drawing of a red-lipped batfish with five leader lines for guided labelling"
-                            onerror="this.hidden=true; this.nextElementSibling.hidden=false;"
-                          >
-                          <div class="m4-asset-placeholder" hidden>
-                            <strong>Batfish diagram missing</strong>
-                            <span>Add the supplied file as <code>../images/lesson5/mission4/red-lipped-batfish-diagram.png</code>.</span>
-                          </div>
-
-                          <!-- Drop zones are aligned beside the ends of the five leader lines in the 4:3 image. -->
-                          <div data-dd-slot="batfish-eye" data-dd-answer="eye" style="--dd-x: 16.2%; --dd-y: 21.4%; --dd-w: 24.7%;" aria-label="Drop the label for the eye here"></div>
-                          <div data-dd-slot="batfish-dorsal" data-dd-answer="dorsal-fin" style="--dd-x: 79.7%; --dd-y: 13.1%; --dd-w: 25.0%;" aria-label="Drop the label for the dorsal fin here"></div>
-                          <div data-dd-slot="batfish-snout" data-dd-answer="snout" style="--dd-x: 88.0%; --dd-y: 35.7%; --dd-w: 23.0%;" aria-label="Drop the label for the snout here"></div>
-                          <div data-dd-slot="batfish-pectoral" data-dd-answer="pectoral-fin" style="--dd-x: 16.0%; --dd-y: 86.6%; --dd-w: 24.5%;" aria-label="Drop the label for the pectoral fin here"></div>
-                          <div data-dd-slot="batfish-mouth" data-dd-answer="mouth" style="--dd-x: 82.5%; --dd-y: 83.1%; --dd-w: 22.5%;" aria-label="Drop the label for the mouth and red lips here"></div>
-                        </div>
-                      </div>
-
-                      <div class="dd-tray m4-label-tray" data-dd-tray aria-label="Batfish labels">
-                        <div class="m4-label-token" data-dd-item="eye">Eye</div>
-                        <div class="m4-label-token" data-dd-item="mouth">Mouth (red lips)</div>
-                        <div class="m4-label-token" data-dd-item="snout">Snout</div>
-                        <div class="m4-label-token" data-dd-item="dorsal-fin">Dorsal fin</div>
-                        <div class="m4-label-token" data-dd-item="pectoral-fin">Pectoral fin</div>
-                      </div>
-                    </div>
-
-                    <p class="activity-prompt">
-                      Place all five labels beside the ends of the leader lines, then press <strong>CHECK</strong>.
-                    </p>
-                    <div class="variable-feedback stage-feedback" data-feedback="m4-batfish-labels" role="status" aria-live="polite"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- ACTIVITY 4 ------------------------------------------------ -->
-              <div class="mission-stage" data-stage-id="m4-frogfish-labels">
-                <div class="mission-window">
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // mission 3: independent labelling</strong>
-                    <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                  </div>
-                  <div class="mission-window-body">
-                    <div class="stage-progress-row">
-                      <p class="mission-label">Mission 03 · Activity 4</p>
-                      <span class="stage-progress-chip">Activity 4 of 4</span>
-                    </div>
-                    <div class="mission-image-zoom-container">
-                      <button
-                        type="button"
-                        class="mission-image-trigger"
-                        onclick="openModal('image', { src: '../images/lesson5/mission4/Frogfish.webp', title: 'Frogfish', alt: 'Photo of a frogfish' })"
-                        aria-label="Zoom in on a photo of the frogfish"
-                      >
-                        <img src="../images/lesson5/mission4/Frogfish.webp" alt="">
-                      </button>
-                      <p>Click the image to zoom in</p>
-                    </div>
-                    <h3>Now label the frogfish yourself</h3>
-                    <p class="mission-subtitle">
-                      This time there is no word bank. Follow each leader line from the frogfish to a blank field and type the scientific label yourself.
-                      Use visible structures from the drawing, then press <strong>CHECK</strong> when all six labels are complete.
-                    </p>
-
-                    <div class="frogfish-labelling-grid">
-                      <div class="frogfish-image-stage" id="frogfishImageStage" data-activity>
-                          <img
-                            class="m4-frogfish-diagram"
-                            src="../images/lesson5/mission4/frogfish-diagram.png"
-                            alt="Front-view scientific drawing of a frogfish with five leader lines for guided labelling"
-                            onerror="this.hidden=true; this.nextElementSibling.hidden=false;"
-                          >
-                        <div class="m4-asset-placeholder frogfish-placeholder" hidden>
-                          <strong>Frogfish diagram placeholder</strong>
-                          <span>Add the supplied diagram as <code>../images/lesson5/mission4/frogfish-diagram.png</code>.</span>
-                        </div>
-
-                        <div class="frogfish-label-entry" data-tr-group data-tr-key="caudal-fin" data-tr-min="1" data-tr-max="1" style="--frog-left: 1.6%; --frog-top: 28.0%; --frog-width: 19%;">
-                          <input type="text" data-tr-input maxlength="30" autocomplete="off" placeholder="Type label" aria-label="Label the fin at the back of the frogfish">
-                          <div data-tr-list></div>
-                        </div>
-
-                        <div class="frogfish-label-entry" data-tr-group data-tr-key="dorsal-fin" data-tr-min="1" data-tr-max="1" style="--frog-left: 17.0%; --frog-top: 11.9%; --frog-width: 20%;">
-                          <input type="text" data-tr-input maxlength="30" autocomplete="off" placeholder="Type label" aria-label="Label the fin along the top of the frogfish">
-                          <div data-tr-list></div>
-                        </div>
-
-                        <div class="frogfish-label-entry" data-tr-group data-tr-key="lure" data-tr-min="1" data-tr-max="1" style="--frog-left: 80.0%; --frog-top: 7.7%; --frog-width: 19%;">
-                          <input type="text" data-tr-input maxlength="30" autocomplete="off" placeholder="Type label" aria-label="Label the frogfish lure">
-                          <div data-tr-list></div>
-                        </div>
-
-                        <div class="frogfish-label-entry" data-tr-group data-tr-key="eye" data-tr-min="1" data-tr-max="1" style="--frog-left: 79.0%; --frog-top: 45.2%; --frog-width: 20%;">
-                          <input type="text" data-tr-input maxlength="30" autocomplete="off" placeholder="Type label" aria-label="Label the frogfish eye">
-                          <div data-tr-list></div>
-                        </div>
-
-                        <div class="frogfish-label-entry" data-tr-group data-tr-key="mouth" data-tr-min="1" data-tr-max="1" style="--frog-left: 82.0%; --frog-top: 68.4%; --frog-width: 18%;">
-                          <input type="text" data-tr-input maxlength="30" autocomplete="off" placeholder="Type label" aria-label="Label the frogfish mouth">
-                          <div data-tr-list></div>
-                        </div>
-
-                        <div class="frogfish-label-entry" data-tr-group data-tr-key="pectoral-fin" data-tr-min="1" data-tr-max="1" style="--frog-left: 2.0%; --frog-top: 90.7%; --frog-width: 20%;">
-                          <input type="text" data-tr-input maxlength="30" autocomplete="off" placeholder="Type label" aria-label="Label the frogfish pectoral fin">
-                          <div data-tr-list></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p class="activity-prompt">
-                      Label all six structures in your own words. Press <strong>ENTER</strong> or click elsewhere to save each label, then press <strong>CHECK</strong> to compare your work with an example.
-                    </p>
-                    <div class="variable-feedback stage-feedback" data-feedback="m4-frogfish-labels" role="status" aria-live="polite"></div>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <!-- ==================================================
-                 MISSION 5: UNKNOWN SPECIES
-                 Final application: sonar -> observation -> camera
-                 failure -> scientific drawing -> self-check.
-                 ================================================== -->
-
-            <section class="section expedition-mission locked" id="mission-5" data-mission-index="3">
-              <div class="mission-stage" data-stage-id="m5-finale">
-                <div class="mission-window">
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // unknown contact</strong>
-                    <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                  </div>
-                  <div class="mission-window-body">
-                    <div class="stage-progress-row">
-                      <p class="mission-label">Mission 04</p>
-                      <span class="stage-progress-chip">Final application</span>
-                    </div>
-                    <h3>Unknown Species Detected</h3>
-                    <p class="mission-subtitle">
-                      Sonar has detected movement near the expedition vehicle. Locate a contact, observe the organism,
-                      and create a scientific record if the camera system cannot capture it.
-                    </p>
-                    <!-- SONAR PHASE
-                         The CSS radar below is a working placeholder. If the team later
-                         makes a Canva GIF, it can replace the radar artwork while the
-                         .sonar-contact buttons remain as clickable HTML overlays. -->
-                    <div class="m5-phase" data-m5-phase="sonar">
-                      <div class="m5-panel">
-                        <div class="m5-status-strip">
-                          <span><span class="m5-status-light"></span>Sonar array online</span>
-                          <span>Scan sector 05</span>
-                        </div>
-                        <div class="sonar-layout">
-                          <div class="sonar-radar" id="mission5Sonar" aria-label="Sonar display with several detected contacts">
-                            <span class="sonar-crosshair-x" aria-hidden="true"></span>
-                            <span class="sonar-crosshair-y" aria-hidden="true"></span>
-                            <span class="sonar-sweep" aria-hidden="true"></span>
-                            <span class="sonar-centre" aria-hidden="true"></span>
-                            <button type="button" class="sonar-contact" data-contact="A" style="--contact-x: 28%; --contact-y: 37%; --contact-delay: -0.2s" aria-label="Investigate sonar contact A" onclick="selectSonarContact('A', this)"></button>
-                            <button type="button" class="sonar-contact" data-contact="B" style="--contact-x: 69%; --contact-y: 26%; --contact-delay: -0.9s" aria-label="Investigate sonar contact B" onclick="selectSonarContact('B', this)"></button>
-                            <button type="button" class="sonar-contact" data-contact="C" style="--contact-x: 76%; --contact-y: 67%; --contact-delay: -1.4s" aria-label="Investigate sonar contact C" onclick="selectSonarContact('C', this)"></button>
-                            <button type="button" class="sonar-contact" data-contact="D" style="--contact-x: 41%; --contact-y: 76%; --contact-delay: -0.55s" aria-label="Investigate sonar contact D" onclick="selectSonarContact('D', this)"></button>
-                            <button type="button" class="sonar-contact" data-contact="E" style="--contact-x: 55%; --contact-y: 49%; --contact-delay: -1.1s" aria-label="Investigate sonar contact E" onclick="selectSonarContact('E', this)"></button>
-                          </div>
-                          <article class="sonar-instructions">
-                            <h4>Multiple contacts detected</h4>
-                            <p>
-                              The sonar cannot identify what is moving through the water. Choose one contact to investigate.
-                            </p>
-                            <p>
-                              Once a contact is acquired, that organism stays assigned to your expedition even if the page is refreshed or the mission is reset.
-                            </p>
-                            <div class="sonar-legend">
-                              <span>● Yellow pulse = possible biological contact</span>
-                              <span>◎ Sweep = active sonar scan</span>
-                            </div>
-                          </article>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="m5-phase" data-m5-phase="tracking" hidden>
-                      <div class="m5-panel tracking-card">
-                        <div class="tracking-spinner" aria-hidden="true"></div>
-                        <h4>Tracking selected contact...</h4>
-                        <p>Matching sonar movement with the live observation feed.</p>
-                      </div>
-                    </div>
-                    <div class="m5-phase" data-m5-phase="observe" hidden>
-                      <div class="m5-panel">
-                        <div class="m5-status-strip">
-                          <span><span class="m5-status-light"></span>Live observation feed</span>
-                          <span id="mission5ContactLabel">Contact acquired</span>
-                        </div>
-                        <div class="creature-console">
-                          <div class="creature-feed">
-                            <span class="live-badge">Live feed</span>
-                            <img id="mission5LiveGif" data-m5-media="gif" src="" alt="Deep-sea organism selected for observation">
-                          </div>
-                          <article class="camera-side-card" id="mission5CaptureCard">
-                            <h4>Visual contact acquired</h4>
-                            <p>
-                              Observe the organism carefully. Try to capture a photograph for the expedition record before it moves away.
-                            </p>
-                            <button type="button" class="expedition-button capture-button" onclick="takeMission5Photo()">
-                              <span>Capture image</span>
-                            </button>
-                          </article>
-                          <article class="camera-side-card" id="mission5AwayCard" hidden>
-                            <h4>Contact lost</h4>
-                            <p>
-                              The organism swam out of range before an image could be captured. Return to the sonar to find another animal.
-                            </p>
-                            <button type="button" class="expedition-button capture-button" onclick="findAnotherMission5Animal()">
-                              <span>Find another animal</span>
-                            </button>
-                          </article>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="m5-phase" data-m5-phase="capture" hidden>
-                      <div class="m5-panel tracking-card">
-                        <div style="font-size:4rem" aria-hidden="true">📷</div>
-                        <h4>Capturing image...</h4>
-                        <p>Writing observation frame to the expedition record.</p>
-                      </div>
-                    </div>
-                    <div class="m5-phase" data-m5-phase="drawing" hidden>
-                      <!-- <div class="camera-failure-message pop-in">
-                        <strong>⚠ Camera capture failed</strong>
-                        The image could not be saved. The live observation feed is still available, so make a scientific drawing while the organism remains in view.
-                      </div> -->
-                      <div class="drawing-mission-grid">
-                        <div class="creature-feed">
-                          <span class="image-captured-badge">Image Captured</span>
-                          <img data-m5-media="static" src="" alt="Static image of the deep-sea organism for scientific drawing">
-                        </div>
-                        <article class="drawing-instructions-card">
-                          <h4>Create the expedition record</h4>
-                          <p>
-                            Draw the organism from observation. Use the <strong>Science Check</strong> panel to review the same scientific-drawing rules.
-                          </p>
-                          <p>
-                            The computer is not judging your drawing. The checklist is your self-assessment before you complete the expedition.
-                          </p>
-                          <label class="drawing-finish-check">
-                            <input type="checkbox" id="mission5DrawingFinished" onchange="setMission5DrawingFinished(this.checked)">
-                            <span>I have finished my scientific drawing.</span>
-                          </label>
-                        </article>
-                      </div>
-                    </div>
-                    <div class="variable-feedback stage-feedback" data-feedback="m5-finale" role="status" aria-live="polite"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Identify the unknown creature-->
-              <div class="mission-stage" data-stage-id="m5-identify">
-                <div class="mission-window">
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // species identification</strong>
-                    <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                  </div>
-                  <div class="mission-window-body">
-                    <div class="stage-progress-row">
-                      <p class="mission-label">Mission 04</p>
-                      <span class="stage-progress-chip">Identify the species</span>
-                    </div>
-                    <h3>Which animal did you see?</h3>
-                    <p class="mission-subtitle">
-                      This is the image the camera recorded. Click the animal you think matches it, then press CHECK.
-                    </p>
-                    <div class="fish-question-image">
-                      <img data-m5-media="static" src="" alt="Static image of the organism recorded by the camera">
-                    </div>
-                    <div id="m5IdentifySpecies" data-activity>
-                      <div data-mc-question>
-                        <!-- Options are built by renderMission5Options() in lesson5.js -->
-                        <div class="choice-grid" id="mission5SpeciesChoices" data-mc-choices></div>
-                      </div>
-                    </div>
-                    <div class="m5-complete-card pop-in" id="mission5IdentifyResult" hidden>
-                      <img data-m5-media="static" src="" alt="Deep-sea organism from the completed expedition">
-                      <div>
-                        <p class="mission-label">Expedition complete</p>
-                        <h4>Scientific record secured</h4>
-                        <p>
-                          The camera failed, but your scientific drawing preserved an observation of the organism.
-                        </p>
-                        <span class="m5-species-reveal" id="mission5SpeciesName">Field guide match</span>
-                        <p id="mission5SpeciesNote"></p>
-                      </div>
-                    </div>
-                    <div class="variable-feedback stage-feedback" data-feedback="m5-identify" role="status" aria-live="polite"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Pokedex -->
-              <div class="mission-stage" data-stage-id="m5-field-guide">
-                <div class="mission-window">
-                  <div class="mission-window-bar">
-                    <strong>Deep field terminal // species archive</strong>
-                  </div>
-
-                  <div class="mission-window-body">
-                    <h3>Deep-Sea Field Guide</h3>
-                    <p>Click a creature to learn more about it!</p>
-
-                    <!-- Buttons will appear automatically here -->
-                    <div id="creatureGrid"></div>
-
-                    <!-- ONE information panel for all creatures -->
-                    <div id="creaturePanel" hidden>
-                      <img alt="Selected marine animal">
-                      <div class="creature-info">
-                        <span class="creature-info-kicker">Species file // Field notes</span>
-                        <h4></h4>
-                        <ul class="creature-facts"></ul>
-                      </div>
-                    </div>
-
-                    <p class="activity-prompt">
-                      Explore the different ocean creatures and discover
-                      how their adaptations help them survive!
-                      Click CLOSE INFO to hide the information panel.
-                    </p>
-
-                    <div class="variable-feedback stage-feedback"
-                        data-feedback="m5-field-guide"
-                        role="status"></div>
-                  </div>
-                </div>
-              </div>
-              <!-- Pokedex -->
-
-            </section>
-
-          </div>
-          <footer class="stage-controls" aria-label="Mission controls">
-            <div class="control-status" id="controlStatus">
-              <strong>Stand by.</strong> Start the expedition to load Mission 1.
-            </div>
-            <button type="button" class="expedition-button control-button" id="checkButton" onclick="checkCurrentMission()" disabled>
-              <span>Check</span>
-            </button>
-            <button type="button" class="expedition-button control-button" id="resetButton" onclick="resetCurrentMission()" disabled>
-              <span>Reset</span>
-            </button>
-            <button type="button" class="expedition-button control-button" id="nextButton" onclick="goNextMission()" disabled>
-              <span>Next</span>
-            </button>
-          </footer>
-        </section>
-        <!-- ==================================================
-             RIGHT: global science-check panel
-             ================================================== -->
-        <aside class="console-panel science-panel" id="sciencePanel" aria-label="Science check">
-          <h2 class="console-heading">🔬 Science check</h2>
-          <div class="science-body">
-            <div class="science-lock">
-              <div class="lock-icon" aria-hidden="true">🔒</div>
-              <strong>Field drawing checklist locked</strong>
-              <p>Unlocks after you complete the scientific symbols activity.</p>
-            </div>
-            <p class="science-mode-note" id="scienceModeNote" hidden>
-              Reference only.
+  <!-- QUESTION 2 -->
+  <div class="partc-analysis-question" id="partCAnalysisQuestion2" data-mc-question data-incorrect-title="Look at the feral deer bar." data-incorrect-text=" Read its height using the y-axis." data-mc-answer="3" data-partc-analysis="deer" hidden>
+    <span class="partc-analysis-progress">Question 2 of 3</span>
+
+    <p class="challenge-question">
+      <strong>
+        How many feral deer were found on average at Site 2?
+      </strong>
+    </p>
+
+    <div class="challenge-choice-grid three-choice" data-mc-choices>
+      <button type="button" class="challenge-choice" data-mc-choice="2">2 animals</button>
+      <button type="button" class="challenge-choice" data-mc-choice="3">3 animals</button>
+      <button type="button" class="challenge-choice" data-mc-choice="4">4 animals</button>
+    </div>
+  </div>
+
+
+  <!-- QUESTION 3 -->
+  <div class="partc-analysis-question" id="partCAnalysisQuestion3" data-mc-question data-incorrect-title="Compare the Leadbeater's Possum results." data-incorrect-text=" Site 1 averaged 6 and Site 2 averaged 1." data-mc-answer="site1" data-partc-analysis="site" hidden>
+    <span class="partc-analysis-progress">Question 3 of 3</span>
+
+    <p class="challenge-question">
+      <strong>
+        Which site had more Leadbeater's Possums?
+      </strong>
+    </p>
+
+    <div class="challenge-choice-grid" data-mc-choices>
+      <button type="button" class="challenge-choice" data-mc-choice="site1">Site 1</button>
+      <button type="button" class="challenge-choice" data-mc-choice="site2">Site 2</button>
+    </div>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div
+    class="challenge-feedback"
+    id="partCAnalysisFeedback"
+    role="status"
+    aria-live="polite"
+  >
+    <strong>Read the Leadbeater's Possum bar.</strong>
+    What average value does it reach?
+  </div>
+
+
+  <!-- COMPLETION -->
+  <div
+    class="partc-complete-card challenge-hidden"
+    id="partCCompleteCard"
+    hidden
+  >
+    <span class="challenge-step-label">Site 2 survey complete</span>
+
+    <h3>You now have results from both sites</h3>
+
+    <p class="partc-result-statement" id="partCResultStatement">
+      Leadbeater's Possums averaged <strong>6 at Site 1</strong> and <strong>1 at Site 2</strong>.
+      <strong>Site 1 had more Leadbeater's Possums.</strong>
+    </p>
+
+    <p class="partc-next-hook">
+      <strong>You have now graphed Site 1 and Site 2.</strong><br />
+      Next, you can place the two datasets together on a bar graph.
+      This will make it easier to compare data from the two sites.
+    </p>
+  </div>
+</div>
+
+        <div class="reset-button-container">
+          <button type="button" class="general-button reset-btn" id="resetPartCButton" data-reset-trigger>Reset Part C</button>
+        </div>
+      </Section>
+
+
+      <!-- ==================================================
+           PART D - ADD A SECOND DATA SET TO A BAR GRAPH
+           Compare baseline and follow-up Project Possum data.
+           ================================================== -->
+      <section class="section student-challenge partd-site-compare-workbench partd-edit-site1 locked" id="bar-compare">
+        <h2 class="section-title">Part D : Compare Site 1 and Site 2 on One Graph</h2>
+
+        <div class="partd-intro-card">
+          <div>
+            <!-- <span class="challenge-step-label">Two sites · one comparison</span> -->
+            <h3>Put Both Sites on One Graph</h3>
+            <p>
+              In a fair test, it is best to put all of your data onto one <strong>graph</strong>.
+              This is so you can easily see if the change you made caused any differences in results.
             </p>
-            <div class="checkpoint-list" id="checkpointList">
+            <div class="partd-compare-callout">
+              Place the data for site 1 and for site 2 on the same <strong>bar graph</strong>.
+              Each animal will have a pair of bars side by side that you can compare easily.
             </div>
           </div>
-          <div class="science-footer" id="scienceFooter">
-            <strong>Science Check:</strong> the scientific-drawing rules.
+        </div>
+
+        <div class="lesson4-workbench partd-workbench">
+        <div class="partd-data-card">
+          <!-- <span class="challenge-step-label">Step 1 · Bring the averages together</span> -->
+          <!-- <h3>Site 1 and Site 2 Averages</h3> -->
+          <p>Put the average results for site 1 and for site 2 in the same table.</p>
+
+          <div class="partd-table-wrap">
+            <table class="practice-table partd-data-table" aria-label="Comparison of average animal counts at Site 1 and Site 2">
+              <caption>Table 3. Comparison of average animal counts at Site 1 and Site 2</caption>
+              <thead>
+                <th style="opacity: 0; border: none;"></th>
+                <th style="background: var(--soft-blue);" colspan="2">Number of animals per hectare</th>
+                <tr>
+                  <th>Type of animal</th>
+                  <th>Site 1</th>
+                  <th>Site 2</th>
+                </tr>
+              </thead>
+              <tbody id="partDComparisonBody"></tbody>
+            </table>
           </div>
-        </aside>
+        </div>
+
+        <div class="graph-control-card partd-builder-card" id="partDSliders" data-activity>
+          <!-- <span class="challenge-step-label">Step 1 · Build both bars</span> -->
+          <h3>Build the bars for each animal in both sites</h3>
+          <!-- <p>
+            Build the bars for each animal for site 1 and site 2.
+          </p> -->
+
+          <div class="partd-site-switcher" id="partDSiteSwitcher" aria-label="Choose which site to edit">
+            <button type="button" class="partd-site-toggle selected" data-partd-site="site1" data-slider-set="site1" aria-pressed="true">Site 1</button>
+            <button type="button" class="partd-site-toggle" data-partd-site="site2" data-slider-set="site2" aria-pressed="false">Site 2</button>
+          </div>
+
+          <!-- <div class="partd-editing-note" id="partDEditingNote">
+            <strong>Editing Site 1.</strong> Match each slider to the Site 1 average in the table.
+          </div> -->
+
+          <div class="bar-builder-controls partd-builder-controls" id="partDBuilderControls">
+            <div class="bar-builder-row" data-partd-bar-row="0" data-slider-row data-slider-target-site1="6" data-slider-target-site2="1">
+              <label for="partDBar0">Leadbeater's Possum</label>
+              <input id="partDBar0" type="range" min="0" max="10" step="1" value="0" data-partd-bar="0" data-slider />
+              <!-- <output for="partDBar0">0</output> -->
+            </div>
+            <div class="bar-builder-row" data-partd-bar-row="1" data-slider-row data-slider-target-site1="3" data-slider-target-site2="1">
+              <label for="partDBar1">Yellow-bellied Glider</label>
+              <input id="partDBar1" type="range" min="0" max="10" step="1" value="0" data-partd-bar="1" data-slider />
+              <!-- <output for="partDBar1">0</output> -->
+            </div>
+            <div class="bar-builder-row" data-partd-bar-row="2" data-slider-row data-slider-target-site1="4" data-slider-target-site2="4">
+              <label for="partDBar2">Ringtail Possum</label>
+              <input id="partDBar2" type="range" min="0" max="10" step="1" value="0" data-partd-bar="2" data-slider />
+              <!-- <output for="partDBar2">0</output> -->
+            </div>
+            <div class="bar-builder-row" data-partd-bar-row="3" data-slider-row data-slider-target-site1="1" data-slider-target-site2="1">
+              <label for="partDBar3">Powerful Owl</label>
+              <input id="partDBar3" type="range" min="0" max="10" step="1" value="0" data-partd-bar="3" data-slider />
+              <!-- <output for="partDBar3">0</output> -->
+            </div>
+            <div class="bar-builder-row" data-partd-bar-row="4" data-slider-row data-slider-target-site1="0" data-slider-target-site2="3">
+              <label for="partDBar4">Feral deer</label>
+              <input id="partDBar4" type="range" min="0" max="10" step="1" value="0" data-partd-bar="4" data-slider />
+              <!-- <output for="partDBar4">0</output> -->
+            </div>
+          </div>
+
+          <button type="button" class="general-button lesson4-check-button" id="checkPartDBarsButton" data-slider-check>Check both sites</button>
+
+          <div class="partd-builder-complete" id="partDBuilderComplete" hidden>
+            <strong>Both sites are on the graph.</strong><br />
+            Each animal now has a Site 1 bar and a Site 2 bar, so you can compare the sites directly.
+          </div>
+
+          <!-- <div class="challenge-feedback" id="partDFeedback" role="status" aria-live="polite">
+            <strong>Start with either site.</strong>
+            Choose Site 1 or Site 2, then use the table to set its five bar heights. Switch whenever you like.
+          </div> -->
+        </div>
+
+        <div class="graph-stage-card partd-graph-card">
+          <div class="graph-stage-heading">
+            <div>
+              <h3>Average animal counts from spotlight surveys at Site 1 and Site 2</h3>
+              <!-- <p id="partDGraphHint">Editing Site 1. Move the sliders to change the Site 1 bars, then switch sites whenever you like.</p> -->
+            </div>
+            <!-- <span class="graph-badge" id="partDGraphBadge">Site 1</span> -->
+          </div>
+
+          <div class="partd-legend" aria-label="Graph key">
+            <span class="partd-legend-item"><span class="partd-swatch site1" aria-hidden="true"></span>Site 1</span>
+            <span class="partd-legend-item"><span class="partd-swatch site2" aria-hidden="true"></span>Site 2</span>
+          </div>
+
+          <div class="graph-svg-wrap">
+            <svg class="graph-svg" id="partDGraphSvg" viewBox="0 0 760 500" role="img" aria-label="Paired bar graph comparing average animal counts at Site 1 and Site 2">
+              <rect x="0" y="0" width="760" height="500" rx="18" fill="white"></rect>
+              <g id="partDGridLayer"></g>
+              <g id="partDYTicksLayer"></g>
+
+              <line class="graph-axis" x1="120" y1="370" x2="715" y2="370"></line>
+              <line class="graph-axis" x1="120" y1="370" x2="120" y2="35"></line>
+
+              <text class="axis-label" x="415" y="470" text-anchor="middle">Type of animal</text>
+              <text class="axis-label" x="32" y="205" text-anchor="middle" transform="rotate(-90 32 205)">Number of animals (animals per hectare)</text>
+
+              <g id="partDCategoriesLayer"></g>
+              <g id="partDSite1BarsLayer"></g>
+              <g id="partDSite2BarsLayer"></g>
+              <g id="partDValuesLayer"></g>
+              <g class="partd-difference-marker" id="partDDifferenceMarker" aria-hidden="true"></g>
+            </svg>
+          </div>
+        </div>
+
+        </div>
+
+        <div class="partd-analysis-panel" id="partDAnalysisPanel" data-activity data-mc-sequence data-mc-feedback-target="#partDAnalysisFeedback" hidden>
+          <span class="challenge-step-label">Analyse the bar graph</span>
+          <!-- <h3>What is easier to see now?</h3>
+          <p>Analyse your <strong>graphs</strong> and check your reasoned prediction.</p> -->
+
+          <div class="partd-analysis-question" id="partDAnalysisQuestion1" data-mc-question data-incorrect-title="Compare the two Leadbeater's Possum bars." data-incorrect-text=" Which site's bar is taller?" data-mc-answer="site1" data-partd-analysis="lead">
+            <span class="partc-analysis-progress">Question 1 of 3</span>
+            <p class="challenge-question"><strong>Which site had the higher average number of Leadbeater's Possums?</strong></p>
+            <div class="challenge-choice-grid three-choice" data-mc-choices>
+              <button type="button" class="challenge-choice" data-mc-choice="site1">Site 1</button>
+              <button type="button" class="challenge-choice" data-mc-choice="site2">Site 2</button>
+              <button type="button" class="challenge-choice" data-mc-choice="same">They were the same</button>
+            </div>
+          </div>
+
+          <div class="partd-analysis-question" id="partDAnalysisQuestion2" data-mc-question data-correct-title="Correct: the difference is 5 animals." data-correct-text=" Now scan all five pairs and look for equal-height bars." data-mc-answer="5" data-partd-analysis="difference" hidden>
+            <span class="partc-analysis-progress">Question 2 of 3</span>
+            <p class="challenge-question"><strong>What is the difference between the Site 1 and Site 2 Leadbeater's Possum averages?</strong></p>
+            <div class="challenge-choice-grid three-choice" data-mc-choices>
+              <button type="button" class="challenge-choice" data-mc-choice="4">4 animals</button>
+              <button type="button" class="challenge-choice" data-mc-choice="5">5 animals</button>
+              <button type="button" class="challenge-choice" data-mc-choice="6">6 animals</button>
+            </div>
+          </div>
+
+          <div class="partd-analysis-question" id="partDAnalysisQuestion3" data-mc-question data-incorrect-title="Look at the feral deer bars." data-incorrect-text=" Compare the Site 1 and Site 2 values for feral deer." data-mc-answer="zero-three" data-partd-analysis="same-count" hidden>
+            <span class="partc-analysis-progress">Question 3 of 3</span>
+            <p class="challenge-question"><strong>How many feral deer were found at site 1 compared to site 2?</strong></p>
+            <div class="challenge-choice-grid three-choice" data-mc-choices>
+              <button type="button" class="challenge-choice" data-mc-choice="three-zero">3 at site 1 and 0 at site 2</button>
+              <button type="button" class="challenge-choice" data-mc-choice="equal">Equal number at site 1 and site 2</button>
+              <button type="button" class="challenge-choice" data-mc-choice="zero-three">0 at site 1 and 3 at site 2</button>
+            </div>
+          </div>
+          <div class="challenge-feedback" id="partDAnalysisFeedback" role="status" aria-live="polite">
+            <strong>Start with the Leadbeater's Possum pair.</strong>
+            Which of its two bars is taller?
+          </div>
+        </div>
+
+        <div class="prediction-check" id="partDCompleteCard" data-activity hidden>
+          <p class="prediction-label">
+            Interpret the results
+          </p>
+
+          <div class="prediction-reminder">
+            <h3 class="prediction-reminder-label">
+              Reasoned prediction
+            </h3>
+
+            <p>
+              When there is more forest <strong>understory</strong> the number of Leadbeater's possums will increase.
+            </p>
+          </div>
+          <div class="prediction-final" data-mc-question data-mc-answer="supported">
+            <h3>
+              Do the results support the reasoned prediction?
+            </h3>
+
+            <div class="prediction-buttons" data-mc-choices>
+
+              <button
+                id="predictionCheckSupported"
+                type="button"
+                data-mc-choice="supported"
+                class="general-button prediction-button"
+              >
+                Supported
+              </button>
+
+              <button
+                id="predictionCheckUnsupported"
+                type="button"
+                data-mc-choice="unsupported"
+                class="general-button prediction-button"
+              >
+                Not supported
+              </button>
+            </div>
+
+            <div
+              class="challenge-feedback"
+              id="partDPredictionFeedback"
+              role="status"
+              aria-live="polite"
+              hidden
+            >
+              <strong>Look at the evidence again.</strong>
+              Compare the forest understory and Leadbeater's Possum results at the two sites.
+            </div>
+
+          </div>
+        </div>
+        <div class="stop-and-check" id="partDStopAndCheck" data-activity data-activity-depends-on="partDCompleteCard" hidden>
+          <div class="stop-and-check-content">
+            <p>
+              Look at the pictures of each forest site.
+              Then look at your bar graph showing numbers of each animal at each site.
+            </p>
+
+            <p>
+              <strong>
+                What might be causing the drop in Leadbeater's possum numbers between Site 1 and Site 2?
+              </strong>
+            </p>
+          </div>
+
+          <div class="stop-and-check-answer" id="partDMoreLess" data-activity data-button-reveal hidden>
+
+            <!--
+              TODO: this whole block is a placeholder - swap in your
+              own question wording and images. The graph above is
+              filled in automatically by JS (partDRenderStopAndCheckGraph
+              in lesson4.js) and always shows the finished comparison,
+              so leave that div empty.
+            -->
+
+            <div
+              class="graph-stage-card partd-graph-card stop-and-check-graph"
+              aria-hidden="true"
+            >
+
+              <div class="graph-stage-heading">
+                <div>
+                  <h3>Average animal counts from spotlight surveys at Site 1 and Site 2</h3>
+                </div>
+              </div>
+
+              <div class="partd-legend" aria-label="Graph key">
+                <span class="partd-legend-item">
+                  <span class="partd-swatch site1" aria-hidden="true"></span>
+                  Site 1
+                </span>
+
+                <span class="partd-legend-item">
+                  <span class="partd-swatch site2" aria-hidden="true"></span>
+                  Site 2
+                </span>
+              </div>
+
+              <div
+                class="graph-svg-wrap"
+                id="partDStopAndCheckGraph"
+              ></div>
+
+            </div>
+
+            <div class="more-less-question">
+              <div class="more-less-items">
+                <div class="more-less-item" data-mc-question data-mc-answer="less">
+                  <p class="more-less-question-text">
+                    Were the <strong>more</strong> or <strong>less</strong> Leadbeater's possums found at site 2?
+                  </p>
+                  <div class="circle-image-placeholder" role="img" aria-label="Leadbeater's possum image container">
+                    <img src="../images/lesson4/leadbeaters_possum_1.png" alt="Leadbeater's possum" />
+                  </div>
+                  <div class="more-less-buttons" data-mc-choices>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
+                  </div>
+                </div>
+
+                <div class="more-less-item" data-mc-question data-mc-answer="more">
+                  <p class="more-less-question-text">
+                    Were there <strong>more</strong> or <strong>less</strong> feral deer found at site 2?
+                  </p>
+                  <div class="circle-image-placeholder" role="img" aria-label="Feral deer image container">
+                    <img src="../images/lesson4/male_deer_1.png" alt="Feral deer" />
+                  </div>
+                  <div class="more-less-buttons" data-mc-choices>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="more-less-site-images" aria-label="Site 1 and Site 2">
+              <div class="more-less-site-card">
+                <h4>Site 1</h4>
+                <div class="more-less-site-photo" role="img" aria-label="Daytime image of Site 1">
+                  <img src="../images/lesson4/site_1_day.png" alt="Site 1" />
+                </div>
+              </div>
+
+              <div class="more-less-site-card">
+                <h4>Site 2</h4>
+                <div class="more-less-site-photo" role="img" aria-label="Daytime image of Site 2">
+                  <img src="../images/lesson4/site_2_day.png" alt="Site 2" />
+                </div>
+              </div>
+            </div>
+
+            <div class="more-less-question">
+              <div class="more-less-items">
+                <div class="more-less-item" data-mc-question data-mc-answer="less">
+                  <p class="more-less-question-text">
+                    Were there <strong>more</strong> or <strong>less</strong> plants in the undergrowth at site 2?
+                  </p>
+                  <div class="circle-image-placeholder" role="img" aria-label="Placeholder image">
+                    <img src="../images/lesson4/undergrowth.png" alt="Placeholder" />
+                  </div>
+                  <div class="more-less-buttons" data-mc-choices>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
+                  </div>
+                </div>
+
+                <div class="more-less-item" data-mc-question data-mc-answer="less">
+                  <p class="more-less-question-text">
+                    Were there <strong>more</strong> or <strong>less</strong> old hollow-bearing trees at site 2?
+                  </p>
+                  <div class="circle-image-placeholder" role="img" aria-label="Placeholder image">
+                    <img src="../images/lesson4/tree.png" alt="Placeholder" />
+                  </div>
+                  <div class="more-less-buttons" data-mc-choices>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="more">More</button>
+                    <button type="button" class="general-button more-less-button" data-mc-choice="less">Less</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--
+              TODO: add downloads/lesson4/protect-leadbeaters-possum.pdf -
+              this button already points at that filename (same pattern as
+              the flyer button in Part A) but the file doesn't exist yet.
+            -->
+            <div class="project-learn-block more-less-protect-block">
+              <h4>What can we do to protect Leadbeater's Possum?
+                Open the protection guide to learn more.
+              </h4>
+              <button
+                type="button"
+                class="general-button project-resource-button"
+                onclick="openModal('pdf', { src: '../downloads/lesson4/protect-leadbeaters-possum.pdf', title: 'Protecting Leadbeater\'s Possum' })"
+              >
+                <span class="bounce-symbol" aria-hidden="true">📄</span>
+                <span>Open Protection Guide</span>
+              </button>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            class="stop-and-check-button general-button"
+            data-button-trigger
+          >
+            <p>Check Your Answer</p>
+            <p class="bounce-symbol">✅</p>
+          </button>
+        </div>
+        <!-- <div class="partd-complete-card" id="partDCompleteCard" hidden>
+          <span class="challenge-step-label">Comparison complete</span>
+          <h3>Use the paired graph to describe the evidence</h3>
+          <p class="partd-result-statement" id="partDResultStatement"></p>
+          <p class="partd-conclusion-note">
+            <strong>Why put the two sites on one graph?</strong><br />
+            The paired bars let you compare the same animal at Site 1 and Site 2 directly, without scrolling between two separate graphs.
+          </p>
+          <p class="partd-prediction-reflection">
+            <strong>Return to your Part A prediction.</strong><br />
+            Did the evidence match which site you expected to have more Leadbeater's Possums?
+          </p>
+        </div> -->
+
+        <div class="reset-button-container">
+          <button type="button" class="general-button reset-btn" id="resetPartDButton" data-reset-trigger>Reset Part D</button>
+        </div>
+        <button
+          id="barCompareNext"
+          class="next-page-button general-button"
+          onclick="window.location.href='/lesson6'"
+          hidden
+        >
+          Next: Lesson 6
+        </button>
+        <p class="completed-note">Completed — next activity unlocked.</p>
+      </section>
+
+
+      <div class="return-to-top">
+        <a class="return-to-top-button general-button" href="#">
+          <p class="bounce-symbol">↑</p>
+          <p>Return to Top</p>
+        </a>
       </div>
-    </div>
-    </div>
-  </main>
+    </main>
 
-  <!-- Reuses the shared glossary modal structure + common_functions.js open/close functions. -->
-
-
-  // Setup for submarine model
+    <!-- Shared site functions, spotlight activity, and Lesson 5 page behaviour. -->
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
 import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
-import '../components/Section.vue' // styles + unlockSection() for the sections not converted yet
+import Section from '../components/Section.vue'
 import LessonIntro from '../components/LessonIntro.vue'
 
 // Terms shown in the vocabulary modal: { word: description }
 const glossary = {
-  "Scientific diagram": "A simplified representation of an experimental set-up using clear conventions and equipment symbols.",
-  "Scientific drawing": "A clear, accurate line drawing used to record an observation.",
-  "Fair test": "An investigation where the variable being tested is changed while relevant conditions are kept the same.",
-  "Observation": "Information collected by carefully noticing and recording features or changes.",
+  "Graph": "A visual way of showing data so patterns, comparisons and relationships are easier to see.",
+  "X-axis": "The horizontal axis. In a fair test line graph, this often shows the independent variable — what was changed.",
+  "Y-axis": "The vertical axis. In a fair test graph, this often shows the dependent variable — what was measured.",
+  "Line graph": "A graph that uses points and lines to show how a measured value changes across ordered or continuous values.",
+  "Bar graph": "A graph that uses separate bars to compare amounts across different categories.",
 }
 
-// Original <head>/<body> resources of lesson5/lesson5.html, loaded in document order.
+// Original <head>/<body> resources of lesson4/lesson4.html, loaded in document order.
 const scripts = [
   { src: "../scripts/common_functions.js" },
-  { src: "../scripts/lesson5_scripts/lesson5.js", type: "module" },
-  { src: "https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js", type: "module" },
-  { code: String.raw`    const viewer = document.getElementById('submarineViewer');
-    const container = document.getElementById('submarineContainer');
-
-    const duration = 9;
-    const radiusX = 130;
-    const radiusY = 65;
-
-    let animationFrame;
-
-    function updateSubmarineGlow() {
-      const time = viewer.currentTime || 0;
-      const angle = (time / duration) * Math.PI * 2;
-
-      const x = 50 + Math.sin(angle) * radiusX;
-      const y = 50 + Math.cos(angle) * radiusY;
-
-      container.style.setProperty('--glow-x', ${'`'}${'$'}{x}%${'`'});
-      container.style.setProperty('--glow-y', ${'`'}${'$'}{y}%${'`'});
-
-      animationFrame = requestAnimationFrame(updateSubmarineGlow);
-    }
-
-    viewer.addEventListener('load', () => {
-      cancelAnimationFrame(animationFrame);
-      updateSubmarineGlow();
-    });` },
-  { code: String.raw`    /* Get the documentElement (<html>) to display the page in fullscreen */
-    const elem = document.querySelector(".expedition-zoom-stage");
-    const button = document.getElementById("fullScreenButton");
-
-    function isFullscreen() {
-      return !!(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.msFullscreenElement
-      );
-    }
-
-    /* View in fullscreen */
-    function openFullscreen() {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) { /* Safari */
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) { /* IE11 */
-        elem.msRequestFullscreen();
-      }
-    }
-
-    /* Close fullscreen */
-    function closeFullscreen() {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) { /* IE11 */
-        document.msExitFullscreen();
-      }
-    }
-
-    function scrollToExpeditionMain() {
-      // Force an instant jump regardless of the page's global
-      // ${'`'}scroll-behavior: smooth${'`'}, which would otherwise animate this.
-      const html = document.documentElement;
-      const previousScrollBehavior = html.style.scrollBehavior;
-      html.style.scrollBehavior = "auto";
-      document.getElementById("expedition-main").scrollIntoView({ block: "start" });
-      html.style.scrollBehavior = previousScrollBehavior;
-    }
-
-    // The button's label/click handler and the close-time scroll are both
-    // driven off the browser's own fullscreenchange event rather than set
-    // directly inside openFullscreen()/closeFullscreen(), so they also stay
-    // correct when fullscreen is left some other way (Esc key, browser UI)
-    // instead of only when this button is clicked.
-    // Only the fullscreen element's subtree is rendered while fullscreen, so
-    // the body-level modals are moved inside it on entry and back on exit.
-    const FULLSCREEN_MODAL_IDS = [
-      "frogfishExampleModal"
-    ];
-
-    function moveModalsForFullscreen() {
-      const host = isFullscreen() ? elem : document.body;
-      FULLSCREEN_MODAL_IDS.forEach(function (id) {
-        const modal = document.getElementById(id);
-        if (modal && modal.parentNode !== host) host.appendChild(modal);
-      });
-      // the shared <Modal> (glossary, pdf, image zoom, teacher menu)
-      const shared = document.querySelector("[data-shared-modal]");
-      if (shared && shared.parentNode !== host) host.appendChild(shared);
-    }
-
-    function onFullscreenChange() {
-      moveModalsForFullscreen();
-      if (isFullscreen()) {
-        button.onclick = closeFullscreen;
-        button.querySelector("span").textContent = "Close Full Screen";
-      } else {
-        button.onclick = openFullscreen;
-        button.querySelector("span").textContent = "Full Screen";
-        scrollToExpeditionMain();
-      }
-    }
-
-    document.addEventListener("fullscreenchange", onFullscreenChange);
-    document.addEventListener("webkitfullscreenchange", onFullscreenChange);
-    document.addEventListener("msfullscreenchange", onFullscreenChange);` },
+  { src: "../scripts/lesson_progress.js", type: "module" },
+  { src: "../scripts/lesson4_scripts/lesson4_shared.js" },
+  { src: "../scripts/lesson4_scripts/spotlight_game.js" },
+  { src: "../scripts/lesson4_scripts/lesson4.js" },
+  { src: "../scripts/lesson4_scripts/lesson4_activities.js", type: "module" },
 ]
 
 function loadScript(def) {
@@ -1839,7 +1510,7 @@ function loadScript(def) {
 }
 
 onMounted(async () => {
-  document.title = "Lesson 5 - Scientific Drawings"
+  document.title = "Lesson 5 - Using Bar Graphs to Visualise Data"
   for (const def of scripts) await loadScript(def)
   // the original scripts wait for DOMContentLoaded, which has already fired
   document.dispatchEvent(new Event('DOMContentLoaded'))

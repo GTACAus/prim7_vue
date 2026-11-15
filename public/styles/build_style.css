@@ -629,25 +629,6 @@ input[type="checkbox"]:active {
   box-shadow: 0 1px 0 var(--line);
 }
 
-.watch-video-button {
-  color: var(--charcoal);
-  background: var(--soft-green);
-  border-radius: 6px;
-  padding: 5px;
-}
-
-.watch-video-button:hover {
-  background: var(--soft-yellow);
-}
-
-.watch-video-button:hover {
-  background: var(--soft-purple);
-}
-
-.watch-video-button:hover {
-  background: var(--soft-blue);
-}
-
 @keyframes bounce-in {
   0% {
     transform: scale(0);
