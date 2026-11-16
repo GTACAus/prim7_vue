@@ -18,7 +18,6 @@ const props = defineProps({
   title: { type: String, required: true },
   sections: { type: Array, required: true },
   glossary: { type: Object, default: null },
-  backLink: { type: Object, default: null },
 });
 
 // Support both { key, id, title } and { name, label } configurations.
@@ -131,7 +130,6 @@ function restoreSection(sectionId) {
 watch(progress, save, { deep: true });
 
 const mountedSections = new Map();
-const backLink = computed(() => props.backLink);
 const modalRef = ref(null);
 let teacherClicks = 0;
 let teacherTimer = null;
@@ -238,7 +236,6 @@ function openTeacherMenu(trigger) {
 }
 provide("lessonPage", {
   sections,
-  backLink,
   isLocked,
   isCompleted,
   isLast,
@@ -275,12 +272,7 @@ defineExpose({
 </script>
 
 <template>
-  <Modal
-    ref="modalRef"
-    :label="title"
-    :glossary="glossary"
-    :back-link="backLink"
-  />
+  <Modal ref="modalRef" :label="title" :glossary="glossary" />
   <main class="page">
     <slot name="lesson-intro" />
     <div class="page-sections"><slot name="sections" /></div>

@@ -44,9 +44,6 @@ const sections = [
   { id: "yeast-labels", title: "Build and Complete the Yeast Data Table" },
 ];
 
-// Teacher menu link to the next lesson
-const backLink = { label: "← To Lesson 4", href: "/lesson4" };
-
 // Options passed to the activity components
 const sortVariablesOneActivityOptions = {
   tiles: [
@@ -110,10 +107,9 @@ const labelsSection = ref(null);
        (opened by clicking the lesson title five times). -->
   <Page
     lessonId="lesson3"
-    title="Lesson 3 - Using a Table to Record Data for a Fair Test"
+    title="Lesson 3 - Organising Fair Test Data into a Table"
     :sections="sections"
     :glossary="glossary"
-    :back-link="backLink"
   >
     <!-- ==================================================
          LESSON INTRODUCTION
@@ -121,7 +117,7 @@ const labelsSection = ref(null);
     <template #lesson-intro>
       <LessonIntro
         label="Lesson 3"
-        title="Using a Table to Record Data for a Fair Test"
+        title="Organising Fair Test Data into a Table"
         intro-class="lesson3-intro"
         worksheet="../worksheets/l3-worksheet.pdf"
         :objective="objective"

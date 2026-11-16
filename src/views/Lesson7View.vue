@@ -35,7 +35,7 @@
   <main class="page expedition-page">
 
     <div class="expedition-intro">
-      <LessonIntro label="Lesson 7" title="Scientific Drawings" worksheet="../worksheets/l5-worksheet.pdf">
+      <LessonIntro label="Lesson 7" title="Drawing Scientific Diagrams" worksheet="../worksheets/l5-worksheet.pdf">
     Scientific drawings help scientists to record and communicate their observations. In this lesson, we will learn how to create a scientific drawing of a specimen.
   </LessonIntro>
 
@@ -1839,7 +1839,7 @@ function loadScript(def) {
 }
 
 onMounted(async () => {
-  document.title = "Lesson 7 - Scientific Drawings"
+  document.title = "Lesson 7 - Drawing Scientific Diagrams"
   for (const def of scripts) await loadScript(def)
   // the original scripts wait for DOMContentLoaded, which has already fired
   document.dispatchEvent(new Event('DOMContentLoaded'))

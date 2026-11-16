@@ -16,6 +16,7 @@ const props = defineProps({
   id: { type: String, default: "" },
   title: { type: String, default: "" },
   last: { type: Boolean, default: false },
+  showCompleteNote: { type: Boolean, default: true },
 });
 const emit = defineEmits(["complete", "unlock", "restore"]);
 const page = inject("lessonPage", null);
@@ -102,18 +103,19 @@ defineExpose({ locked, completed, complete, reset, next, scrollTo });
 <template>
   <ContentBox
     ref="element"
+    tag="section"
     class="section"
     :id="sectionId"
     :class="{ locked, completed }"
   >
-    <h2 class="section-title">
+    <h2 v-if="sectionTitle" class="section-title">
       <slot name="title">{{ sectionTitle }}</slot>
     </h2>
     <slot />
     <template v-if="!sectionLast">
       <Button v-if="showNext" class="next-button" @click="next">Next</Button>
 
-      <p v-if="completed" class="completed-note">
+      <p v-if="completed && showCompleteNote" class="completed-note">
         Completed — next activity unlocked.
       </p>
     </template>

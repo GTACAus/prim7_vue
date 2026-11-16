@@ -5,7 +5,7 @@
   <div class="page lesson4-page">
 
     <!-- ============ LESSON 6: LINE GRAPHS INTRO ============ -->
-    <LessonIntro label="Lesson 6" title="Line Graphs" worksheet="../worksheets/l4-2-worksheet.pdf">
+    <LessonIntro label="Lesson 6" title="Using Line Graphs to Visualise Data" worksheet="../worksheets/l4-2-worksheet.pdf">
     Line graphs help scientists show how <strong>one variable changes continuously as another variable changes</strong>, making <strong>trends</strong> and <strong>patterns</strong> easier to see.
   </LessonIntro>
 
@@ -1621,7 +1621,7 @@ function loadScript(def) {
 }
 
 onMounted(async () => {
-  document.title = "Lesson 6 - Line Graphs"
+  document.title = "Lesson 6 - Using Line Graphs to Visualise Data"
   for (const def of scripts) await loadScript(def)
   // the original scripts wait for DOMContentLoaded, which has already fired
   document.dispatchEvent(new Event('DOMContentLoaded'))

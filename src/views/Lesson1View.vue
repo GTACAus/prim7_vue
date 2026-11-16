@@ -143,14 +143,14 @@ const sections = [
 <template>
   <Page
     lessonId="lesson1"
-    title="Lesson 1 - Questioning and Predicting"
+    title="Lesson 1 - Asking Scientific Questions &amp; Making Predictions"
     :sections="sections"
     :glossary="glossary"
   >
     <template #lesson-intro>
       <LessonIntro
         label="Lesson 1"
-        title="Questioning and Predicting"
+        title="Asking Scientific Questions &amp; Making Predictions"
         worksheet="../worksheets/l1-worksheet.pdf"
         :objective="objective"
         :criteria="criteria"

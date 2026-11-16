@@ -1,7 +1,13 @@
+<script setup>
+defineProps({
+  tag: { type: String, default: "div" },
+});
+</script>
+
 <template>
-  <div class="content-box">
+  <component :is="tag" class="content-box">
     <slot />
-  </div>
+  </component>
 </template>
 
 <style scoped>
@@ -11,7 +17,7 @@
   display: block;
   padding: 20px;
   margin-bottom: 20px;
-  background: var(#ffffff);
+  background: var(--paper);
   border: var(--border-medium);
   box-shadow: var(--shadow-medium);
 }

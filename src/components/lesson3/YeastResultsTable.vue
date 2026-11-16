@@ -538,7 +538,7 @@ const choices = [
       </template>
     </StopAndCheck>
 
-    <div class="reset-button-container lesson3-reset-container">
+    <div class="reset-button-container">
       <Button :is-reset="true" @click="emit('reset')" />
     </div>
 

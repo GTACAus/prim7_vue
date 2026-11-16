@@ -27,16 +27,6 @@ defineProps({
 
       <Button v-else class="home-button" to="/" symbol="🏠">Home</Button>
 
-      <!-- link back to the previous lesson, e.g. Lesson 4 -> Lesson 3 (route meta backHref / backLabel) -->
-      <Button
-        v-if="backHref"
-        id="back-to-part1-button"
-        :to="backHref"
-        symbol="←"
-      >
-        {{ backLabel }}
-      </Button>
-
       <Button class="glossary-button" @click="openGlossary" symbol="📖"
         >Vocabulary</Button
       >

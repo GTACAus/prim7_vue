@@ -161,7 +161,7 @@ const sections = [
        (opened by clicking the lesson title five times). -->
   <Page
     lessonId="lesson2"
-    title="Lesson 2 - Planning a Fair Test Experiment"
+    title="Lesson 2 - Planning a Fair Test"
     :sections="sections"
     :glossary="glossary"
   >
@@ -171,7 +171,7 @@ const sections = [
     <template #lesson-intro>
       <LessonIntro
         label="Lesson 2"
-        title="Planning a Fair Test Experiment"
+        title="Planning a Fair Test"
         worksheet="../worksheets/l2-worksheet.pdf"
         :objective="objective"
         :criteria="criteria"
@@ -180,7 +180,7 @@ const sections = [
         fair.
 
         <template #title
-          >Planning a <strong>Fair Test</strong> Experiment</template
+          >Planning a <strong>Fair Test</strong></template
         >
 
         <template #observation>

@@ -21,8 +21,6 @@ const props = defineProps({
 
   pdfLabel: { type: String, default: "" },
 
-  backLink: { type: Object, default: null },
-
   note: {
     type: String,
 
@@ -34,10 +32,6 @@ const props = defineProps({
 const page = inject("lessonPage", null);
 
 const teacherSections = computed(() => page?.sections.value ?? []);
-
-const teacherBack = computed(
-  () => props.backLink ?? page?.backLink.value ?? null,
-);
 
 const overlay = ref(null);
 
@@ -237,14 +231,6 @@ defineExpose({ open: show, close });
             @click="jump(section.id)"
           >
             {{ index + 1 }}. {{ section.label }}
-          </button>
-
-          <button
-            v-if="teacherBack?.href"
-            type="button"
-            @click="goBack(teacherBack.href)"
-          >
-            {{ teacherBack.label || "← Back" }}
           </button>
         </div>
 
