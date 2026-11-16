@@ -200,9 +200,16 @@
   animation: lesson4ChoiceBuzz 0.28s ease;
 }
 @keyframes lesson4ChoiceBuzz {
-  0%, 100% { transform: translateX(0); }
-  30% { transform: translateX(-4px); }
-  60% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-4px);
+  }
+  60% {
+    transform: translateX(4px);
+  }
 }
 .challenge-feedback {
   min-height: 76px;
@@ -308,7 +315,9 @@
 .practice-bar {
   stroke: var(--charcoal);
   stroke-width: 2;
-  transition: y 0.2s ease, height 0.2s ease;
+  transition:
+    y 0.2s ease,
+    height 0.2s ease;
 }
 
 /* ==================================================
@@ -379,7 +388,6 @@
 /* ==================================================
    PART B - GUIDED BAR GRAPH CONSTRUCTION
    ================================================== */
-
 
 /* ==================================================
    PART B - GUIDED BAR GRAPH CONSTRUCTION
@@ -466,7 +474,7 @@
 
 .partb-construction-grid {
   display: grid;
-  grid-template-columns: minmax(260px, .82fr) minmax(0, 1.55fr);
+  grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.55fr);
   gap: 20px;
   align-items: start;
 }
@@ -479,7 +487,6 @@
 .partb-graph-card {
   padding: 16px;
 }
-
 
 .partb-label-bank {
   display: flex;
@@ -524,11 +531,11 @@
 }
 
 .partb-axis-card.is-dragging {
-  opacity: .55;
+  opacity: 0.55;
 }
 
 .partb-axis-card.placed {
-  opacity: .28;
+  opacity: 0.28;
   cursor: default;
   transform: none;
   box-shadow: none;
@@ -585,7 +592,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  background: rgba(215, 242, 244, .86);
+  background: rgba(215, 242, 244, 0.86);
   border: 2.5px dashed var(--blue);
   border-radius: 9px;
   color: var(--muted);
@@ -617,7 +624,8 @@
 }
 
 .axis-slot-y.dd-hover {
-  transform: translate(-50%, -50%) rotate(-90deg) scale(var(--dd-slot-hover-scale));
+  transform: translate(-50%, -50%) rotate(-90deg)
+    scale(var(--dd-slot-hover-scale));
 }
 
 .axis-slot.dd-rejected {
@@ -637,7 +645,8 @@
 }
 
 .axis-slot-rot.dd-hover {
-  transform: translate(-50%, -50%) rotate(-90deg) scale(var(--dd-slot-hover-scale));
+  transform: translate(-50%, -50%) rotate(-90deg)
+    scale(var(--dd-slot-hover-scale));
 }
 
 .axis-slot.axis-complete {
@@ -648,7 +657,7 @@
   min-height: 0;
   width: 100%;
   height: 100%;
-  padding: 0 .4em;
+  padding: 0 0.4em;
   margin: 0;
   border-width: 0;
   border-radius: 7px;
@@ -666,27 +675,63 @@
 }
 
 #partBGraphSvg .partb-final-axis-label,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-final-axis-label {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-final-axis-label {
   opacity: 0;
-  transition: opacity .25s ease;
+  transition: opacity 0.25s ease;
 }
 
 #partBGraphSvg .partb-final-axis-label.visible,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-final-axis-label.visible {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-final-axis-label.visible {
   opacity: 1;
 }
 
 #partBGraphSvg .partb-x-choice,
 #partBGraphSvg .partb-y-choice,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-choice {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-choice {
   cursor: pointer;
 }
 
 #partBGraphSvg .partb-x-hit,
 #partBGraphSvg .partb-y-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-hit {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-hit,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-hit {
   fill: transparent;
   pointer-events: all;
 }
@@ -695,59 +740,154 @@
 #partBGraphSvg .partb-y-choice:hover .partb-y-hit,
 #partBGraphSvg .partb-x-choice.active .partb-x-hit,
 #partBGraphSvg .partb-y-choice.active .partb-y-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice:hover .partb-x-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-choice:hover .partb-y-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice.active .partb-x-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-choice.active .partb-y-hit {
-  fill: rgba(255, 205, 29, .22);
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice:hover
+  .partb-x-hit,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-choice:hover
+  .partb-y-hit,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice.active
+  .partb-x-hit,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-choice.active
+  .partb-y-hit {
+  fill: rgba(255, 205, 29, 0.22);
 }
 
 #partBGraphSvg .partb-x-choice.active text,
 #partBGraphSvg .partb-y-choice.active text,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice.active text,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-choice.active text {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice.active
+  text,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-choice.active
+  text {
   fill: var(--purple);
   font-weight: 800;
 }
 
 #partBGraphSvg .partb-y-choice.try-again .partb-y-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice.try-again .partb-x-hit,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-choice.try-again .partb-y-hit {
-  fill: rgba(255, 109, 58, .24);
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice.try-again
+  .partb-x-hit,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-choice.try-again
+  .partb-y-hit {
+  fill: rgba(255, 109, 58, 0.24);
   stroke: var(--orange);
   stroke-width: 2;
 }
 
 #partBGraphSvg .partb-y-choice.try-again text,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice.try-again text,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-y-choice.try-again text {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice.try-again
+  text,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-y-choice.try-again
+  text {
   fill: var(--orange);
   font-weight: 800;
 }
 
 #partBGraphSvg .partb-x-choice.complete text,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-x-choice.complete text {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-x-choice.complete
+  text {
   fill: var(--green);
   font-weight: 800;
 }
 
 #partBGraphSvg .partb-guide,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-guide {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-guide {
   stroke: var(--purple);
   stroke-width: 2.5;
   stroke-dasharray: 8 7;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .18s ease;
+  transition: opacity 0.18s ease;
 }
 
 #partBGraphSvg .partb-guide.visible,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-guide.visible {
-  opacity: .82;
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-guide.visible {
+  opacity: 0.82;
 }
 
 #partBGraphSvg .partb-intersection-point,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-intersection-point {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-intersection-point {
   fill: var(--orange);
   stroke: var(--charcoal);
   stroke-width: 3;
@@ -758,20 +898,32 @@
 }
 
 #partBGraphSvg .partb-intersection-point.visible,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-intersection-point.visible {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-intersection-point.visible {
   opacity: 1;
-  animation: graphPointPop .35s ease-out;
+  animation: graphPointPop 0.35s ease-out;
 }
 
 #partBGraphSvg .partb-intersection-point.wrong,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .partb-intersection-point.wrong {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .partb-intersection-point.wrong {
   fill: var(--soft-orange);
   stroke: var(--orange);
 }
 
 #partBGraphSvg .partb-bar-fill {
   opacity: 0;
-  transition: opacity .35s ease;
+  transition: opacity 0.35s ease;
 }
 
 #partBGraphSvg .partb-bar-fill.visible {
@@ -792,7 +944,7 @@
   font-size: 12px;
   font-weight: 800;
   text-anchor: middle;
-  transition: opacity .25s ease;
+  transition: opacity 0.25s ease;
 }
 
 #partBGraphSvg .partb-value-label.visible {
@@ -805,7 +957,7 @@
   stroke-linecap: round;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
 }
 
 #partBGraphSvg .partb-zero-bar-marker.visible {
@@ -888,7 +1040,7 @@
   background: var(--soft-purple);
   border: 2px solid var(--charcoal);
   border-radius: 999px;
-  font-size: .78rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
@@ -954,14 +1106,13 @@
 #partBGraphSvg .partb-bar-fill.analysis-highlight {
   stroke: var(--purple);
   stroke-width: 5;
-  filter: drop-shadow(0 3px 0 rgba(48, 51, 47, .18));
+  filter: drop-shadow(0 3px 0 rgba(48, 51, 47, 0.18));
 }
 
 #partBGraphSvg .partb-x-choice.analysis-highlight text {
   fill: var(--purple);
   font-weight: 800;
 }
-
 
 /* ==================================================
    PART C - SITE 2 BAR GRAPH PRACTICE
@@ -1041,7 +1192,7 @@
 
 .partc-build-grid {
   display: grid;
-  grid-template-columns: minmax(260px, .82fr) minmax(420px, 1.4fr);
+  grid-template-columns: minmax(260px, 0.82fr) minmax(420px, 1.4fr);
   gap: 18px;
   align-items: start;
 }
@@ -1070,7 +1221,7 @@
   border: 2px solid var(--charcoal);
   border-top: 6px solid var(--blue);
   border-radius: 13px;
-  box-shadow: 0 3px 0 rgba(48, 51, 47, .2);
+  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.2);
   font: inherit;
   font-weight: 800;
   cursor: grab;
@@ -1083,18 +1234,18 @@
 }
 
 .partc-axis-card.is-dragging {
-  opacity: .55;
+  opacity: 0.55;
 }
 
 .partc-axis-card.placed {
-  opacity: .28;
+  opacity: 0.28;
   box-shadow: none;
   cursor: default;
 }
 
 #partCGraphSvg .partc-final-axis-label {
   opacity: 0;
-  transition: opacity .25s ease;
+  transition: opacity 0.25s ease;
 }
 
 #partCGraphSvg .partc-final-axis-label.visible {
@@ -1104,7 +1255,7 @@
 #partCGraphSvg .partc-scaffold-layer {
   opacity: 0;
   pointer-events: none;
-  transition: opacity .35s ease;
+  transition: opacity 0.35s ease;
 }
 
 #partCGraphSvg .partc-scaffold-layer.visible {
@@ -1148,7 +1299,7 @@
   background: white;
   border: 2px solid var(--charcoal);
   border-radius: 999px;
-  font-size: .78rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
@@ -1165,11 +1316,14 @@
 #partCGraphSvg .partc-practice-bar {
   stroke: var(--charcoal);
   stroke-width: 2.5;
-  transition: y .18s ease, height .18s ease, opacity .2s ease;
+  transition:
+    y 0.18s ease,
+    height 0.18s ease,
+    opacity 0.2s ease;
 }
 
 #partCGraphSvg .partc-practice-bar.preview {
-  opacity: .72;
+  opacity: 0.72;
 }
 
 #partCGraphSvg .partc-practice-bar.complete {
@@ -1181,7 +1335,7 @@
   font-size: 13px;
   font-weight: 800;
   text-anchor: middle;
-  transition: opacity .25s ease;
+  transition: opacity 0.25s ease;
 }
 
 #partCGraphSvg .partc-value-label.visible {
@@ -1201,7 +1355,7 @@
 #partCGraphSvg .partc-practice-bar.analysis-highlight {
   stroke: var(--purple);
   stroke-width: 6;
-  filter: drop-shadow(0 3px 0 rgba(48, 51, 47, .16));
+  filter: drop-shadow(0 3px 0 rgba(48, 51, 47, 0.16));
 }
 
 .partc-analysis-panel,
@@ -1222,7 +1376,7 @@
   background: var(--soft-purple);
   border: 2px solid var(--charcoal);
   border-radius: 999px;
-  font-size: .78rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
@@ -1386,12 +1540,12 @@
 
 .partd-data-table th:nth-child(2),
 .partd-data-table td:nth-child(2) {
-  background: rgba(192, 173, 255, .18);
+  background: rgba(192, 173, 255, 0.18);
 }
 
 .partd-data-table th:nth-child(3),
 .partd-data-table td:nth-child(3) {
-  background: rgba(215, 245, 233, .62);
+  background: rgba(215, 245, 233, 0.62);
 }
 
 #bar-compare.partd-edit-site1 .partd-data-table th:nth-child(2),
@@ -1459,13 +1613,12 @@
   background-color: var(--paper);
   border: 2px solid var(--charcoal);
   border-radius: 11px;
-  font-size: .88rem;
+  font-size: 0.88rem;
   line-height: 1.35;
 }
 
 #bar-compare .partd-builder-controls {
   --partd-slider-rest: rgb(237, 237, 237);
-
 }
 #bar-compare.partd-edit-site1 .partd-builder-controls input[type="range"] {
   --partd-slider-fill: var(--lavender);
@@ -1483,7 +1636,9 @@
   cursor: pointer;
 }
 
-#bar-compare .partd-builder-controls input[type="range"]::-webkit-slider-runnable-track {
+#bar-compare
+  .partd-builder-controls
+  input[type="range"]::-webkit-slider-runnable-track {
   height: 8px;
   border: 1px solid var(--charcoal);
   border-radius: 999px;
@@ -1553,7 +1708,7 @@
   gap: 10px 18px;
   margin: 10px 0 8px;
   color: var(--muted);
-  font-size: .86rem;
+  font-size: 0.86rem;
   font-weight: 700;
 }
 
@@ -1582,7 +1737,11 @@
 #partDGraphSvg .partd-site2-bar {
   stroke: var(--charcoal);
   stroke-width: 2.5;
-  transition: y .18s ease, height .18s ease, opacity .18s ease, stroke-width .18s ease;
+  transition:
+    y 0.18s ease,
+    height 0.18s ease,
+    opacity 0.18s ease,
+    stroke-width 0.18s ease;
 }
 
 #partDGraphSvg .partd-site1-bar {
@@ -1603,7 +1762,7 @@
 
 #bar-compare.partd-edit-site1 #partDGraphSvg .partd-site2-bar,
 #bar-compare.partd-edit-site2 #partDGraphSvg .partd-site1-bar {
-  opacity: .56;
+  opacity: 0.56;
 }
 
 #partDGraphSvg .partd-value-label {
@@ -1611,17 +1770,16 @@
   font-weight: 800;
   text-anchor: middle;
   opacity: 0;
-  transition: opacity .18s ease;
+  transition: opacity 0.18s ease;
   display: none; /* Hide the numbers on the top graph */
 }
 
 /* #partDGraphSvg .partd-value-label.visible {
   opacity: 1;
-/* } */  Hide the numbers on the top graph */
-
-#partDGraphSvg .partd-difference-marker {
+/* } */
+Hide the numbers on the top graph */ #partDGraphSvg .partd-difference-marker {
   opacity: 0;
-  transition: opacity .25s ease;
+  transition: opacity 0.25s ease;
 }
 
 #partDGraphSvg .partd-difference-marker.visible {
@@ -1792,7 +1950,7 @@
 }
 
 @media (max-width: 800px) {
-    .bar-example-image-card:first-child .image-box img,
+  .bar-example-image-card:first-child .image-box img,
   .bar-example-image-card:last-child .image-box img {
     max-width: 100%;
   }
@@ -1842,7 +2000,7 @@
   flex: 0 1 30%;
   margin: 0;
   padding: 14px 16px;
-  background: var(--paper);
+  background: white;
   border: 2px solid var(--line);
   border-radius: 14px;
 }
@@ -1850,7 +2008,7 @@
 .bar-example-checklist h5 {
   margin: 0 0 5px;
   color: var(--text);
-  font-size: .98rem;
+  font-size: 0.98rem;
 }
 
 .bar-example-checklist > p {
@@ -1871,7 +2029,7 @@
 }
 
 .bar-example-checklist .check-item + .check-item {
-  border-top: 1px solid rgba(48, 51, 47, .18);
+  border-top: 1px solid rgba(48, 51, 47, 0.18);
 }
 
 .bar-example-checklist .check-item input[type="checkbox"] {
@@ -1890,7 +2048,7 @@
 
 .bar-example-checklist .check-item small {
   color: var(--muted);
-  font-size: .84rem;
+  font-size: 0.84rem;
   line-height: 1.35;
 }
 
@@ -1901,7 +2059,9 @@
 }
 
 @media (max-width: 700px) {
-  .bar-data-preamble { padding: 18px; }
+  .bar-data-preamble {
+    padding: 18px;
+  }
 
   .bar-data-intro-row {
     align-items: stretch;
@@ -1912,10 +2072,7 @@
   .bar-data-resource-button {
     align-self: flex-start;
   }
-
-
-      }
-
+}
 
 /* ---------- Site 2 scene ---------- */
 /* ==================================================
@@ -1945,7 +2102,7 @@
   padding: 12px;
   box-sizing: border-box;
   background:
-    linear-gradient(rgba(215, 245, 233, .28), rgba(229, 238, 255, .26)),
+    linear-gradient(rgba(215, 245, 233, 0.28), rgba(229, 238, 255, 0.26)),
     var(--paper);
   border: 3px solid var(--charcoal);
   border-radius: 20px;
@@ -2051,7 +2208,7 @@
 
 .project-species-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(230px, .55fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(230px, 0.55fr);
   gap: 18px;
   align-items: stretch;
 }
@@ -2098,7 +2255,7 @@
   gap: 7px;
   margin: 0;
   padding: 9px 13px;
-  font-size: .88rem;
+  font-size: 0.88rem;
 }
 
 .project-species-portrait {
@@ -2118,7 +2275,7 @@
   width: min(100%, 185px);
   object-fit: contain;
   border: 2px solid var(--charcoal);
-  filter: drop-shadow(0 5px 0 rgba(48, 51, 47, .12));
+  filter: drop-shadow(0 5px 0 rgba(48, 51, 47, 0.12));
   background: white;
   border-radius: 50%;
   overflow: hidden;
@@ -2141,7 +2298,7 @@
   padding: 5px 9px;
   border: 2px solid var(--charcoal);
   border-radius: 999px;
-  font-size: .76rem;
+  font-size: 0.76rem;
   font-weight: 800;
 }
 
@@ -2182,7 +2339,7 @@
   align-content: center;
   min-height: 112px;
   padding: 10px;
-  background: rgba(255, 255, 255, .72);
+  background: rgba(255, 255, 255, 0.72);
   border: 2px dashed var(--charcoal);
   border-radius: 12px;
   color: var(--muted);
@@ -2194,7 +2351,7 @@
 }
 
 .project-site-image small {
-  font-size: .7rem;
+  font-size: 0.7rem;
   font-weight: 800;
   line-height: 1.2;
 }
@@ -2218,7 +2375,7 @@
   margin: 0;
   color: var(--muted);
   line-height: 1.4;
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .project-site-arrow {
@@ -2251,7 +2408,7 @@
 
 .project-question-card h4 {
   margin: 0 0 7px;
-  font-size: .96rem;
+  font-size: 0.96rem;
 }
 
 .project-question-card p {
@@ -2262,7 +2419,7 @@
 .project-question-card .project-prompt-note {
   margin-top: 8px;
   color: var(--muted);
-  font-size: .83rem;
+  font-size: 0.83rem;
 }
 
 .project-animal-grid {
@@ -2311,7 +2468,7 @@
 }
 
 .project-animal-card strong {
-  font-size: .96rem;
+  font-size: 0.96rem;
   line-height: 1.25;
 }
 
@@ -2332,7 +2489,7 @@
   align-items: center;
   margin: 2px 0 14px;
   padding: 16px 18px;
-  background: var(--soft-blue)
+  background: var(--soft-blue);
 }
 
 .project-spotlight-intro .project-step-number {
@@ -2344,7 +2501,7 @@
   background: var(--mint);
   border: 2px solid var(--charcoal);
   border-radius: 999px;
-  font-size: .82rem;
+  font-size: 0.82rem;
   font-weight: 800;
   white-space: nowrap;
 }
@@ -2390,7 +2547,7 @@
 
 @media (max-width: 900px) {
   .project-species-layout {
-    grid-template-columns: minmax(0, 1.25fr) minmax(200px, .75fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(200px, 0.75fr);
   }
 
   .project-animal-picture {
@@ -2457,9 +2614,6 @@
   }
 }
 
-
-
-
 /* ==================================================
    LINE GRAPH - TABLE-TO-GRAPH ACTIVITIES
    Shared by the elephant-snail and striped-conniwinks
@@ -2469,61 +2623,69 @@
 
 /* Slightly larger step labels and instructions in the line-graph activities */
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .challenge-step-label {
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .challenge-step-label {
   font-size: 0.9rem;
   padding: 7px 11px;
 }
 
 /* Step 1 table instructions + Step 2 axis instructions */
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .linegraph-data-card > p,
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .linegraph-data-card
+  > p,
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .partb-control-panel > div > p {
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .partb-control-panel
+  > div
+  > p {
   font-size: 1.05rem;
   line-height: 1.55;
 }
 
 /* Instructions that appear during the plotting/building steps */
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .partb-builder-prompt {
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .partb-builder-prompt {
   font-size: 1.02rem;
 }
 
-
 /* Slightly larger numbers on the x- and y-axes */
 :is(
-  #lineGraphElephantSvg,
-  #lineGraphConniwinksSvg,
-  #lineGraphYeastSvg,
-  #lineGraphPlantsSvg
-) .tick-label {
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .tick-label {
   font-size: 14px;
   font-weight: 700;
 }
 
 /* Keep all line-graph data tables compact and easy to scan. */
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .linegraph-data-table {
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .linegraph-data-table {
   width: min(820px, 100%);
   margin: 0 auto;
   table-layout: fixed;
@@ -2532,17 +2694,21 @@
 /* First column gets a little more room, but stays centred.
    The remaining four columns share the rest evenly. */
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .linegraph-data-table th:first-child,
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .linegraph-data-table
+  th:first-child,
 :is(
-  #line-graph-elephant,
-  #line-graph-conniwinks,
-  #line-graph-yeast,
-  #line-graph-plants
-) .linegraph-data-table td:first-child {
+    #line-graph-elephant,
+    #line-graph-conniwinks,
+    #line-graph-yeast,
+    #line-graph-plants
+  )
+  .linegraph-data-table
+  td:first-child {
   width: 28%;
   text-align: center;
   vertical-align: middle;
@@ -2558,14 +2724,17 @@
   margin-bottom: 20px;
 }
 
-#lineGraphLabelBank .partb-axis-card[data-line-card-type="unit"],
-#conniwinksLabelBank .partb-axis-card[data-conni-card-type="unit"],
-#yeastLabelBank .partb-axis-card[data-yeast-card-type="unit"],
-#plantLabelBank .partb-axis-card[data-plant-card-type="unit"] {
+.partb-axis-card.linegraph-unit-card {
   border-top-color: var(--green);
 }
 
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-path {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-path {
   fill: none;
   stroke: var(--purple);
   stroke-width: 5;
@@ -2574,39 +2743,73 @@
   pointer-events: none;
 }
 
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-point {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-point {
   fill: var(--orange);
   stroke: var(--charcoal);
   stroke-width: 3;
   transform-box: fill-box;
   transform-origin: center;
-  animation: graphPointPop .35s ease-out;
+  animation: graphPointPop 0.35s ease-out;
 }
 
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-point.connectable {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-point.connectable {
   cursor: pointer;
 }
 
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-point.connectable:hover,
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-point.connectable:focus {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-point.connectable:hover,
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-point.connectable:focus {
   fill: var(--yellow);
   stroke: var(--purple);
   outline: none;
 }
 
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-point.connected {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-point.connected {
   fill: var(--soft-green);
   stroke: var(--green);
   stroke-width: 4;
 }
 
-:is(#lineGraphElephantSvg, #lineGraphConniwinksSvg, #lineGraphYeastSvg, #lineGraphPlantsSvg) .linegraph-point.connect-error {
+:is(
+    #lineGraphElephantSvg,
+    #lineGraphConniwinksSvg,
+    #lineGraphYeastSvg,
+    #lineGraphPlantsSvg
+  )
+  .linegraph-point.connect-error {
   fill: var(--soft-orange);
   stroke: var(--orange);
   stroke-width: 4;
 }
-
-
 
 /* Section C and the yeast practice use the same Lesson 4 line-graph
    components as the elephant-snail activity. Their free-plot graphs use
@@ -2619,7 +2822,8 @@
   background: var(--soft-yellow);
 }
 
-:is(#line-graph-conniwinks, #line-graph-yeast, #line-graph-plants) .project-question-grid {
+:is(#line-graph-conniwinks, #line-graph-yeast, #line-graph-plants)
+  .project-question-grid {
   margin-bottom: 20px;
 }
 
@@ -2627,8 +2831,6 @@
   cursor: crosshair;
   touch-action: none;
 }
-
-
 
 /* ==================================================
    LINE GRAPH - SECTION E: STEVIA WATER COMPARISON
@@ -2662,7 +2864,7 @@
 .plant-condition-card .partb-data-table th,
 .plant-condition-card .partb-data-table td {
   padding: 7px 5px;
-  font-size: .78rem;
+  font-size: 0.78rem;
   line-height: 1.22;
 }
 
@@ -2713,7 +2915,7 @@
 }
 
 #line-graph-plants .partd-legend-item:not(.is-active) {
-  opacity: .72;
+  opacity: 0.72;
 }
 
 #line-graph-plants.plant-graph-complete .partd-legend-item {
@@ -2774,7 +2976,9 @@
     margin: 0;
   }
 
-  #bar-construction.partb-build-active .partb-workbench > .partb-construction-stage,
+  #bar-construction.partb-build-active
+    .partb-workbench
+    > .partb-construction-stage,
   #bar-construction.partb-build-active .partb-construction-grid {
     display: contents;
   }
@@ -2939,7 +3143,7 @@
 /* While students construct the graph, narrow screens only need the animal and
    average columns from Part B. */
 @media (max-width: 699px),
-       (min-width: 700px) and (max-width: 1100px) and (orientation: portrait) {
+  (min-width: 700px) and (max-width: 1100px) and (orientation: portrait) {
   #bar-construction.partb-build-active .partb-data-card {
     align-self: start;
   }
@@ -3133,14 +3337,12 @@
   }
 }
 
-
 @media (max-width: 520px) {
   .graph-stage-card,
   .graph-control-card {
     padding: 14px;
   }
 }
-
 
 /* ==================================================
    PART A - FAIR-TEST VARIABLE CALLBACK
@@ -3298,7 +3500,7 @@
   display: flex;
   justify-content: center;
   gap: 28px;
-  
+
   margin-bottom: 4px;
   padding: 10px;
 
@@ -3324,7 +3526,7 @@
   border: 2px solid var(--charcoal);
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, .72);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .circle-image-placeholder img {

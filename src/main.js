@@ -35,7 +35,6 @@ const routes = [
     path: "/plant-detective",
     meta: {
       header: false,
-      stylesheets: ["/styles/pretask_styles/plant_detective.css"],
     },
     component: () => import("./views/PlantDetectiveView.vue"),
   },
@@ -95,7 +94,6 @@ const routes = [
       stylesheets: [
         "/styles/drag_and_drop_base.css",
         "/styles/lesson4_styles/lesson4.css",
-        "/styles/lesson4_styles/number-line-activity.css",
       ],
     },
     component: () => import("./views/Lesson6View.vue"),

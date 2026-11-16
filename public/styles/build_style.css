@@ -350,33 +350,6 @@ input[type="checkbox"]:active {
   line-height: 1.5;
 }
 
-.next-page-button {
-  margin-top: 20px;
-  padding: 12px 22px;
-
-  width: fit-content;
-
-  background: var(--card) !important;
-  color: var(--charcoal) !important;
-
-  border-top: 5px solid var(--green) !important;
-  border-radius: 12px;
-
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.next-page-button::after {
-  content: "  →";
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
-.next-page-button:hover::after {
-  transform: translateX(4px);
-}
-
 /*
   The header ignores clicks so students can select the
   page underneath it, so every control placed in it has

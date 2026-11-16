@@ -543,7 +543,6 @@ const choices = [
     </div>
 
     <template v-if="finished">
-      <Button class="next-page-button" to="/lesson4"> Next: Lesson 4 </Button>
       <Button class="save-work-button" symbol="💾" @click="downloadLessonPDF">
         <p>Save my work</p>
       </Button>

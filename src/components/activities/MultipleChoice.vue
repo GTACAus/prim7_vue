@@ -106,7 +106,7 @@ provide("multipleChoice", {
   isVisible: (question) => !props.sequence || current.value === question,
 });
 
-defineExpose({ reset, isComplete });
+defineExpose({ reset, isComplete, solved });
 </script>
 
 <template>

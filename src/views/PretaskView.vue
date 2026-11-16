@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { computed, ref } from "vue";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
 import DragDrop from "../components/activities/DragDrop.vue";
@@ -8,6 +8,15 @@ import DragItem from "../components/activities/DragItem.vue";
 import ThinkBox from "../components/pretask/ThinkBox.vue";
 import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
 import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
+
+// "Build a Plant" / "Label the Plant" tabs: labelling opens once the plant is built
+const plantGame = ref("parts");
+const plantParts = ref(null);
+const partsDone = computed(() => plantParts.value?.done ?? false);
+function switchGame(game) {
+  if (game === "labels" && !partsDone.value) return;
+  plantGame.value = game;
+}
 
 // Sections of the page. Order defines the unlock chain (next-id) and which
 // sections start locked; override per section where needed.
@@ -247,26 +256,29 @@ const glossary = {
             <div class="plant-game-container">
               <div class="tab-button-container">
                 <button
-                  class="tab option-button active"
-                  id="tab-parts"
-                  onclick="switchGame('parts')"
+                  type="button"
+                  class="tab option-button"
+                  :class="{ active: plantGame === 'parts' }"
+                  @click="switchGame('parts')"
                 >
                   Build a Plant
                 </button>
                 <button
+                  type="button"
                   class="tab option-button"
-                  id="tab-labels"
-                  onclick="switchGame('labels')"
+                  :class="{ active: plantGame === 'labels' }"
+                  @click="switchGame('labels')"
                 >
                   Label the Plant
                 </button>
               </div>
-              <main id="game-parts">
+              <main v-show="plantGame === 'parts'">
                 <DragDrop
                   id="plantPartsActivity"
+                  ref="plantParts"
                   class="plant-activity"
                   strict
-                  v-slot="{ done, trayEmpty }"
+                  v-slot="{ done, trayEmpty, reset }"
                 >
                   <div class="plant-area">
                     <div class="plant-image-container">
@@ -338,14 +350,19 @@ const glossary = {
 
                   <div class="option-button-container">
                     <div class="option-button">
-                      <button class="general-button" data-reset-trigger>
+                      <button
+                        type="button"
+                        class="general-button"
+                        @click="reset"
+                      >
                         Start Over
                       </button>
                     </div>
                     <div id="continue-button" class="option-button" v-if="done">
                       <button
+                        type="button"
                         class="general-button"
-                        onclick="switchGame('labels')"
+                        @click="switchGame('labels')"
                       >
                         Continue ->
                       </button>
@@ -353,13 +370,12 @@ const glossary = {
                   </div>
                 </DragDrop>
               </main>
-              <main id="game-labels" hidden>
+              <main v-show="plantGame === 'labels'">
                 <DragDrop
                   id="plantLabelsActivity"
                   class="plant-activity"
-                  depends-on="plantPartsActivity"
                   strict
-                  v-slot="{ done, trayEmpty }"
+                  v-slot="{ done, trayEmpty, reset }"
                 >
                   <div class="plant-area">
                     <div class="plant-image-container">
@@ -407,7 +423,11 @@ const glossary = {
                   </div>
 
                   <div class="option-button">
-                    <button class="general-button" data-reset-trigger>
+                    <button
+                      type="button"
+                      class="general-button"
+                      @click="reset"
+                    >
                       Start Over
                     </button>
                   </div>
@@ -468,7 +488,7 @@ const glossary = {
               id="wordSentencesActivity"
               class="word-sentences-activity dd-activity"
               strict
-              v-slot="{ done }"
+              v-slot="{ done, reset }"
             >
               <header class="wd-header">
                 <h3 class="wd-title">Plant Science</h3>
@@ -584,7 +604,7 @@ const glossary = {
                 <button
                   type="button"
                   class="general-button reset-btn"
-                  data-reset-trigger
+                  @click="reset"
                 >
                   Reset
                 </button>

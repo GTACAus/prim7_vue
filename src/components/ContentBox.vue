@@ -17,7 +17,7 @@ defineProps({
   display: block;
   padding: 20px;
   margin-bottom: 20px;
-  background: var(--paper);
+  background: white;
   border: var(--border-medium);
   box-shadow: var(--shadow-medium);
 }

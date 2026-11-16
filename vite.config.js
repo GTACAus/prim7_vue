@@ -49,7 +49,11 @@ export default defineConfig({
     vue({
       template: {
         transformAssetUrls: { tags: {} },
-        compilerOptions: { whitespace: "preserve" },
+        compilerOptions: {
+          whitespace: "preserve",
+          // the 3D submarine in the Lesson 7 banner (loaded from a CDN)
+          isCustomElement: (tag) => tag === "model-viewer",
+        },
       },
     }),
   ],
