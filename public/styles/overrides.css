@@ -158,24 +158,6 @@
     display: none !important;
   }
 
-  /* Show printable replacement messages */
-
-  .print-note {
-    margin: 5mm 0;
-    padding: 5mm;
-
-    background: var(--soft-yellow) !important;
-    border: 2px solid var(--line);
-    border-radius: 10px;
-
-    color: black;
-    font-size: 10pt;
-    font-weight: 600;
-
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
   /* Do not print empty input controls */
 
   .stw-input-row,
@@ -263,10 +245,6 @@
   .back-to-part1-button {
     margin: 0;
     white-space: nowrap;
-  }
-
-  .glossary-button {
-    grid-column: -1;
   }
 
   .worksheet-button,

@@ -10,21 +10,81 @@ import { computed, onBeforeUnmount, ref } from "vue";
 const IMG = "../images/pretask/plant_detective/";
 
 const SCENARIOS = [
-  { answer: "water-more", hint: "This plant is wilting — it looks thirsty!", image: "not_enough_water_plant.png", alt: "A wilted plant that needs more water" },
-  { answer: "water-less", hint: "The leaves are turning yellow and soggy!", image: "too_much_water_plant.png", alt: "An overwatered plant with yellow soggy leaves" },
-  { answer: "sunlight-more", hint: "This plant is pale and stretching toward light!", image: "not_enough_sunlight_plant.png", alt: "A pale plant stretching toward light needing more sunlight" },
-  { answer: "sunlight-less", hint: "The leaves look scorched and brown!", image: "too_much_sunlight_plant.png", alt: "A plant with scorched brown leaves from too much sun" },
-  { answer: "co2-more", hint: "This plant is growing very slowly and looks stunted!", image: "not_enough_co2_plant.png", alt: "A small stunted plant growing slowly needing more CO2" },
-  { answer: "co2-less", hint: "The leaves are curling up and closing!", image: "too_much_co2_plant.png", alt: "A plant with curling leaves needing less carbon dioxide" },
-  { answer: "nutrients-more", hint: "The leaves are turning yellow at the edges!", image: "not_enough_nutrients_plant.png", alt: "A plant with yellow leaves showing nutrient deficiency" },
-  { answer: "nutrients-less", hint: "The leaf tips are brown and burnt-looking!", image: "too_much_nutrients_plant.png", alt: "A plant with brown burnt leaf tips from too much fertilizer" },
+  {
+    answer: "water-more",
+    hint: "This plant is wilting — it looks thirsty!",
+    image: "not_enough_water_plant.png",
+    alt: "A wilted plant that needs more water",
+  },
+  {
+    answer: "water-less",
+    hint: "The leaves are turning yellow and soggy!",
+    image: "too_much_water_plant.png",
+    alt: "An overwatered plant with yellow soggy leaves",
+  },
+  {
+    answer: "sunlight-more",
+    hint: "This plant is pale and stretching toward light!",
+    image: "not_enough_sunlight_plant.png",
+    alt: "A pale plant stretching toward light needing more sunlight",
+  },
+  {
+    answer: "sunlight-less",
+    hint: "The leaves look scorched and brown!",
+    image: "too_much_sunlight_plant.png",
+    alt: "A plant with scorched brown leaves from too much sun",
+  },
+  {
+    answer: "co2-more",
+    hint: "This plant is growing very slowly and looks stunted!",
+    image: "not_enough_co2_plant.png",
+    alt: "A small stunted plant growing slowly needing more CO2",
+  },
+  {
+    answer: "co2-less",
+    hint: "The leaves are curling up and closing!",
+    image: "too_much_co2_plant.png",
+    alt: "A plant with curling leaves needing less carbon dioxide",
+  },
+  {
+    answer: "nutrients-more",
+    hint: "The leaves are turning yellow at the edges!",
+    image: "not_enough_nutrients_plant.png",
+    alt: "A plant with yellow leaves showing nutrient deficiency",
+  },
+  {
+    answer: "nutrients-less",
+    hint: "The leaf tips are brown and burnt-looking!",
+    image: "too_much_nutrients_plant.png",
+    alt: "A plant with brown burnt leaf tips from too much fertilizer",
+  },
 ];
 
 const CONTROLS = [
-  { key: "water", label: "💧 Water", name: "Water", className: "water-control" },
-  { key: "sunlight", label: "☀️ Sunlight", name: "Sunlight", className: "sunlight-control" },
-  { key: "co2", label: "🌬️ CO₂", name: "Carbon Dioxide", className: "co2-control" },
-  { key: "nutrients", label: "🧪 Nutrients", name: "Nutrients", className: "nutrient-control" },
+  {
+    key: "water",
+    label: "💧 Water",
+    name: "Water",
+    className: "water-control",
+  },
+  {
+    key: "sunlight",
+    label: "☀️ Sunlight",
+    name: "Sunlight",
+    className: "sunlight-control",
+  },
+  {
+    key: "co2",
+    label: "🌬️ CO₂",
+    name: "Carbon Dioxide",
+    className: "co2-control",
+  },
+  {
+    key: "nutrients",
+    label: "🧪 Nutrients",
+    name: "Nutrients",
+    className: "nutrient-control",
+  },
 ];
 
 function shuffle(list) {
@@ -47,7 +107,8 @@ let shakeTimer = null;
 
 const scenario = computed(() => SCENARIOS[order.value[current.value]]);
 const scoreText = computed(
-  () => `Question ${Math.min(current.value + 1, 8)} of 8 · Score: ${score.value}`,
+  () =>
+    `Question ${Math.min(current.value + 1, 8)} of 8 · Score: ${score.value}`,
 );
 
 function startGame() {
@@ -669,15 +730,5 @@ onBeforeUnmount(() => {
 
 .fade-out {
   animation: fadeOut 0.8s ease forwards;
-}
-</style>
-
-<style>
-/* The game fills its iframe on the pre-task page. */
-html,
-body {
-  min-height: 100%;
-  height: auto;
-  overflow: visible;
 }
 </style>

@@ -14,57 +14,6 @@
   padding-top: 0;
 }
 
-.formula-card {
-  display: grid;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.formula-step {
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 2px solid var(--line);
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.16);
-}
-
-.formula-step-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border: 2px solid var(--line);
-  border-radius: 50%;
-  font-weight: 700;
-  background: var(--mint);
-}
-
-#formula-step-independent {
-  background: var(--yellow);
-}
-#formula-step-dependent {
-  background: var(--soft-purple);
-}
-#formula-step-units {
-  background: var(--blue);
-}
-
-.formula-step strong {
-  display: block;
-  margin-bottom: 3px;
-  color: var(--text);
-}
-
-.formula-step span {
-  color: var(--muted);
-  line-height: 1.45;
-}
-
 /* ---------- Parent data-table section ---------- */
 
 .table-reference-note {

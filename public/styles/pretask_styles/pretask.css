@@ -202,7 +202,9 @@
 
 .plant-canvas {
   min-height: 280px;
-  background: radial-gradient(circle, rgba(78, 50, 232, 0.1) 1.5px, transparent 1.5px), var(--card);
+  background:
+    radial-gradient(circle, rgba(78, 50, 232, 0.1) 1.5px, transparent 1.5px),
+    var(--card);
   background-size: 22px 22px;
   border: 3px solid var(--line);
   border-radius: 22px;
@@ -646,7 +648,9 @@
 
 #plantLabelsActivity [data-dd-item],
 .part.dd-ghost:not(:has(img)) {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 600;
@@ -684,7 +688,8 @@
   display: none;
 }
 
-#success-1, #success-2 {
+#success-1,
+#success-2 {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -719,14 +724,9 @@
   text-align: center;
 }
 
-
 /* ----- Moved here from build_style.css: these selectors are pretask-only ----- */
 
 @media (max-width: 960px) {
-  .detective-embed-box {
-    min-height: 1200px;
-  }
-
   .video-row,
   .plant-game,
   .learning-row {

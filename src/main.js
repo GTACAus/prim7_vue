@@ -32,13 +32,6 @@ const routes = [
     component: () => import("./views/PretaskView.vue"),
   },
   {
-    path: "/plant-detective",
-    meta: {
-      header: false,
-    },
-    component: () => import("./views/PlantDetectiveView.vue"),
-  },
-  {
     path: "/lesson1",
     meta: {
       stylesheets: ["/styles/overrides.css"],

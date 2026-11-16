@@ -2,12 +2,14 @@
 import { computed, ref } from "vue";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
+import Button from "../components/Button.vue";
 import DragDrop from "../components/activities/DragDrop.vue";
 import DropSlot from "../components/activities/DropSlot.vue";
 import DragItem from "../components/activities/DragItem.vue";
 import ThinkBox from "../components/pretask/ThinkBox.vue";
 import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
 import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
+import PlantDetective from "../components/pretask/PlantDetective.vue";
 
 // "Build a Plant" / "Label the Plant" tabs: labelling opens once the plant is built
 const plantGame = ref("parts");
@@ -255,22 +257,20 @@ const glossary = {
           <div class="plant-canvas">
             <div class="plant-game-container">
               <div class="tab-button-container">
-                <button
-                  type="button"
+                <Button
                   class="tab option-button"
                   :class="{ active: plantGame === 'parts' }"
                   @click="switchGame('parts')"
                 >
                   Build a Plant
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
                   class="tab option-button"
                   :class="{ active: plantGame === 'labels' }"
                   @click="switchGame('labels')"
                 >
                   Label the Plant
-                </button>
+                </Button>
               </div>
               <main v-show="plantGame === 'parts'">
                 <DragDrop
@@ -423,11 +423,7 @@ const glossary = {
                   </div>
 
                   <div class="option-button">
-                    <button
-                      type="button"
-                      class="general-button"
-                      @click="reset"
-                    >
+                    <button type="button" class="general-button" @click="reset">
                       Start Over
                     </button>
                   </div>
@@ -652,12 +648,7 @@ const glossary = {
         </div>
 
         <div class="detective-embed-box">
-          <iframe
-            src="/plant-detective"
-            title="Plant Detective Game"
-            class="detective-iframe"
-          >
-          </iframe>
+          <PlantDetective />
         </div>
       </Section>
 

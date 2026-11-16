@@ -10,26 +10,12 @@
   margin-top: 16px;
 }
 
+/* Lesson 2 differences from the shared .formula-step styles (build_style.css) */
 .formula-step {
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 2px solid var(--line);
-  border-radius: 14px;
-  background: var(--paper);
+  box-shadow: none;
 }
 
 .formula-step-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border: 2px solid var(--line);
-  border-radius: 50%;
-  font-weight: 700;
   background: var(--yellow);
 }
 
@@ -39,24 +25,6 @@
 
 .formula-step.control .formula-step-number {
   background: var(--mint);
-}
-
-/* Colour the complete fair-test formula rows */
-.formula-step.change,
-.formula-step.measure,
-.formula-step.control {
-  background: white;
-}
-
-.formula-step strong {
-  display: block;
-  margin-bottom: 3px;
-  color: var(--text);
-}
-
-.formula-step span {
-  color: var(--muted);
-  line-height: 1.45;
 }
 
 .variable-type-grid {
@@ -113,194 +81,14 @@
   color: var(--text);
 }
 
-.variable-summary-placeholder {
-  margin-top: 18px;
-  padding: 18px;
-  border: 2px dashed var(--line);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--muted);
-  text-align: center;
-}
-
 #choose-ball-pair .content-box {
   padding: 14px 18px;
-}
-
-
-
-.prediction-placeholder,
-.diagram-placeholder,
-.procedure-placeholder {
-  margin-top: 18px;
-  padding: 24px;
-  border: 2px dashed var(--line);
-  border-radius: 18px;
-  background: var(--paper);
-  color: var(--muted);
-  line-height: 1.6;
-  text-align: center;
-}
-
-.fair-test-diagram-layout {
-  display: grid;
-  grid-template-columns: 1.35fr 0.8fr;
-  gap: 18px;
-  align-items: stretch;
-}
-
-.diagram-panel,
-.variable-panel {
-  padding: 20px;
-  border: 2px solid var(--line);
-  border-radius: 20px;
-  background: var(--paper);
-}
-
-.diagram-panel {
-  min-height: 430px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--soft-blue);
-}
-
-.variable-panel h3 {
-  margin-top: 0;
-  color: var(--text);
-}
-
-.variable-panel-block {
-  margin-bottom: 14px;
-  padding: 14px;
-  border: 2px solid var(--line);
-  border-radius: 14px;
-}
-
-.variable-panel-block:last-child {
-  margin-bottom: 0;
-}
-
-.variable-panel-block.independent {
-  background: var(--soft-yellow);
-}
-
-.variable-panel-block.dependent {
-  background: var(--soft-purple);
-}
-
-.variable-panel-block.controlled {
-  background: var(--soft-green);
-}
-
-.variable-panel-block label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text);
-  font-weight: 700;
-}
-
-.variable-panel-block select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 2px solid var(--line);
-  border-radius: 12px;
-  background: white;
-  color: var(--text);
-  font: inherit;
-}
-
-.procedure-comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-
-.procedure-card {
-  padding: 22px;
-  border: 3px solid var(--line);
-  border-radius: 22px;
-  background: var(--paper);
-  box-shadow: var(--shadow-small);
-}
-
-.procedure-card h3 {
-  margin: 0 0 16px;
-  color: var(--purple);
-}
-
-.procedure-step {
-  margin-bottom: 14px;
-  padding: 14px;
-  border: 2px solid var(--line);
-  border-radius: 14px;
-}
-
-.procedure-step:last-child {
-  margin-bottom: 0;
-}
-
-.procedure-step.change {
-  background: var(--soft-yellow);
-}
-
-.procedure-step.measure {
-  background: var(--soft-purple);
-}
-
-.procedure-step.control {
-  background: var(--soft-green);
-}
-
-.procedure-step strong {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--text);
-}
-
-.procedure-step textarea {
-  width: 100%;
-  min-height: 95px;
-  padding: 12px;
-  resize: vertical;
-  border: 2px solid var(--line);
-  border-radius: 12px;
-  background: white;
-  color: var(--text);
-  font: inherit;
-  line-height: 1.5;
-}
-
-.lesson-finish-box {
-  margin-top: 20px;
-  padding: 22px;
-  border: 3px solid var(--line);
-  border-radius: 20px;
-  background: var(--yellow);
-  text-align: center;
-  box-shadow: var(--shadow-medium);
-}
-
-.lesson-finish-box h3 {
-  margin: 0 0 8px;
-  color: var(--purple);
-}
-
-.lesson-finish-box p {
-  margin: 0;
-  color: var(--text);
-  line-height: 1.55;
 }
 
 @media (max-width: 900px) {
   .variable-grid,
   .variable-type-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .fair-test-diagram-layout,
-  .procedure-comparison-grid {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -315,16 +103,6 @@
   }
 }
 
-/* ==================================================
-   REASONED PREDICTION BUILDER IFRAME
-   ================================================== */
-.reasoned-prediction-iframe {
-  height: 700px;
-  margin-top: 0;
-  background: var(--paper);
-  overflow: hidden;
-} /* reasoned-prediction-iframe exists in build_style.css. This
-   override is to make it taller for lesson 2. */
 /* Lesson 2 section heading colours — add gradually */
 
 #discover-variables .section-title {

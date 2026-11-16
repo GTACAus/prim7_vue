@@ -74,3 +74,11 @@ document.title = "Lesson 7 - Drawing Scientific Diagrams";
     <Expedition :glossary="glossary" />
   </main>
 </template>
+
+<style scoped>
+/* Same width as the intro on the other lessons (Page.vue); the game below stays full-width. */
+.expedition-intro {
+  width: min(1180px, 94%);
+  margin: 0 auto;
+}
+</style>
