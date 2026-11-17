@@ -8,48 +8,71 @@ const lessons = [
     img: "/images/index/lesson1.png",
     accent: "var(--purple)",
     subtitle: "Asking Scientific Questions & Making Predictions",
+    description:
+      "Use what you know about the world to ask questions and make predictions.",
+    experiment: "Toy Cars Rolling Down Ramps",
   },
   {
     href: "lesson2/",
     img: "/images/index/lesson2.png",
     accent: "var(--orange)",
     subtitle: "Planning a Fair Test",
+    description: "Learn how to plan a fair test and represent it as a diagram.",
+    experiment: "Ball Bounce Test",
   },
   {
     href: "lesson3/",
     img: "/images/index/lesson3.png",
     accent: "var(--green)",
     subtitle: "Organising Fair Test Data into a Table",
+    description:
+      "Collect data from a fair test and learn how to organize it into a table.",
+    experiment: "Is Yeast Alive?",
   },
   {
     href: "lesson4/",
     img: "/images/index/lesson3.png",
     accent: "var(--purple)",
     subtitle: "Science Inquiry Lab - Skills Check!",
+    description:
+      "Apply what you have learned in lessons 1,2 and 3. Plan a fair test and record results in a table.",
+    experiment: "Ball Bounce Test Continued",
   },
   {
     href: "lesson5/",
     img: "/images/index/lesson4.png",
     accent: "var(--blue)",
     subtitle: "Using Bar Graphs to Visualise Data",
+    description:
+      "Learn how to convert data into a bar graph to help analyse results.",
+    experiment: "Leadbeaters Possum Conservation",
   },
   {
     href: "lesson6/",
     img: "/images/index/lesson4.png",
     accent: "var(--blue)",
     subtitle: "Using Line Graphs to Visualise Data",
+    description:
+      "Learn how to convert data into a line graph to help analyse results.",
+    experiment: "What lives in the intertidal zone?",
   },
   {
     href: "lesson7/",
     img: "/images/index/lesson4.png",
     accent: "var(--green)",
     subtitle: "Drawing Scientific Diagrams",
+    description:
+      "Learn how to represent experiments as a diagram and observations as scientific drawings.",
+    experiment: "Deep Sea Exploration + Rust experiment",
   },
   {
     href: "lesson8/",
     img: "/images/index/lesson4.png",
     accent: "var(--green)",
     subtitle: "Communicating Science",
+    description:
+      "Learn how to report on a fair test using a scientific poster or scientific report.",
+    experiment: "Reaction Time Experiment",
   },
 ];
 
@@ -57,7 +80,7 @@ let teardown = null;
 
 // All DOM access happens after the template has rendered.
 onMounted(() => {
-  document.title = "Scientific Inquiry Lesson Overview";
+  document.title = "Science Inquiry Lab Overview";
 
   // ─────────────────────────────────────────────
   // Carousel configuration
@@ -66,7 +89,7 @@ onMounted(() => {
   // Lessons up to availableLesson are unlocked.
   // Click the heading 5 times to unlock everything.
 
-  const availableLesson = 5;
+  const availableLesson = 7;
   let showAll = false;
 
   const cards = [...document.querySelectorAll(".lesson-card")];
@@ -146,21 +169,6 @@ onMounted(() => {
     card.addEventListener(type, listener);
     cardEventListeners.get(card).push({ type, listener });
   }
-
-  // ─────────────────────────────────────────────
-  // Lesson descriptions
-  // ─────────────────────────────────────────────
-
-  const lessonDescriptions = [
-    "Use what you know about the world to ask questions and make predictions.",
-    "Learn how to plan a fair test and represent it as a diagram.",
-    "Collect data from a fair test and learn how to organize it into a table.",
-    "Apply what you have learned in lessons 1,2 and 3. Plan a fair test and record results in a table.",
-    "Learn how to convert data into a bar graph to help analyse results.",
-    "Learn how to convert data into a line graph to help analyse results.",
-    "Learn how to represent experiments as a diagram and observations as scientific drawings.",
-    "Learn how to report on a fair test using a scientific poster or scientific report.",
-  ];
 
   // ─────────────────────────────────────────────
   // Animation utilities
@@ -413,14 +421,6 @@ onMounted(() => {
   // Carousel functionality
   // ─────────────────────────────────────────────
 
-  const description = document.getElementById("description");
-
-  description.addEventListener("animationend", (event) => {
-    if (event.animationName === "description-arrive") {
-      description.classList.remove("is-transitioning");
-    }
-  });
-
   function updateVisibility() {
     document.querySelectorAll("[data-stage]").forEach((item) => {
       item.classList.toggle(
@@ -433,25 +433,6 @@ onMounted(() => {
         String(item.classList.contains("unavailable")),
       );
     });
-  }
-
-  function showDescription(index, animate = false) {
-    description.innerHTML = "";
-
-    const heading = document.createElement("h2");
-    const content = document.createElement("p");
-
-    description.appendChild(heading);
-    description.appendChild(content);
-
-    heading.textContent = `Lesson ${index + 1}`;
-    content.textContent = lessonDescriptions[index];
-
-    if (animate && !reduceMotion) {
-      description.classList.remove("is-transitioning");
-      void description.offsetWidth;
-      description.classList.add("is-transitioning");
-    }
   }
 
   function showLesson(index, animate = false) {
@@ -483,8 +464,6 @@ onMounted(() => {
     nextButton.disabled = currentIndex === cards.length - 1;
 
     status.textContent = `${String(currentIndex + 1).padStart(2, "0")} / ${String(cards.length).padStart(2, "0")}`;
-
-    showDescription(currentIndex, animate);
   }
 
   // ─────────────────────────────────────────────
@@ -727,7 +706,7 @@ onBeforeUnmount(() => {
   <main class="page">
     <header class="lesson-heading">
       <h1 id="hero">
-        <span>Scientific Inquiry</span>
+        <span>Science Inquiry Lab</span>
         <span>starts here</span>
       </h1>
     </header>
@@ -746,6 +725,8 @@ onBeforeUnmount(() => {
           :img="lesson.img"
           :stage="number + 1"
           :accent="lesson.accent"
+          :description="lesson.description"
+          :experiment="lesson.experiment"
         >
           <template #number>Lesson {{ number + 1 }}</template>
           <template #subtitle>{{ lesson.subtitle }}</template>
@@ -756,10 +737,6 @@ onBeforeUnmount(() => {
         type="button"
         aria-label="Show next lesson"
       ></button>
-      <div
-        id="description"
-        aria-label="Description of the current lesson"
-      ></div>
     </section>
     <p class="carousel-status" aria-live="polite"></p>
   </main>
@@ -833,18 +810,18 @@ body {
   perspective: 1200px;
   touch-action: pan-y;
 }
-/* Grid mode: hide arrows + description, let the track size to its cards */
+/* Grid mode: hide arrows, let the track size to its cards */
 .carousel:has(.carousel-track.is-grid) {
   grid-template-rows: auto;
+  width: min(calc(100% - 100px), 1980px);
 }
-.carousel:has(.carousel-track.is-grid) .carousel-control,
-.carousel:has(.carousel-track.is-grid) #description {
+.carousel:has(.carousel-track.is-grid) .carousel-control {
   display: none;
 }
 .carousel-track.is-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 280px);
-  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(auto-fit, min(100%, 550px));
+  grid-auto-rows: auto;
   gap: 16px;
   align-items: stretch;
   justify-content: center;
@@ -853,7 +830,10 @@ body {
 .carousel-track.is-grid .lesson-card {
   position: static;
   width: auto;
-  min-height: 120px;
+  min-height: 0;
+  /* Match the carousel cards' shape (~550 x 400) */
+  aspect-ratio: 11 / 8;
+  padding: clamp(16px, 2vw, 28px);
   box-shadow: none;
 
   transform: none;
@@ -863,75 +843,19 @@ body {
 
   transition: none;
   will-change: none;
+
+  animation: pop-fade-in 0.5s ease;
+}
+/* Grid mode: the overview sits in the card's flow, under the title */
+.carousel-track.is-grid :deep(.overview) {
+  position: static;
+  width: 100%;
+  margin: auto 0 0;
 }
 .carousel-track.is-grid .lesson-card:hover {
   background: color-mix(in srgb, var(--accent) 20%, white 80%);
 }
 
-#description {
-  z-index: -1;
-  grid-column: 1 / -1;
-  grid-row: 2;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 700px;
-  margin: 0 20px;
-  padding: 20px;
-  border: 2px solid var(--charcoal);
-  background: white;
-  box-shadow: var(--shadow-medium);
-  border-radius: 20px;
-  width: 100%;
-}
-#description.is-transitioning {
-  --animation-length: 0.6s;
-  --bounce-amount: 20px;
-
-  animation: description-arrive var(--animation-length) ease both;
-}
-#description.is-transitioning * {
-  animation: description-content-fade var(--animation-length) ease both;
-}
-@keyframes description-content-fade {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes description-arrive {
-  0% {
-    transform: translateY(-300px) scaleX(0.1);
-  }
-  50% {
-    transform: translateY(var(--bounce-amount)) scaleX(0.1);
-  }
-  75% {
-    transform: translateY(calc(-1 * var(--bounce-amount))) scaleX(1);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-#description h2,
-p {
-  margin: 0;
-  margin-bottom: 10px;
-}
-#description h2 {
-  margin-bottom: 25px;
-}
-#description p::before {
-  content: "Description: ";
-  font-weight: 700;
-}
 .carousel-track.is-swiping .lesson-card {
   left: calc(50% + var(--swipe-x));
   z-index: var(--swipe-z);
@@ -1001,7 +925,7 @@ p {
   outline: 4px solid var(--purple);
   outline-offset: 5px;
 }
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .page {
     padding: 28px 0;
   }
@@ -1018,9 +942,6 @@ p {
     width: 40px;
     height: 40px;
   }
-  #description {
-    padding: 16px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1028,9 +949,6 @@ p {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
-  }
-  #description.is-transitioning {
-    animation-duration: 0.01ms;
   }
 }
 </style>

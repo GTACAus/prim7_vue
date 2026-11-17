@@ -5,7 +5,7 @@
     2. watch the three test videos and type in the results (<InputResponse>)
     3. stop and think about unusual results, then calculate each row's average
     4. interpret the results (<PredictionCheck>), then a final stop and think,
-       which shows the Next: Lesson 4 and Save my work buttons.
+       which shows the end-of-lesson card.
 
     <YeastResultsTable @reset="section.reset()" />
 
@@ -26,7 +26,7 @@ import McChoice from "../activities/McChoice.vue";
 import StopAndCheck from "../StopAndCheck.vue";
 import Button from "../Button.vue";
 import { openVideo } from "../../composables/useModal.js";
-import { downloadLessonPDF } from "../../composables/usePrintLesson.js";
+import LessonEndCard from "../LessonEndCard.vue";
 
 const emit = defineEmits(["reset"]);
 
@@ -436,14 +436,11 @@ const choices = [
                 >
                   <div v-if="calculated[index]" class="average-result-wrapper">
                     <span class="average-result-value">{{ average(row) }}</span>
-                    <button
-                      type="button"
-                      class="average-clear-button"
+                    <Button
+                      :is-delete="true"
                       aria-label="Clear calculated average"
                       @click="clearAverage(index)"
-                    >
-                      ×
-                    </button>
+                    />
                   </div>
                   <button
                     v-else-if="averagesShown"
@@ -544,11 +541,15 @@ const choices = [
       <Button :is-reset="true" @click="emit('reset')" />
     </div>
 
-    <template v-if="finished">
-      <Button class="save-work-button" symbol="💾" @click="downloadLessonPDF">
-        <p>Save my work</p>
-      </Button>
-    </template>
+    <LessonEndCard
+      v-if="finished"
+      :lesson-number="3"
+      :practiced="[
+        'Observing and investigating yeast',
+        'Recording results and looking for patterns',
+        'Using results to check a prediction',
+      ]"
+    />
   </Activity>
 </template>
 

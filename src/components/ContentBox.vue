@@ -20,5 +20,7 @@ defineProps({
   background: white;
   border: var(--border-medium);
   box-shadow: var(--shadow-medium);
+
+  animation: pop-fade-in 0.5s ease;
 }
 </style>

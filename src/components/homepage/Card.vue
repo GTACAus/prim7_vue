@@ -4,6 +4,9 @@ defineProps({
   img: { type: String, required: true },
   stage: { type: Number, required: true },
   accent: { type: String, default: "var(--purple)" },
+  // overview under the title: what the lesson is about and its experiment
+  description: { type: String, default: "" },
+  experiment: { type: String, default: "" },
 });
 </script>
 
@@ -17,6 +20,19 @@ defineProps({
     <img v-if="img" :src="img" alt="" />
     <span class="lesson-number"><slot name="number" /></span>
     <span class="lesson-subtitle"><slot name="subtitle" /></span>
+    <div
+      v-if="description || experiment"
+      class="overview"
+      :aria-label="`Overview of lesson ${stage}`"
+    >
+      <div class="description">
+        <p class="description-content">{{ description }}</p>
+      </div>
+      <div class="experiment">
+        <h2 class="experiment-heading">Experiment:</h2>
+        <p class="experiment-content">{{ experiment }}</p>
+      </div>
+    </div>
   </a>
 </template>
 
@@ -31,7 +47,7 @@ defineProps({
   min-height: clamp(260px, 44vh, 430px);
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   gap: 0.8rem;
   overflow: hidden;
   padding: clamp(20px, 4vw, 48px);
@@ -63,12 +79,11 @@ defineProps({
 }
 .lesson-card img {
   position: absolute;
-  inset: 10% 12%;
-  width: 76%;
-  height: 80%;
+  inset: -10%;
+  height: 140%;
   margin: auto;
   object-fit: contain;
-  opacity: 0.2;
+  opacity: 0.1;
   pointer-events: none;
   transition:
     opacity 0.2s ease,
@@ -85,8 +100,8 @@ defineProps({
   transition: transform 0.45s ease;
 }
 .lesson-subtitle {
-  max-width: 17ch;
-  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+  max-width: 50ch;
+  font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.35;
   transition: transform 0.45s ease;
@@ -102,12 +117,64 @@ defineProps({
 .lesson-card.is-current:not(.unavailable):hover {
   background: color-mix(in srgb, var(--accent) 20%, white 80%);
 }
-.lesson-card.is-current:not(.unavailable):hover .lesson-subtitle {
-  transform: scale(1.5);
+.lesson-card.is-current img {
+  opacity: 0.1;
 }
 
-.lesson-card.is-current img {
-  opacity: 0.28;
+/* ---------- overview: description + experiment ---------- */
+.overview {
+  position: absolute;
+  bottom: 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 700px;
+  margin: 0 clamp(8px, 1.7vw, 20px);
+  padding: clamp(10px, 1.7vw, 20px);
+  background: transparent;
+  border: 2px solid var(--charcoal);
+  border-radius: clamp(12px, 1.7vw, 20px);
+  box-shadow: var(--shadow-medium);
+  text-align: center;
+  text-transform: none;
+  transition: background 0.25s ease;
+}
+.lesson-card:not(.unavailable):hover .overview {
+  background: white;
+}
+.overview h2,
+.overview p {
+  margin: 0;
+  margin-bottom: clamp(5px, 0.85vw, 10px);
+}
+.overview h2 {
+  margin-bottom: clamp(12px, 2.1vw, 25px);
+  text-transform: uppercase;
+}
+/* Reserve two lines so every overview is the same height */
+.overview .description-content {
+  min-height: 2lh;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+}
+.overview .experiment {
+  display: flex;
+  align-items: center;
+  gap: clamp(5px, 0.85vw, 10px);
+}
+.overview .experiment-heading {
+  margin-bottom: clamp(5px, 0.85vw, 10px);
+  font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+}
+.overview .experiment-content {
+  padding: clamp(4px, 0.6vw, 7px);
+  background: var(--green);
+  border: 2px solid var(--charcoal);
+  border-radius: 99px;
+  box-shadow: 0 5px 5px rgb(0 0 0 / 40%);
+  color: var(--paper);
+  font-weight: 700;
 }
 .lesson-card.is-previous,
 .lesson-card.is-next {
@@ -155,10 +222,19 @@ defineProps({
   outline: 4px solid var(--purple);
   outline-offset: 5px;
 }
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .lesson-card {
     width: min(68vw, 310px);
     min-height: clamp(250px, 40vh, 360px);
+  }
+  .lesson-subtitle {
+    font-size: clamp(0.8rem, 1vw, 1rem);
+  }
+  .overview .experiment {
+    flex-direction: column;
+  }
+  .overview .experiment-heading {
+    font-size: clamp(1rem, 5vw, 1.4rem);
   }
   .lesson-card.is-previous,
   .lesson-card.is-next {

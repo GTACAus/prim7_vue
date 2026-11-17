@@ -2,6 +2,7 @@
 import { computed, nextTick, ref } from "vue";
 import Activity from "../activities/Activity.vue";
 import Button from "../Button.vue";
+import LessonEndCard from "../LessonEndCard.vue";
 
 const props = defineProps({
   tests: { type: Array, required: true },
@@ -22,7 +23,7 @@ const isComplete = computed(
     ),
 );
 
-const state = { answers, correctEver, completion };
+const state = { answers, correctEver };
 
 function selectAnswer(index, value) {
   answers.value = { ...answers.value, [index]: value };
@@ -136,16 +137,15 @@ defineExpose({ reset, isComplete });
       </article>
     </div>
 
-    <div
-      ref="completion"
-      class="prediction-test-completion"
-      v-show="isComplete"
-    >
-      <strong>Well done! You practiced:</strong>
-      <ol>
-        <li>Writing a testable question</li>
-        <li>Making a prediction and giving a reason for your choice</li>
-      </ol>
+    <div ref="completion" v-show="isComplete">
+      <LessonEndCard :lesson-number="1">
+        <template #list>
+          <ol>
+            <li>Writing a testable question</li>
+            <li>'Making a prediction and giving a reason for your choice</li>
+          </ol>
+        </template>
+      </LessonEndCard>
     </div>
     <div class="reset-button-container">
       <Button :is-reset="true" @click="reset">Reset</Button>
@@ -376,46 +376,6 @@ defineExpose({ reset, isComplete });
 
 .prediction-feedback[hidden] {
   display: none;
-}
-
-.prediction-test-completion {
-  margin-top: 28px;
-  padding: 20px;
-
-  background: var(--soft-green);
-  border: 3px solid var(--green);
-  border-radius: 18px;
-
-  box-shadow: 0 4px 0 var(--green);
-
-  color: var(--text);
-
-  text-align: center;
-}
-
-.prediction-test-completion[hidden] {
-  display: none;
-}
-
-.prediction-test-completion strong {
-  display: block;
-
-  margin-bottom: 7px;
-
-  color: var(--purple);
-
-  font-size: 1.2rem;
-}
-
-.prediction-test-completion ol {
-  justify-self: center;
-}
-
-.prediction-test-completion li {
-  text-align: left;
-  margin: 0;
-
-  line-height: 1.55;
 }
 
 @media (max-width: 800px) {

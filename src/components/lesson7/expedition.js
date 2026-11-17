@@ -120,6 +120,7 @@ export const missionConfig = [
 export function createFreshState() {
   return {
     started: false,
+    teacherMode: false, // set by the teacher menu's "Show all sections"
     currentMissionIndex: 0,
     currentStageIndex: 0,
     unlockedMissionIndex: 0,

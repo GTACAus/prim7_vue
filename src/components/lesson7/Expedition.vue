@@ -35,6 +35,7 @@ import RustSymbolMatch from "./RustSymbolMatch.vue";
 import RustDiagram from "./RustDiagram.vue";
 import UnknownSpecies from "./UnknownSpecies.vue";
 import FieldGuide from "./FieldGuide.vue";
+import LessonEndCard from "../LessonEndCard.vue";
 import { openGlossary, openModal } from "../../composables/useModal.js";
 import {
   FROGFISH_LABELS,
@@ -96,7 +97,8 @@ const mission = computed(() => missionConfig[state.currentMissionIndex]);
 const stage = computed(
   () => mission.value?.stages[state.currentStageIndex] ?? null,
 );
-const isActive = (id) => state.started && stage.value?.id === id;
+const isActive = (id) =>
+  state.started && !overviewOpen.value && stage.value?.id === id;
 const missionIndexOf = (s) => missionConfig.findIndex((m) => m.stages.includes(s));
 const isLastStageOf = (s) => {
   const m = missionConfig[missionIndexOf(s)];
@@ -519,8 +521,60 @@ function hasResettableInput(s) {
   }
 }
 
+/* ---------- teacher stage overview ----------
+   After "Show all sections", teachers get a grid of every stage in the
+   current mission. Clicking a card opens that stage; the "All stages" banner
+   button brings the grid back. */
+
+const overviewOpen = ref(false);
+const overviewThumbs = ref({}); // stage id -> { tag, attrs } of its first image / video
+
+function toggleOverview() {
+  if (!state.teacherMode) return;
+  state.started = true;
+  overviewOpen.value = !overviewOpen.value;
+}
+
+// Thumbnails come from each stage's own first video or image
+async function readThumbnails() {
+  await nextTick();
+  const thumbs = {};
+  for (const s of mission.value?.stages ?? []) {
+    const body = stageScreen.value?.querySelector(
+      '[data-stage-id="' + s.id + '"] .mission-window-body',
+    );
+    const media =
+      body?.querySelector("video[src]") || body?.querySelector("img[src]");
+    if (!media) continue;
+    const attrs = {};
+    for (const attr of media.attributes) {
+      if (attr.name === "controls" || attr.name.startsWith("data-v-")) continue;
+      attrs[attr.name] = attr.value;
+    }
+    thumbs[s.id] = { tag: media.tagName.toLowerCase(), attrs };
+  }
+  overviewThumbs.value = thumbs;
+}
+
+watch(
+  () => [overviewOpen.value, state.currentMissionIndex],
+  ([open]) => {
+    if (!open) return;
+    readThumbnails();
+    if (stageScreen.value) stageScreen.value.scrollTop = 0;
+  },
+  { immediate: true },
+);
+
 const controls = computed(() => {
   const s = stage.value;
+  if (state.started && overviewOpen.value)
+    return {
+      check: { label: "Check", disabled: true },
+      reset: { label: "Reset", disabled: true },
+      next: { disabled: true },
+      status: ["Teacher view.", " Choose a stage to open it."],
+    };
   if (!state.started)
     return {
       check: { label: "Check", disabled: true },
@@ -607,6 +661,7 @@ function setMission(index) {
 
 function setStage(index) {
   if (index > (state.unlockedStageIndices[state.currentMissionIndex] || 0)) return;
+  overviewOpen.value = false;
   state.currentStageIndex = index;
 }
 
@@ -666,16 +721,21 @@ function teacherJump(id) {
   const index = missionConfig.findIndex((m) => m.id === id);
   if (index < 0) return;
   unlockMissionsUpTo(index);
+  overviewOpen.value = false;
   setMission(index);
 }
 
 function teacherShowAll() {
   unlockMissionsUpTo(missionConfig.length - 1);
   missionConfig.forEach((m, i) => (state.unlockedStageIndices[i] = m.stages.length - 1));
+  state.teacherMode = true;
+  state.started = true;
+  overviewOpen.value = true;
 }
 
 function teacherResetView() {
   Object.assign(state, createFreshState());
+  overviewOpen.value = false;
   for (const key of Object.keys(feedback)) delete feedback[key];
   for (const key of Object.keys(marks)) delete marks[key];
   diagramLabels.value?.reset();
@@ -948,6 +1008,15 @@ onBeforeUnmount(() => {
           <button type="button" class="expedition-button field-guide-button" @click="openGlossary">
             <span>Field guide</span>
           </button>
+          <button
+            v-if="state.teacherMode"
+            type="button"
+            class="expedition-button stage-overview-button"
+            :aria-pressed="overviewOpen"
+            @click="toggleOverview"
+          >
+            <span>{{ overviewOpen ? "Close stages" : "All stages" }}</span>
+          </button>
         </div>
       </header>
 
@@ -1050,6 +1119,51 @@ onBeforeUnmount(() => {
               </div>
             </section>
 
+            <!-- Teacher-only grid of every stage in the current mission -->
+            <section
+              v-if="state.started && overviewOpen"
+              class="stage-overview"
+              aria-label="All stages in this mission"
+            >
+              <div class="stage-overview-header">
+                <p class="mission-label">
+                  Mission {{ String(state.currentMissionIndex + 1).padStart(2, "0") }}
+                </p>
+                <h3>{{ mission.title }}</h3>
+                <p>Choose a stage to open it.</p>
+              </div>
+              <div class="stage-overview-grid">
+                <button
+                  v-for="(s, si) in mission.stages"
+                  :key="s.id"
+                  type="button"
+                  class="stage-overview-card"
+                  :class="{
+                    current: si === state.currentStageIndex,
+                    complete: state.completedStages[s.id],
+                  }"
+                  @click="setStage(si)"
+                >
+                  <div
+                    class="stage-overview-media"
+                    :class="{ 'is-empty': !overviewThumbs[s.id] }"
+                  >
+                    <component
+                      :is="overviewThumbs[s.id].tag"
+                      v-if="overviewThumbs[s.id]"
+                      v-bind="overviewThumbs[s.id].attrs"
+                    />
+                    <template v-else>{{ String(si + 1).padStart(2, "0") }}</template>
+                  </div>
+                  <span class="stage-progress-chip">
+                    Stage {{ si + 1 }} of {{ mission.stages.length }}
+                  </span>
+                  <strong>{{ s.label }}</strong>
+                  <p class="stage-progress-complete-label">Complete</p>
+                </button>
+              </div>
+            </section>
+
             <section
               v-for="(m, i) in missionConfig"
               :id="m.id"
@@ -1057,7 +1171,8 @@ onBeforeUnmount(() => {
               ref="missionEls"
               class="section expedition-mission"
               :class="{
-                active: state.started && i === state.currentMissionIndex,
+                active:
+                  state.started && !overviewOpen && i === state.currentMissionIndex,
                 locked: i > state.unlockedMissionIndex,
                 completed: state.completedMissions[i],
               }"
@@ -1821,6 +1936,14 @@ onBeforeUnmount(() => {
                     adaptations help them survive! Click CLOSE INFO to hide the
                     information panel.
                   </p>
+                  <LessonEndCard
+                    :lesson-number="7"
+                    :practiced="[
+                      'Observing and recording details',
+                      'Making and labelling a scientific drawing',
+                      'Identifying a deep-sea creature',
+                    ]"
+                  />
                 </MissionStage>
               </template>
             </section>
@@ -2506,6 +2629,139 @@ onBeforeUnmount(() => {
 .field-guide-button {
   --background-colour: var(--yellow);
   color: var(--exp-navy-dark) !important;
+}
+
+/* ---------- teacher stage overview ---------- */
+
+.stage-overview-button {
+  --background-colour: var(--purple);
+}
+
+.stage-overview {
+  min-height: 600px;
+  padding: 26px;
+  color: var(--exp-white);
+  animation: pop-fade-in 0.35s ease;
+}
+
+.stage-overview-header {
+  width: min(920px, 100%);
+  margin: 0 auto 18px;
+}
+
+.stage-overview-header h3 {
+  margin: 4px 0 6px;
+  font-family: "Oxanium", sans-serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+}
+
+.stage-overview-header p:last-child {
+  margin: 0;
+  color: var(--exp-muted);
+}
+
+.stage-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+  width: min(920px, 100%);
+  margin: 0 auto;
+}
+
+.stage-overview-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: var(--mission-bg);
+  border: 3px solid rgba(117, 221, 232, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+  color: var(--exp-white);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.stage-overview-card:hover,
+.stage-overview-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--exp-cyan);
+}
+
+.stage-overview-card.current {
+  border-color: var(--yellow);
+}
+
+.stage-overview-card.complete .stage-progress-chip {
+  background: var(--mint);
+}
+
+.stage-overview-card .stage-progress-complete-label {
+  --background-colour: var(--mint);
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
+  margin: 0;
+  padding: 5px 10px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0) 45%,
+      rgba(0, 0, 0, 0.12) 100%
+    ),
+    var(--background-colour, var(--exp-cyan));
+  border: none;
+  border-radius: 99px;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--background-colour) 55%, black 45%),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -4px 6px rgba(0, 0, 0, 0.18);
+  color: var(--exp-navy);
+  font-size: small;
+  font-weight: 700;
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.stage-overview-card.complete .stage-progress-complete-label {
+  display: inline;
+}
+
+.stage-overview-card strong {
+  font-family: "Oxanium", sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.stage-overview-media {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: rgba(57, 211, 255, 0.08);
+  border-radius: 12px;
+}
+
+.stage-overview-media :is(img, video) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.stage-overview-media.is-empty {
+  display: grid;
+  place-items: center;
+  color: var(--exp-cyan);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 2.4rem;
 }
 
 .expedition-banner h1,

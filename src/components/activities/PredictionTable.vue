@@ -410,13 +410,7 @@ defineExpose({ reset, setContext, isComplete });
             <label class="cell-helper">This is because...</label>
             <div v-if="entries.reason.saved" class="submitted-answer visible">
               {{ entries.reason.saved }}
-              <button
-                type="button"
-                class="delete-answer"
-                @click="clearEntry('reason')"
-              >
-                ×
-              </button>
+              <Button :is-delete="true" @click="clearEntry('reason')" />
             </div>
             <input
               v-else

@@ -1,7 +1,6 @@
 <script setup>
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
-import Button from "../components/Button.vue";
 import Flashcards from "../components/lesson1/Flashcards.vue";
 import QuestionWheel from "../components/lesson1/QuestionWheel.vue";
 import PredictionTests from "../components/lesson1/PredictionTests.vue";
@@ -11,11 +10,10 @@ import LessonCard from "../components/LessonCard.vue";
 import ThinkBox from "../components/ThinkBox.vue";
 
 import { openVideo } from "../composables/useModal.js";
-import { downloadLessonPDF } from "../composables/usePrintLesson.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
-  "Learn to ask <strong>testable questions</strong> and make reasoned predictions for a scientific <strong>experiment</strong>";
+  "I am learning to ask <strong>testable questions</strong> and make reasoned predictions for a scientific <strong>experiment</strong>";
 const criteria = [
   "I can classify whether a <strong>question</strong> is testable or untestable",
   "I can write a <strong>testable question</strong>",
@@ -144,11 +142,12 @@ const sections = [
   },
   {
     id: "flashcards",
-    title: "Testable or Non-testable?",
+    title: "Practice identifying if a question is testable or untestable",
+    label: "Testable or non-testable?",
   },
   {
     id: "testable-questions",
-    title: "How do We Write Testable Questions?",
+    title: "How do we write testable questions?",
   },
   {
     id: "reasoned-prediction",
@@ -160,21 +159,21 @@ const sections = [
   },
   {
     id: "testing-predictions",
-    title: "How to Test Reasoned Predictions",
+    title: "Testing our reasoned predictions",
   },
 ];
 </script>
 <template>
   <Page
     lessonId="lesson1"
-    title="Lesson 1 - Asking Scientific Questions &amp; Making Predictions"
+    title="Lesson 1 - Questioning and Predicting"
     :sections="sections"
     :glossary="glossary"
   >
     <template #lesson-intro>
       <LessonIntro
         label="Lesson 1"
-        title="Asking Scientific Questions &amp; Making Predictions"
+        title="Questioning and Predicting"
         worksheet="../worksheets/l1-worksheet.pdf"
         :objective="objective"
         :criteria="criteria"
@@ -218,10 +217,12 @@ const sections = [
             <strong>observations</strong> and ask <strong>questions</strong>.
           </p>
         </div>
-        <div class="image-box">
-          <img src="../images/lesson1/l1-default.png" alt="Toy car example" />
+        <div class="observe-experiment-grid">
+          <div class="image-box">
+            <img src="../images/lesson1/l1-default.png" alt="Toy car example" />
+          </div>
+          <ThinkBox class="lesson1-stw-box" :groups="stwGroups" />
         </div>
-        <ThinkBox :groups="stwGroups" />
       </Section>
       <!-- ---------- Explicit Teaching: What is a Testable Question? ---------- -->
       <Section name="testable-question-intro">
@@ -234,7 +235,8 @@ const sections = [
           <p class="activity-instruction">
             It is answered by doing an experiment. You change one thing and
             <strong>measure</strong> the effect on something else. It explores
-            the relationship between two different things.
+            the relationship between two different things. Compare the rules for
+            a testable and an untestable question below.
           </p>
         </div>
         <div class="intro-grid question-comparison-grid">
@@ -249,12 +251,8 @@ const sections = [
                 </li>
                 <li>Explore the relationship between two things.</li>
                 <li>
-                  One thing is changed and its effect on another thing is
+                  One thing is <strong>changed</strong>, and the effect is
                   <strong>measured</strong>.
-                </li>
-                <li>
-                  Different scientists should reach a similar answer when
-                  conducting the same <strong>experiment</strong>.
                 </li>
               </ul>
             </template>
@@ -266,28 +264,22 @@ const sections = [
             <template #content>
               <ul>
                 <li>
-                  May be answered using personal opinions, values or beliefs.
+                  Cannot be answered using an <strong>experiment</strong>.
                 </li>
+                <li>May be answered using personal opinions.</li>
                 <li>
-                  Do not explore the effect of <strong>changing</strong> one
+                  Are not done by <strong>changing</strong> only one thing. So
+                  you cannot <strong>measure</strong> its effect on another
                   thing.
                 </li>
-                <li>
-                  Cannot be answered using <strong>measurable</strong> evidence
-                  from an <strong>experiment</strong>.
-                </li>
-                <li>
-                  Are not by <strong>changing</strong> one thing and
-                  <strong>measuring</strong> the effect on another thing.
-                </li>
-                <li>Different people may provide different answers.</li>
               </ul>
             </template>
           </LessonCard>
         </div>
         <div class="diagram-box diagram-activity question-example-intro">
           <p class="activity-instruction">
-            Look at the following examples from our See, Think, Wonder exercise.
+            Look at the four questions below for the cars rolling down ramps
+            experiment. Learn to identify what makes a question testable.
           </p>
         </div>
         <div class="intro-grid question-example-grid">
@@ -400,7 +392,41 @@ const sections = [
       </Section>
       <!-- ---------- Flashcards ---------- -->
       <Section name="flashcards">
-        <Flashcards />
+        <div class="flashcards-learning-grid">
+          <Flashcards />
+          <LessonCard class="testable-card testable-question-guide">
+            <template #eyebrow>
+              <p>Testable question guide</p>
+            </template>
+            <template #content>
+              <h3>What makes a question testable?</h3>
+              <div class="question-check-list">
+                <div class="question-check-row">
+                  <span
+                    class="question-check-icon question-guide-icon"
+                    aria-hidden="true"
+                    >1</span
+                  >
+                  <div>
+                    <strong>Is something being changed?</strong>
+                    <p>A fair test changes one thing.</p>
+                  </div>
+                </div>
+                <div class="question-check-row">
+                  <span
+                    class="question-check-icon question-guide-icon"
+                    aria-hidden="true"
+                    >2</span
+                  >
+                  <div>
+                    <strong>Can the effect be measured?</strong>
+                    <p>Look for a result you can observe or measure.</p>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </LessonCard>
+        </div>
       </Section>
       <!-- Part C: How do we write testable questions? -->
       <Section name="testable-questions">
@@ -412,9 +438,11 @@ const sections = [
             <li>What is being <strong>changed</strong> and</li>
             <li>What is being <strong>measured</strong>.</li>
           </ol>
-          <strong>Testable questions</strong> begin with words like
-          <strong><i>What, How, Does and If</i></strong
-          >.
+          <p>
+            <strong>Testable questions</strong> begin with words like
+            <strong><i>What, How, Does and If</i></strong
+            >.
+          </p>
         </div>
         <QuestionWheel next-button-id="testableQuestionsNextButton" />
       </Section>
@@ -541,32 +569,39 @@ const sections = [
       <!-- ---------- Reasoned Prediction Builder ---------- -->
       <Section name="reasoned-builder">
         <div class="diagram-box diagram-activity">
-          <p class="activity-instruction">
-            Choose your investigation question. Then use the graphic organiser
-            to build a <strong>reasoned prediction</strong>. Watch the two
-            videos below to learn how to do this.
-          </p>
-          <div class="video-help-buttons">
-            <Button
+          <div class="prediction-video-layout">
+            <div class="prediction-video-instructions">
+              <p class="activity-instruction">
+                Follow these steps to create a
+                <strong>reasoned prediction</strong>:
+              </p>
+              <ol>
+                <li>Choose your testable question.</li>
+                <li>
+                  <strong>Watch the video</strong> to learn how to make a
+                  reasoned prediction.
+                </li>
+                <li>
+                  Use the graphic organiser to write your prediction and reason.
+                </li>
+              </ol>
+            </div>
+            <button
+              type="button"
+              class="prediction-video-button"
+              aria-label="Watch the reasoned prediction video"
               @click="
                 openVideo(
                   '../videos/lesson1/reasoned-prediction-v2.mp4',
-                  'Video guide 1',
+                  'Reasoned prediction video',
                 )
               "
             >
-              ▶ How to use the reasoned prediction builder
-            </Button>
-            <Button
-              @click="
-                openVideo(
-                  '../videos/lesson1/reasoned-prediction-example-v2.mp4',
-                  'Video guide 2',
-                )
-              "
-            >
-              ▶ Worked example
-            </Button>
+              <span class="prediction-video-play" aria-hidden="true">▶</span>
+              <span class="prediction-video-label"
+                ><strong>Watch the video</strong></span
+              >
+            </button>
           </div>
         </div>
         <PredictionTable
@@ -580,23 +615,20 @@ const sections = [
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
             To test a <strong>reasoned prediction</strong>, you do an
-            <strong>experiment</strong>. Below are four
-            <strong>experiments</strong> rolling cars down ramps. For each,
-            decide if the <strong>reasoned prediction</strong> is either:
+            <strong>experiment</strong>. Look at the results of these four
+            experiments done by students.<br />
+            Decide if their reasoned predictions are:
           </p>
           <ol>
             <li><strong>Supported</strong></li>
             <li><strong>Unsupported</strong></li>
           </ol>
+          <p>
+            Unsupported results still teach you something. That is what science
+            is about!
+          </p>
         </div>
         <PredictionTests :tests="predictionTests" />
-        <Button
-          class="save-work-button general-button"
-          symbol="💾"
-          @click="downloadLessonPDF"
-        >
-          <p>Save my work</p>
-        </Button>
       </Section>
     </template>
   </Page>
@@ -721,12 +753,12 @@ ol li::marker {
    ================================================== */
 
 .testable-card {
-  background: #f3fff8;
+  background: color-mix(in srgb, var(--soft-green) 50%, white 50%);
   border-top: 10px solid var(--green);
 }
 
 .untestable-card {
-  background: #fff8f3;
+  background: color-mix(in srgb, var(--soft-orange) 20%, white 80%);
   border-top: 10px solid var(--orange);
 }
 
@@ -781,24 +813,282 @@ ol li::marker {
   line-height: 1.5;
 }
 
-.video-help-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+/* Moved from prim7 lesson1.css: STW grid, flashcard guide, prediction video */
+/* ==================================================
+        OBSERVATION AND TESTABLE-QUESTION ACTIVITIES
+        ================================================== */
 
-  margin-top: 16px;
+.observe-experiment-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(290px, 0.85fr);
+  align-items: stretch;
+  gap: 20px;
 }
 
-/* ----- Moved here from build_style.css: .video-help-buttons is lesson 1 only ----- */
+#observe-experiment .image-box,
+#observe-experiment .lesson1-stw-box {
+  min-width: 0;
+  min-height: 480px;
+  margin: 20px 0;
+}
 
-@media (max-width: 600px) {
-  .video-help-buttons {
-    display: grid;
+#observe-experiment .image-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#observe-experiment .image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.lesson1-stw-box {
+  display: flex;
+  flex-direction: column;
+  background: var(--soft-yellow);
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 0 var(--line);
+}
+
+.lesson1-stw-box .stw-column {
+  flex: 1;
+  padding: 14px 16px;
+  border-bottom: 2px dashed rgba(48, 51, 47, 0.32);
+}
+
+.lesson1-stw-box .stw-column:last-child {
+  border-bottom: none;
+}
+
+.lesson1-stw-box .stw-column h3 {
+  margin: 0 0 6px;
+  color: var(--purple);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.lesson1-stw-box .stw-column p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.lesson1-stw-box .stw-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.lesson1-stw-box .stw-input-row input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 8px;
+  padding: 9px 10px;
+  background: white;
+  color: var(--text);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  box-shadow: inset 0 -2px 0 rgba(48, 51, 47, 0.09);
+  font: inherit;
+}
+
+.lesson1-stw-box .stw-input-row input:focus {
+  outline: 3px solid rgba(78, 50, 232, 0.18);
+  border-color: var(--purple);
+}
+
+.lesson1-stw-box .stw-input-row button {
+  align-self: flex-start;
+  padding: 9px 12px;
+  color: white;
+  background: var(--green);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 3px 0 var(--line);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lesson1-stw-box .stw-input-row button:hover {
+  background: var(--purple);
+}
+
+.lesson1-stw-box .stw-list {
+  margin: 6px 0 0;
+  padding: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  list-style: none;
+}
+
+.lesson1-stw-box .stw-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  padding: 7px 9px;
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+}
+
+.flashcards-learning-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(250px, 0.9fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.flashcards-learning-grid .flashcard-box {
+  min-width: 0;
+}
+
+.flashcards-learning-grid .flashcard-content {
+  padding: 24px 8px;
+}
+
+.testable-question-guide {
+  min-width: 0;
+  padding: 20px;
+}
+
+.testable-question-guide h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.testable-question-guide .question-check-list {
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.testable-question-guide .question-check-row {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+}
+
+.testable-question-guide .question-guide-icon {
+  background: var(--mint);
+}
+
+.testable-question-guide .question-check-row p {
+  font-size: 0.9rem;
+}
+
+/* ==================================================
+        REASONED-PREDICTION VIDEO
+        ================================================== */
+
+.prediction-video-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 20%);
+  align-items: center;
+  gap: 20px;
+}
+
+.prediction-video-instructions .activity-instruction {
+  margin-top: 0;
+}
+
+.prediction-video-instructions ol {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding-left: 1.4rem;
+}
+
+.prediction-video-instructions li {
+  padding-left: 4px;
+  line-height: 1.5;
+}
+
+.prediction-video-button {
+  display: flex;
+  width: min(100%, 150px);
+  aspect-ratio: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  justify-self: center;
+  padding: 14px;
+  color: white;
+  background: var(--green);
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 4px 0 var(--line);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.prediction-video-button:hover {
+  background: var(--button-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 var(--line);
+}
+
+.prediction-video-button:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 4px;
+}
+
+.prediction-video-play {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  padding-left: 4px;
+  color: var(--purple);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.prediction-video-label {
+  font-size: 0.95rem;
+}
+
+@media (max-width: 960px) {
+  .observe-experiment-grid,
+  .flashcards-learning-grid {
     grid-template-columns: 1fr;
   }
 
-  .video-help-buttons .general-button {
-    width: 100%;
+  #observe-experiment .image-box,
+  #observe-experiment .lesson1-stw-box {
+    min-height: 0;
+  }
+
+  #observe-experiment .image-box {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 700px) {
+  .prediction-video-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-video-button {
+    width: min(100%, 150px);
   }
 }
 </style>

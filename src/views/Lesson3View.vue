@@ -324,7 +324,7 @@ const labelsSection = ref(null);
               <h3>{{ key.title }}</h3>
               <p v-html="key.text"></p>
               <Button
-                class="general-button watch-video-button"
+                class="watch-video-button"
                 symbol="▶"
                 @click="openVideo(key.video, key.videoTitle)"
               >
@@ -332,7 +332,7 @@ const labelsSection = ref(null);
               </Button>
               <Button
                 v-if="key.pdf"
-                class="general-button watch-video-button"
+                class="watch-video-button"
                 @click="openPDF(key.pdf, key.pdfTitle)"
               >
                 <p>{{ key.pdfTitle }}</p>

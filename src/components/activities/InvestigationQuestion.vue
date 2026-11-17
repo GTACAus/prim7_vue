@@ -16,6 +16,9 @@
     (saved on Enter or blur, checked by the classroom language filter, shown
     in place of the box with a × to change it).
   - textInputClass: class for those text fields.
+  - steps: lay the builder out as three numbered steps (choose a starter,
+    choose the variables, check the question). Step 2 appears once a starter
+    is chosen and step 3 once the question is complete (lesson 2).
   - templates: overrides the four structures (what/how/does/if). Each is
       { parts: [before-first, between, after-second],
         firstPlaceholder, secondPlaceholder }
@@ -72,6 +75,7 @@ const props = defineProps({
   inputType: { type: String, default: "select" },
   textInputClass: { type: String, default: "question-blank-input" },
   templates: { type: Object, default: null },
+  steps: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["change"]);
@@ -161,91 +165,117 @@ defineExpose({ reset, isComplete, text });
 </script>
 
 <template>
-  <Activity :tag="tag" :complete="isComplete" :state="state" @reset="reset">
-    <div class="question-structure-grid">
-      <button
-        v-for="s in STRUCTURES"
-        :key="s.key"
-        type="button"
-        class="question-structure-card"
-        :class="[
-          'question-structure-' + s.key,
-          { selected: structure === s.key },
-        ]"
-        :aria-pressed="structure === s.key"
-        @click="selectStructure(s.key)"
-      >
-        {{ s.text }}
-      </button>
+  <Activity
+    :tag="tag"
+    :complete="isComplete"
+    :state="state"
+    :class="{ 'question-builder-steps': steps }"
+    @reset="reset"
+  >
+    <div :class="{ 'question-builder-step': steps }">
+      <template v-if="steps">
+        <h3>Step 1: Choose a question starter</h3>
+        <p>Choose one way to begin your fair test question.</p>
+      </template>
+      <div class="question-structure-grid">
+        <button
+          v-for="s in STRUCTURES"
+          :key="s.key"
+          type="button"
+          class="question-structure-card"
+          :class="[
+            'question-structure-' + s.key,
+            { selected: structure === s.key },
+          ]"
+          :aria-pressed="structure === s.key"
+          @click="selectStructure(s.key)"
+        >
+          {{ s.text }}
+        </button>
+      </div>
     </div>
 
-    <div
-      class="investigation-question-builder"
-      :class="{ 'builder-active': template }"
-      aria-live="polite"
-    >
-      <p v-if="!template" class="question-builder-placeholder">
-        Select a question structure above to begin.
-      </p>
-
-      <template v-else>
-        <div class="question-builder-sentence">
-          <template v-for="(blank, i) in blanks" :key="blank.name">
-            {{ template.parts[i] }}
-            <span class="question-blank">
-              <StudentEntry
-                v-if="inputType === 'text'"
-                :key="structure + ':' + blank.name"
-                :answers="entryAnswers(blank.name)"
-                :multiple-inputs="false"
-                :maxlength="50"
-                :input-class="textInputClass"
-                :placeholder="blank.placeholder"
-                :aria-label="blank.placeholder"
-                @update:answers="setEntryAnswers(blank.name, $event)"
-              />
-
-              <template v-else>
-                <span
-                  v-if="!answers[blank.name]"
-                  class="question-blank-input-row"
-                >
-                  <select
-                    v-model="drafts[blank.name]"
-                    class="question-blank-input"
-                    :aria-label="blank.placeholder"
-                    @change="saveAnswer(blank.name)"
-                  >
-                    <option value="" disabled>{{ blank.placeholder }}</option>
-                    <option
-                      v-for="option in variableOptions"
-                      :key="option"
-                      :value="option"
-                    >
-                      {{ option }}
-                    </option>
-                  </select>
-                </span>
-                <span v-else class="question-blank-answer visible">
-                  <span class="question-blank-answer-text">{{
-                    answers[blank.name]
-                  }}</span>
-                  <Button
-                    :is-delete="true"
-                    :aria-label="`Edit ${answers[blank.name]}`"
-                    @click="editAnswer(blank.name)"
-                  />
-                </span>
-              </template>
-            </span>
-          </template>
-          {{ template.parts[2] }}
-        </div>
-
-        <div v-if="text" class="completed-investigation-question">
-          {{ text }}
-        </div>
+    <div v-if="!steps || template" :class="{ 'question-builder-step': steps }">
+      <template v-if="steps">
+        <h3>Step 2: Choose your variables</h3>
+        <p>
+          Choose what you will change and what you will measure. You can choose
+          either one first.
+        </p>
       </template>
+      <div
+        class="investigation-question-builder"
+        :class="{ 'builder-active': template }"
+        aria-live="polite"
+      >
+        <p v-if="!template" class="question-builder-placeholder">
+          Select a question structure above to begin.
+        </p>
+
+        <template v-else>
+          <div class="question-builder-sentence">
+            <template v-for="(blank, i) in blanks" :key="blank.name">
+              {{ template.parts[i] }}
+              <span class="question-blank">
+                <StudentEntry
+                  v-if="inputType === 'text'"
+                  :key="structure + ':' + blank.name"
+                  :answers="entryAnswers(blank.name)"
+                  :multiple-inputs="false"
+                  :maxlength="50"
+                  :input-class="textInputClass"
+                  :placeholder="blank.placeholder"
+                  :aria-label="blank.placeholder"
+                  @update:answers="setEntryAnswers(blank.name, $event)"
+                />
+
+                <template v-else>
+                  <span
+                    v-if="!answers[blank.name]"
+                    class="question-blank-input-row"
+                  >
+                    <select
+                      v-model="drafts[blank.name]"
+                      class="question-blank-input"
+                      :aria-label="blank.placeholder"
+                      @change="saveAnswer(blank.name)"
+                    >
+                      <option value="" disabled>{{ blank.placeholder }}</option>
+                      <option
+                        v-for="option in variableOptions"
+                        :key="option"
+                        :value="option"
+                      >
+                        {{ option }}
+                      </option>
+                    </select>
+                  </span>
+                  <span v-else class="question-blank-answer visible">
+                    <span class="question-blank-answer-text">{{
+                      answers[blank.name]
+                    }}</span>
+                    <Button
+                      :is-delete="true"
+                      :aria-label="`Edit ${answers[blank.name]}`"
+                      @click="editAnswer(blank.name)"
+                    />
+                  </span>
+                </template>
+              </span>
+            </template>
+            {{ template.parts[2] }}
+          </div>
+
+          <div v-if="text && !steps" class="completed-investigation-question">
+            {{ text }}
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div v-if="steps && text" class="question-builder-step question-review">
+      <h3>Step 3: Check your testable question</h3>
+      <p>{{ text }}</p>
     </div>
 
     <slot />
@@ -253,6 +283,48 @@ defineExpose({ reset, isComplete, text });
 </template>
 
 <style>
+/* ---------- steps layout (lesson 2) ---------- */
+.question-builder-step {
+  margin-bottom: 16px;
+  padding: 20px;
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  animation: pop-fade-in 0.4s ease;
+}
+
+.question-builder-step h3 {
+  margin: 0 0 6px;
+  color: var(--purple);
+  font-size: 1.15rem;
+}
+
+.question-builder-step > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.question-builder-step .question-structure-grid {
+  margin-top: 14px;
+}
+
+.question-builder-steps .investigation-question-builder {
+  margin: 14px 0 0;
+}
+
+.question-review {
+  background: var(--soft-green);
+}
+
+.question-review > p {
+  margin-top: 10px;
+  color: var(--text);
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
 .question-structure-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -14,7 +14,6 @@ import ContentBox from "./ContentBox.vue";
 <style scoped>
 .intro-card {
   position: relative;
-  background: var(--paper);
 }
 
 .intro-card::before {

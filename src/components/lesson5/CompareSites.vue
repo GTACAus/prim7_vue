@@ -6,7 +6,7 @@
     2. Answer three analysis questions about the paired bars.
     3. Do the results support the reasoned prediction? (<PredictionCheck>)
     4. Stop and think: a recap graph, four more / less questions and the two
-       site photos. The Next: Lesson 6 button follows.
+       site photos. The end-of-lesson card follows.
 
     <CompareSites ref="partD" @reset="section.reset()" />
 
@@ -21,6 +21,7 @@ import McChoice from "../activities/McChoice.vue";
 import PredictionCheck from "../activities/PredictionCheck.vue";
 import StopAndCheck from "../StopAndCheck.vue";
 import Button from "../Button.vue";
+import LessonEndCard from "../LessonEndCard.vue";
 import BarSliders from "./BarSliders.vue";
 import PairedBarGraph from "./PairedBarGraph.vue";
 import AnalysisQuestions from "./AnalysisQuestions.vue";
@@ -430,6 +431,15 @@ defineExpose({ sectionClass });
       </div>
     </template>
   </StopAndCheck>
+
+  <LessonEndCard
+    v-if="finished"
+    :lesson-number="5"
+    :practiced="[
+      'Collecting and displaying data in bar graphs',
+      'Reading graphs to compare results between two sites',
+    ]"
+  />
 
   <div class="reset-button-container">
     <Button :is-reset="true" @click="emit('reset')" />

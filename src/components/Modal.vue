@@ -224,32 +224,24 @@ defineExpose({ open: show, close });
       <!-- Teacher menu -->
       <template v-if="isTeacher">
         <div class="teacher-section-list">
-          <button
+          <Button
             v-for="(section, index) in teacherSections"
+            class="teacher-select-button"
             :key="section.id"
-            type="button"
             @click="jump(section.id)"
           >
             {{ index + 1 }}. {{ section.label }}
-          </button>
+          </Button>
         </div>
 
         <div class="teacher-actions">
-          <button
-            type="button"
-            class="teacher-secondary-button"
-            @click="showAll"
-          >
+          <Button class="teacher-secondary-button" @click="showAll">
             Show all sections
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            class="teacher-secondary-button"
-            @click="resetView"
-          >
+          <Button class="teacher-secondary-button" @click="resetView">
             Reset student view
-          </button>
+          </Button>
         </div>
 
         <p class="teacher-note">{{ note }}</p>
@@ -376,6 +368,7 @@ defineExpose({ open: show, close });
   --font-size: 1.4rem;
 
   --background-hover: var(--orange);
+  --color-hover: var(--paper);
   --background-active: var(--orange);
 }
 
@@ -432,16 +425,15 @@ defineExpose({ open: show, close });
 .teacher-section-list {
   gap: 10px;
 }
-.teacher-section-list button {
+.teacher-select-button {
   width: 100%;
   color: var(--text);
   text-align: left;
   font-size: 0.98rem;
   font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  --box-shadow-hover: none;
+
+  --color-hover: var(--text);
 }
 .teacher-section-list button:hover {
   background: var(--soft-yellow);
@@ -460,13 +452,12 @@ defineExpose({ open: show, close });
   color: var(--text);
   border: 2px solid var(--line);
   border-radius: 12px;
-  box-shadow: 0 3px 0 var(--line);
   font-weight: 600;
-  cursor: pointer;
+
+  --background-hover: var(--soft-green);
+  --color-hover: var(--text);
 }
-.teacher-secondary-button:hover {
-  background: var(--soft-green);
-}
+
 .teacher-note {
   margin: 16px 0 0;
   color: var(--muted);

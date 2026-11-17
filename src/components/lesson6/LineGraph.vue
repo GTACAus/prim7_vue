@@ -472,7 +472,13 @@ function onKey(event, handler) {
   }
 }
 
-defineExpose({ complete });
+// the last step: lets the page show the end-of-lesson card
+const predictionCheck = ref(null);
+const predictionComplete = computed(
+  () => complete.value && (predictionCheck.value?.isComplete ?? false),
+);
+
+defineExpose({ complete, predictionComplete });
 </script>
 
 <template>
@@ -550,8 +556,9 @@ defineExpose({ complete });
           role="status"
           aria-live="polite"
         >
-          <strong>{{ tableFeedback(table, ti).title }}</strong
-          >{{ tableFeedback(table, ti).text }}
+          <strong>{{ tableFeedback(table, ti).title }}</strong>{{
+            tableFeedback(table, ti).text
+          }}
         </div>
       </div>
     </div>
@@ -606,13 +613,13 @@ defineExpose({ complete });
             role="status"
             aria-live="polite"
           >
-            <strong>{{ feedback.title }}</strong
-            >{{ feedback.text }}
+            <strong>{{ feedback.title }}</strong>{{ feedback.text }}
           </div>
 
           <div v-else class="challenge-complete">
-            <strong>{{ g.completeMessage.title }}</strong
-            >{{ g.completeMessage.text }}
+            <strong>{{ g.completeMessage.title }}</strong>{{
+              g.completeMessage.text
+            }}
           </div>
 
           <div class="reset-button-container">
@@ -934,6 +941,7 @@ defineExpose({ complete });
     <!-- ---------- step 5: interpret ---------- -->
     <PredictionCheck
       v-if="complete"
+      ref="predictionCheck"
       :name="g.key + '-prediction'"
       :prediction="g.prediction.text"
       :answer="g.prediction.answer"

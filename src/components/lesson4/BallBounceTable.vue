@@ -8,7 +8,7 @@
     - Calculate buttons for each row's average
     - once both averages are calculated, <PredictionCheck>: type the two
       averages and say whether the prediction was supported (no right answer)
-    - Reset (table + interpretation) and Save my work
+    - Reset (table + interpretation) and the end-of-lesson card
 
     <BallBounceTable />
 
@@ -20,7 +20,7 @@ import Activity from "../activities/Activity.vue";
 import PredictionCheck from "../activities/PredictionCheck.vue";
 import StudentEntry from "../StudentEntry.vue";
 import Button from "../Button.vue";
-import { downloadLessonPDF } from "../../composables/usePrintLesson.js";
+import LessonEndCard from "../LessonEndCard.vue";
 
 /* ---------- videos ---------- */
 
@@ -375,13 +375,15 @@ defineExpose({ reset });
       </div>
     </PredictionCheck>
 
-    <Button
-      class="save-work-button general-button"
-      symbol="💾"
-      @click="downloadLessonPDF"
-    >
-      <p>Save my work</p>
-    </Button>
+    <LessonEndCard
+      v-if="interpretation?.isComplete"
+      :lesson-number="4"
+      :practiced="[
+        'Planning a fair test for a ball-bounce experiment',
+        'Recording repeated results in a table',
+        'Using results to check a prediction',
+      ]"
+    />
   </Activity>
 </template>
 

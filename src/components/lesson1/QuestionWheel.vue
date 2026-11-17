@@ -246,12 +246,11 @@ defineExpose({ reset });
   >
     <div class="activity-heading">
       <p class="activity-eyebrow">Your turn</p>
-      <h3>Create a testable question</h3>
-      <p>
-        Think back to what you were curious about during the
-        <strong>See, Think, Wonder</strong> activity. Spin the wheel to choose a
-        <strong>question</strong> structure.
-      </p>
+      <h3>
+        Create two or more testable questions for the cars rolling down ramps
+        experiment
+      </h3>
+      <p>Spin the wheel to start the question.</p>
     </div>
 
     <div class="question-wheel-layout">
@@ -293,8 +292,6 @@ defineExpose({ reset });
 
       <!-- Question-writing side -->
       <div class="question-builder-panel">
-        <h4>Your question structures</h4>
-
         <div class="selected-question-template" aria-live="polite">
           <p v-if="!cards.length" class="template-placeholder">
             {{ placeholder }}
@@ -323,13 +320,11 @@ defineExpose({ reset });
                 {{ card.structure.before }}
                 <span class="submitted-variable">{{
                   partText(card.parts.changed)
-                }}</span
-                >{{ card.structure.between.startsWith(",") ? "" : " "
+                }}</span>{{ card.structure.between.startsWith(",") ? "" : " "
                 }}{{ card.structure.between }}
                 <span class="submitted-variable">{{
                   partText(card.parts.measured)
-                }}</span
-                >?
+                }}</span>?
               </span>
             </div>
 

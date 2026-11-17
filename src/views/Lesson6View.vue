@@ -14,6 +14,7 @@ import {
   PLANTS,
 } from "../components/lesson6/lineGraphs.js";
 import ContentBox from "../components/ContentBox.vue";
+import LessonEndCard from "../components/LessonEndCard.vue";
 
 // Terms shown in the vocabulary modal: { word: description }
 const glossary = {
@@ -41,13 +42,13 @@ const criteria = [
 // The three steps in the intro's "When do scientists use a line graph?" card
 const graphSteps = [
   {
-    title: "Look for a continuous variable:",
+    title: "Look for a continuous variable",
     points: [
       "We use a line graph when the variable on the x-axis is continuous. The values can include whole numbers, decimals, or fractions.",
     ],
   },
   {
-    title: "Think about what can vary continuously:",
+    title: "Think about what can vary continuously",
     points: ["Examples include length, weight, temperature, volume and depth."],
   },
   {
@@ -341,6 +342,15 @@ const plants = ref(null);
           ref="plants"
           :graph="PLANTS"
           @reset="plantsSection?.reset()"
+        />
+
+        <LessonEndCard
+          v-if="plants?.predictionComplete"
+          :lesson-number="6"
+          :practiced="[
+            'Plotting and connecting points on a line graph',
+            'Describing trends as a variable changes over time',
+          ]"
         />
       </Section>
     </template>

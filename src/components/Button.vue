@@ -110,6 +110,9 @@ const isLink = computed(() => href.value !== null && href.value !== undefined);
 }
 
 .watch-video-button {
+  display: flex;
+  gap: 5px;
+  align-items: center;
   --color: var(--charcoal);
   --background: var(--soft-green);
   --border-radius: 6px;

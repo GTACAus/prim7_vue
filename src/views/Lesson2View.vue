@@ -22,6 +22,8 @@ const sortVariablesOneActivityOptions = {
       "ball-material",
       "drop-height",
       "ball-squashiness",
+      "number-of-bounces",
+      "time-spent-bouncing",
     ],
   },
 };
@@ -35,6 +37,8 @@ const sortVariablesTwoActivityOptions = {
       "drop-height",
       "ball-squashiness",
       "bounce-surface",
+      "number-of-bounces",
+      "time-spent-bouncing",
     ],
   },
 };
@@ -95,7 +99,6 @@ function resetQuestionAndPrediction() {
 }
 import LessonIntro from "../components/LessonIntro.vue";
 import Button from "../components/Button.vue";
-import { downloadLessonPDF } from "../composables/usePrintLesson.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -182,9 +185,7 @@ const sections = [
       >
         Learn how to plan a fair test and represent it in a diagram.
 
-        <template #title
-          >Planning a <strong>Fair Test</strong></template
-        >
+        <template #title>Planning a <strong>Fair Test</strong></template>
 
         <template #observation>
           <h2>The fair test rules</h2>
@@ -237,8 +238,8 @@ const sections = [
             <div class="diagram-box diagram-activity">
               <p class="activity-instruction">
                 The image below shows a mind map for planning a ball bounce
-                <strong>fair test</strong>. The
-                <strong>variables</strong> have been identified.
+                <strong>fair test</strong>. The <strong>variables</strong> have
+                been identified.
               </p>
               <p class="activity-instruction">
                 A <strong>variable</strong> is any factor that can vary. For
@@ -394,31 +395,10 @@ const sections = [
         <!-- ================================
          PART 1: INVESTIGATION QUESTION
          ================================ -->
-        <div class="diagram-box diagram-activity">
-          <div class="activity-instruction">
-            <ol class="ol-step-count">
-              <li>
-                Look at the ball bounce <strong>fair test</strong> mind map
-                diagram. It is near the top of the page.
-              </li>
-              <li>
-                Choose the <strong>independent variable</strong> (what you want
-                to change)
-              </li>
-              <li>
-                Choose the <strong>dependent variable</strong> (the thing you
-                will measure).
-              </li>
-              <li>Select one of the question structures below.</li>
-              <li>
-                Enter your <strong>variables</strong> to create your question.
-              </li>
-            </ol>
-          </div>
-        </div>
         <InvestigationQuestion
           ref="questionActivity"
           name="investigation-question"
+          steps
           :variable-options="dropdownAnswers"
           @change="question = $event"
         >
@@ -487,19 +467,13 @@ const sections = [
               then choose <strong>how</strong> to measure it.
             </li>
             <li>
-              Click on <strong><i>Keep the same</i></strong>. Choose a variable
-              to review the shared setting for both experiments.
+              Click on <strong><i>Keep the same</i></strong
+              >. Choose a variable to review the shared setting for both
+              experiments.
             </li>
           </ol>
         </div>
         <FairTestBuilder />
-        <Button
-          class="save-work-button general-button"
-          symbol="💾"
-          @click="downloadLessonPDF"
-        >
-          <p>Save my work</p>
-        </Button>
       </Section>
     </template>
   </Page>

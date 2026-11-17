@@ -189,10 +189,7 @@
 :root[data-theme="dark"] .teacher-secondary-button {
   background: var(--exp-panel);
   color: var(--exp-white);
-}
-
-:root[data-theme="dark"] .teacher-secondary-button:hover {
-  background: rgba(57, 211, 255, 0.25);
+  --background-hover: rgba(57, 211, 255, 0.25);
 }
 
 :root[data-theme="dark"] .equipment-symbol-row {
