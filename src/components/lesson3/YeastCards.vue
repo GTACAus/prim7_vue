@@ -17,12 +17,12 @@ const cards = [
   {
     image: "../images/lesson3/Sugar Blocks.jpg",
     alt: "Sugar",
-    text: "Yeast use sugar as a food source, so it can grow and reproduce.",
+    text: "Yeast uses sugar as a food source, so it can grow and reproduce.",
   },
   {
     image: "../images/lesson3/Sourdough Starter.jpg",
     alt: "Sourdough starter",
-    text: "When you mix dry yeast and sugar in water, it starts to become active. Active yeast produces and releases carbon dioxide gas. This gas can be seen as bubbles in the mixture. The gas bubbles rise to the top and they pop, so the gas escapes the mixture and enters the air above it.",
+    text: "When you mix dry yeast and sugar in water, the yeast becomes active. Active yeast releases carbon dioxide gas. This gas can be seen as bubbles in the mixture. The gas bubbles rise to the top and they pop, so the gas escapes the mixture into the air.",
   },
   {
     image: "../images/lesson3/Sourdough Bread 2.jpg",

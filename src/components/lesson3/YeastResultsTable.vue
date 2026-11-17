@@ -257,20 +257,15 @@ const choices = [
           </p>
           <p>
             <strong>
-              Are there any strange or unusual results when you compare Test 1,
-              Test 2 and Test 3?
+              Compare Test 1, Test 2, and Test 3 at 80°C. Which result is
+              different from the others?
             </strong>
-          </p>
-          <p>
-            Think about why repeated fair tests might give different results.
           </p>
         </template>
         <template #answer>
-          Some of the results from the repeated fair tests are different. At
-          <strong>37°C</strong>, the result for Test 2 is lower than those for
-          Tests 1 and 3. At <strong>80°C</strong>, the results are very
-          different. This could be from mistakes made setting up the fair test
-          or measuring the result.
+          At <strong>80°C</strong>, Test 3 is much higher than Test 1 and Test
+          2. This could be due to a mistake made setting up the fair test or
+          measuring the result.
         </template>
       </StopAndCheck>
 
@@ -278,11 +273,10 @@ const choices = [
         <div class="yeast-results-step-heading">
           <span>3</span>
           <div>
-            <p class="yeast-results-eyebrow">Calculate the average results</p>
-            <h3>
-              Calculate the average result for the three tests at each
-              temperature in the fair test.
-            </h3>
+            <p class="yeast-results-eyebrow">
+              Why is it important to repeat each test 3 times?
+            </p>
+            <h3>So we can calculate the average result.</h3>
           </div>
         </div>
 
@@ -292,7 +286,7 @@ const choices = [
         </p>
 
         <div class="average-worked-example">
-          <p class="average-example-label">Worked example — 22°C</p>
+          <p class="average-example-label">Worked example for yeast at 22°C</p>
           <p>
             Calculating the average size of the balloon circumference at 22°C:
           </p>

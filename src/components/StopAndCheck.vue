@@ -113,7 +113,7 @@ defineExpose({ pressed });
   padding: 16px 18px;
   border: 3px solid var(--charcoal);
   border-top: 6px solid var(--blue);
-  background: var(--soft-blue);
+  background: var(--paper);
   box-shadow: 0 4px 0 var(--charcoal);
   border-radius: 16px;
   font-weight: 500;

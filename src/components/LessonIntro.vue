@@ -40,7 +40,7 @@ defineProps({
         <slot name="title">{{ title }}</slot>
       </h1>
 
-      <p class="lesson-summary"><slot /></p>
+      <p v-if="$slots.default" class="lesson-summary"><slot /></p>
 
       <div v-if="$slots.actions" class="intro-actions">
         <Button

@@ -274,7 +274,9 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
 
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+  width: calc(var(--fit-ch, 12) * 1ch + 2.5em);
   max-width: var(--entry-max-width, min(100%, 80vw));
   padding: 5px 10px;
   border: var(--border-medium);

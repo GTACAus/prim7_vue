@@ -15,7 +15,7 @@ import { openPDF, openVideo } from "../composables/useModal.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
-  "We are learning how to collect <strong>data</strong> and put it in a <strong>table</strong>.";
+  "We are learning how to collect <strong>data</strong> and record it in a <strong>table</strong>.";
 const criteria = [
   "I can label a <strong>table</strong> with variables and <strong>units</strong> in the correct way.",
   "I can collect <strong>data</strong> and enter it into a <strong>table</strong> with the correct <strong>units</strong>.",
@@ -41,7 +41,8 @@ const sections = [
   { id: "yeast-image-investigation", title: "Is Yeast Alive?" },
   {
     id: "yeast-variables",
-    title: "Identify all the variables in the Yeast Fair Test",
+    title: "A fair test to find out what makes yeast active",
+    label: "Yeast Variables: Select the variables",
   },
   { id: "data-table-template", title: "How to make a scientific table" },
   { id: "yeast-labels", title: "Build and Complete the Yeast Data Table" },
@@ -134,9 +135,6 @@ const labelsSection = ref(null);
         :objective="objective"
         :criteria="criteria"
       >
-        Scientists organise results in <strong>data tables</strong> so that
-        measurements are clear, consistent and easy to compare.
-
         <template #observation>
           <h2>Recording Data in Scientific Tables</h2>
 
@@ -200,8 +198,8 @@ const labelsSection = ref(null);
            ================================================== -->
       <Section name="yeast-image-investigation">
         <div class="diagram-box diagram-activity">
-          Hover over each image to learn more about the activity of yeast and
-          how it helps produce sourdough bread.
+          Hover over each image to learn if yeast is alive, and how it is used
+          to produce bread.
         </div>
         <YeastCards />
       </Section>
@@ -239,34 +237,23 @@ const labelsSection = ref(null);
 
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
-            Identify all the variables in the yeast Fair Test.
+            Identify all the variables in the yeast fair test:
           </p>
 
-          <div class="formula-card">
-            <div class="formula-step">
-              <div class="formula-step-number">1</div>
-              <div>
-                <strong>Click on the independent variable button.</strong>
-                <span>Then choose the thing that is being changed.</span>
-              </div>
-            </div>
-
-            <div class="formula-step">
-              <div class="formula-step-number">2</div>
-              <div>
-                <strong>Click on the dependent variable button.</strong>
-                <span>Then choose the thing that is being measured.</span>
-              </div>
-            </div>
-
-            <div class="formula-step">
-              <div class="formula-step-number">3</div>
-              <div>
-                <strong>Click on the controlled variable button.</strong>
-                <span>Then choose all the things you must keep the same.</span>
-              </div>
-            </div>
-          </div>
+          <ol class="variable-steps">
+            <li>
+              Select <strong>Independent variable</strong>, then choose what is
+              changed.
+            </li>
+            <li>
+              Select <strong>Dependent variable</strong>, then choose what is
+              measured.
+            </li>
+            <li>
+              Select <strong>Controlled variable</strong>, then choose
+              everything kept the same.
+            </li>
+          </ol>
         </div>
 
         <VariableSort
@@ -287,12 +274,8 @@ const labelsSection = ref(null);
             <p>How will they measure the amount of gas produced?</p>
           </template>
           <template #answer>
-            The student mixed the same amount of yeast, sugar and water in each
-            flask. Then they stretched a balloon over the top of the flask. This
-            was done to trap the gas produced by the yeast. Yeast that is more
-            active will produce more gas and this will make the balloon bigger.
-            By comparing the size of each balloon we can see which temperature
-            makes the yeast work best.
+            The balloon will trap any gas made by the yeast. As yeast gets more
+            active, there will be more gas made, so the balloon will be bigger.
           </template>
         </StopAndCheck>
       </Section>
@@ -305,11 +288,7 @@ const labelsSection = ref(null);
           <p class="activity-instruction">
             Scientists have a format they use to make a scientific
             <strong>table</strong> to record <strong>data</strong>. Watch the
-            video to learn how they do this.
-          </p>
-          <p class="activity-instruction">
-            Use this template as a guide when you build your own
-            <strong>data tables</strong> during the lesson.
+            videos below to learn how they do this.
           </p>
         </div>
 
@@ -405,6 +384,14 @@ const labelsSection = ref(null);
            4. YEAST EXPERIMENT - LABELS, RESULTS, AVERAGES
            ================================================== -->
       <Section ref="labelsSection" name="yeast-labels">
+        <!-- Remind students of the testable question -->
+        <div class="diagram-box diagram-activity">
+          <div class="variable-question floating-title">
+            How does changing temperature affect the amount of gas made by
+            yeast?
+          </div>
+        </div>
+
         <YeastResultsTable @reset="labelsSection?.reset()" />
       </Section>
     </template>
