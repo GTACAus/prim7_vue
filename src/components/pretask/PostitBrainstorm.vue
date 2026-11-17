@@ -113,6 +113,47 @@ defineProps({
   line-height: 1.25;
 }
 
+/* Positions over the notes in the background image: 2 rows x 4 columns */
+.postit-1 {
+  top: 25%;
+  left: 10%;
+}
+
+.postit-2 {
+  top: 25%;
+  left: 31%;
+}
+
+.postit-3 {
+  top: 25%;
+  left: 52%;
+}
+
+.postit-4 {
+  top: 25%;
+  left: 74%;
+}
+
+.postit-5 {
+  top: 57%;
+  left: 10%;
+}
+
+.postit-6 {
+  top: 57%;
+  left: 31%;
+}
+
+.postit-7 {
+  top: 57%;
+  left: 52%;
+}
+
+.postit-8 {
+  top: 57%;
+  left: 74%;
+}
+
 @media (max-width: 800px) {
   .postit-answer {
     width: 20%;

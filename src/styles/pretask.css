@@ -209,12 +209,6 @@
   box-shadow: 0 6px 0 var(--line);
 }
 
-.drop-zone {
-  transition:
-    transform 0.2s,
-    opacity 0.2s;
-}
-
 /*
   Slots for the two plant-building DragDropActivity instances
   (see scripts/activities/drag-drop-activity.js). Position/size

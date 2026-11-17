@@ -3,14 +3,12 @@
 import "../styles/pretask.css";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
-import DragDrop from "../components/activities/DragDrop.vue";
-import DropSlot from "../components/activities/DropSlot.vue";
-import DragItem from "../components/activities/DragItem.vue";
 import ThinkBox from "../components/pretask/ThinkBox.vue";
 import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
 import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
 import PlantDetective from "../components/pretask/PlantDetective.vue";
 import PlantGame from "../components/pretask/PlantGame.vue";
+import WordSentences from "../components/pretask/WordSentences.vue";
 
 // Sections of the page. Order defines the unlock chain (next-id) and which
 // sections start locked; override per section where needed.
@@ -294,134 +292,7 @@ const glossary = {
               />
             </div>
 
-            <DragDrop
-              id="wordSentencesActivity"
-              class="word-sentences-activity dd-activity"
-              strict
-              v-slot="{ done, reset }"
-            >
-              <header class="wd-header">
-                <h3 class="wd-title">Plant Science</h3>
-                <p class="wd-subtitle">
-                  Drag the correct words into the blanks to complete each
-                  sentence.
-                </p>
-              </header>
-
-              <div class="">
-                <div class="sentence-card">
-                  Plants make sugar to get energy to grow. This occurs in the
-                  leaves using
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s0-a"
-                    answer="sunlight carbon-dioxide water"
-                  />,
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s0-b"
-                    answer="sunlight carbon-dioxide water"
-                  />, and
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s0-c"
-                    answer="sunlight carbon-dioxide water"
-                  />.
-                </div>
-                <div class="sentence-card">
-                  Roots grow through
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s1-a"
-                    answer="soil"
-                  />
-                  and this helps to keep the plant anchored.
-                </div>
-                <div class="sentence-card">
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s2-a"
-                    answer="water"
-                  />
-                  moves from soil to roots, travels up the stem, and evaporates
-                  from the leaves. This helps the plant stay upright.
-                </div>
-                <div class="sentence-card">
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s3-a"
-                    answer="nutrients"
-                  />
-                  in the soil are dissolved in water and enter the roots to
-                  travel around the plant.
-                </div>
-                <div class="sentence-card">
-                  <DropSlot
-                    tag="span"
-                    class="drop-zone"
-                    name="s4-a"
-                    answer="oxygen"
-                  />
-                  is found in pores in the soil and is needed to keep roots
-                  healthy. If plants are over-watered, they don't get enough
-                  oxygen.
-                </div>
-              </div>
-
-              <div class="wd-word-bank">
-                <p class="wd-word-bank-label">Word Bank</p>
-                <div data-dd-tray class="word-tray">
-                  <DragItem
-                    tag="span"
-                    class="word-chip"
-                    name="sunlight"
-                    reusable
-                    >sunlight</DragItem
-                  >
-                  <DragItem
-                    tag="span"
-                    class="word-chip"
-                    name="carbon-dioxide"
-                    reusable
-                    >carbon dioxide</DragItem
-                  >
-                  <DragItem tag="span" class="word-chip" name="water" reusable
-                    >water</DragItem
-                  >
-                  <DragItem tag="span" class="word-chip" name="soil" reusable
-                    >soil</DragItem
-                  >
-                  <DragItem
-                    tag="span"
-                    class="word-chip"
-                    name="nutrients"
-                    reusable
-                    >nutrients</DragItem
-                  >
-                  <DragItem tag="span" class="word-chip" name="oxygen" reusable
-                    >oxygen</DragItem
-                  >
-                </div>
-              </div>
-
-              <div class="wd-actions">
-                <button
-                  type="button"
-                  class="general-button reset-btn"
-                  @click="reset"
-                >
-                  Reset
-                </button>
-              </div>
-
-              <div id="wordSentencesCelebration" v-if="done">Well done!</div>
-            </DragDrop>
+            <WordSentences />
           </div>
 
           <div class="writing-box thinglink-box">

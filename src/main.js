@@ -25,7 +25,6 @@ const routes = [
     meta: {
       save: true,
       stylesheets: [
-        "/styles/pretask_styles/word_drag_and_drop.css",
         "/styles/drag_and_drop_base.css",
       ],
     },

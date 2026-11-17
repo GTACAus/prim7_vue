@@ -123,6 +123,38 @@ defineExpose({ isComplete, solved, reset });
   margin-top: 12px;
 }
 
+/* The class names are built in the template as `${prefix}-analysis-question` and
+   `${progressPrefix || prefix}-analysis-progress` (partb / partc / partd). */
+.partb-analysis-progress,
+.partc-analysis-progress {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 9px;
+  background: var(--soft-purple);
+  border: 2px solid var(--charcoal);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.partb-analysis-question,
+.partc-analysis-question,
+.partd-analysis-question {
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--paper);
+  border: 2px solid var(--charcoal);
+  border-radius: 14px;
+}
+
+.partb-analysis-question {
+  margin-top: 8px;
+}
+
+.partd-analysis-question {
+  margin-top: 12px;
+}
+
 .partb-analysis-question .challenge-question {
   margin-bottom: 10px;
 }
