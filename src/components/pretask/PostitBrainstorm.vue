@@ -31,3 +31,92 @@ defineProps({
     />
   </InputResponse>
 </template>
+
+<style>
+/* Moved from pretask_styles/pretask.css. Not scoped: some rules style child components' content. */
+
+.postit-brainstorm {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.5 / 1;
+
+  background-image: url("../../images/pretask/postitwall.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border: 3px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+
+  box-shadow: 0 6px 0 var(--line);
+}
+
+.postit-answer {
+  position: absolute;
+  width: 17.5%;
+  height: 15%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px;
+}
+
+.postit-answer input {
+  width: 100%;
+  height: 100%;
+
+  border: 2px solid rgba(48, 51, 47, 0.75);
+  border-radius: 12px;
+
+  background: rgba(255, 253, 244, 0.86);
+  color: var(--text);
+
+  padding: 8px 10px;
+
+  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.18);
+
+  font-family: inherit;
+  font-size: clamp(0.72rem, 1.3vw, 0.95rem);
+  font-weight: 600;
+  text-align: center;
+
+  outline: none;
+}
+
+.postit-answer input:focus {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 3px rgba(0, 188, 116, 0.2);
+}
+
+.postit-answer .brainstorm-answer {
+  width: 100%;
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 8px 10px;
+
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 253, 244, 0.92);
+  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.22);
+
+  color: var(--text);
+  font-size: clamp(0.72rem, 1.3vw, 0.95rem);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.25;
+}
+
+@media (max-width: 800px) {
+  .postit-answer {
+    width: 20%;
+    height: 20%;
+  }
+}
+</style>

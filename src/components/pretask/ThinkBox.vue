@@ -36,3 +36,47 @@ defineProps({
     </ResponseBox>
   </InputResponse>
 </template>
+
+<style>
+/* Moved from pretask_styles/pretask.css. Not scoped: some rules style child components' content. */
+
+.think-box {
+  min-height: 500px;
+  background: var(--soft-yellow);
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  padding: 0;
+  color: var(--muted);
+  overflow: hidden;
+  box-shadow: 0 5px 0 var(--line);
+}
+
+.stw-column {
+  padding: 17px;
+  border-bottom: 2px dashed rgba(48, 51, 47, 0.32);
+}
+
+.stw-column:last-child {
+  border-bottom: none;
+}
+
+.stw-column h3 {
+  margin: 0 0 8px;
+  color: var(--purple);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.stw-column p {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.stw-list {
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+</style>

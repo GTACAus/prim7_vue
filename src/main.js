@@ -27,7 +27,6 @@ const routes = [
       stylesheets: [
         "/styles/pretask_styles/word_drag_and_drop.css",
         "/styles/drag_and_drop_base.css",
-        "/styles/pretask_styles/pretask.css",
       ],
     },
     component: () => import("./views/PretaskView.vue"),

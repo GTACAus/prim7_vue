@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref } from "vue";
+// Load before the components: these styles keep the cascade order of the old stylesheet.
+import "../styles/pretask.css";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
-import Button from "../components/Button.vue";
 import DragDrop from "../components/activities/DragDrop.vue";
 import DropSlot from "../components/activities/DropSlot.vue";
 import DragItem from "../components/activities/DragItem.vue";
@@ -10,15 +10,7 @@ import ThinkBox from "../components/pretask/ThinkBox.vue";
 import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
 import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
 import PlantDetective from "../components/pretask/PlantDetective.vue";
-
-// "Build a Plant" / "Label the Plant" tabs: labelling opens once the plant is built
-const plantGame = ref("parts");
-const plantParts = ref(null);
-const partsDone = computed(() => plantParts.value?.done ?? false);
-function switchGame(game) {
-  if (game === "labels" && !partsDone.value) return;
-  plantGame.value = game;
-}
+import PlantGame from "../components/pretask/PlantGame.vue";
 
 // Sections of the page. Order defines the unlock chain (next-id) and which
 // sections start locked; override per section where needed.
@@ -253,185 +245,7 @@ const glossary = {
             parts of a flowering plant complete this drag and drop activity.
           </p>
         </div>
-        <div class="plant-game">
-          <div class="plant-canvas">
-            <div class="plant-game-container">
-              <div class="tab-button-container">
-                <Button
-                  class="tab option-button"
-                  :class="{ active: plantGame === 'parts' }"
-                  @click="switchGame('parts')"
-                >
-                  Build a Plant
-                </Button>
-                <Button
-                  class="tab option-button"
-                  :class="{ active: plantGame === 'labels' }"
-                  @click="switchGame('labels')"
-                >
-                  Label the Plant
-                </Button>
-              </div>
-              <main v-show="plantGame === 'parts'">
-                <DragDrop
-                  id="plantPartsActivity"
-                  ref="plantParts"
-                  class="plant-activity"
-                  strict
-                  v-slot="{ done, trayEmpty, reset }"
-                >
-                  <div class="plant-area">
-                    <div class="plant-image-container">
-                      <img
-                        class="plant-image"
-                        src="../images/pretask/sunflower.png"
-                        alt="Sunflower"
-                      />
-                    </div>
-                    <DropSlot
-                      class="slot slot-flower"
-                      name="flower"
-                      answer="flower"
-                    />
-                    <DropSlot
-                      class="slot slot-left-leaf"
-                      name="left-leaf"
-                      answer="left-leaf"
-                    />
-                    <DropSlot
-                      class="slot slot-stem"
-                      name="stem"
-                      answer="stem"
-                    />
-                    <DropSlot
-                      class="slot slot-roots"
-                      name="roots"
-                      answer="roots"
-                    />
-                  </div>
-
-                  <div id="success-1" v-if="done">
-                    <p class="success-text">
-                      Beautiful! Your plant is complete!
-                    </p>
-                    <span class="success-icon">🌻</span>
-                  </div>
-
-                  <div data-dd-tray class="parts-tray" v-show="!trayEmpty">
-                    <DragItem class="part" name="flower">
-                      <img
-                        class="flower-image"
-                        src="../images/pretask/flower.png"
-                        alt="Flower"
-                      />
-                    </DragItem>
-                    <DragItem class="part" name="left-leaf">
-                      <img
-                        class="left-leaf-image"
-                        src="../images/pretask/left_leaf.png"
-                        alt="Left Leaf"
-                      />
-                    </DragItem>
-                    <DragItem class="part" name="stem">
-                      <img
-                        class="stem-image"
-                        src="../images/pretask/stem.png"
-                        alt="Stem"
-                      />
-                    </DragItem>
-                    <DragItem class="part" name="roots">
-                      <img
-                        class="roots-image"
-                        src="../images/pretask/roots.png"
-                        alt="Roots"
-                      />
-                    </DragItem>
-                  </div>
-
-                  <div class="option-button-container">
-                    <div class="option-button">
-                      <button
-                        type="button"
-                        class="general-button"
-                        @click="reset"
-                      >
-                        Start Over
-                      </button>
-                    </div>
-                    <div id="continue-button" class="option-button" v-if="done">
-                      <button
-                        type="button"
-                        class="general-button"
-                        @click="switchGame('labels')"
-                      >
-                        Continue ->
-                      </button>
-                    </div>
-                  </div>
-                </DragDrop>
-              </main>
-              <main v-show="plantGame === 'labels'">
-                <DragDrop
-                  id="plantLabelsActivity"
-                  class="plant-activity"
-                  strict
-                  v-slot="{ done, trayEmpty, reset }"
-                >
-                  <div class="plant-area">
-                    <div class="plant-image-container">
-                      <img
-                        class="plant-image"
-                        src="../images/pretask/sunflower.png"
-                        alt="Sunflower"
-                      />
-                    </div>
-
-                    <DropSlot
-                      class="label-slot label-flower-slot"
-                      name="flower"
-                      answer="flower"
-                    />
-                    <DropSlot
-                      class="label-slot label-leaf-slot"
-                      name="leaf"
-                      answer="leaf"
-                    />
-                    <DropSlot
-                      class="label-slot label-stem-slot"
-                      name="stem"
-                      answer="stem"
-                    />
-                    <DropSlot
-                      class="label-slot label-roots-slot"
-                      name="roots"
-                      answer="roots"
-                    />
-                  </div>
-
-                  <div id="success-2" class="success-message" v-if="done">
-                    <p class="success-text">
-                      Well done! All labels are correct! 🎉
-                    </p>
-                    <span class="success-icon">🌻</span>
-                  </div>
-
-                  <div data-dd-tray class="parts-tray" v-show="!trayEmpty">
-                    <DragItem class="part" name="flower">Flower</DragItem>
-                    <DragItem class="part" name="leaf">Leaf</DragItem>
-                    <DragItem class="part" name="stem">Stem</DragItem>
-                    <DragItem class="part" name="roots">Roots</DragItem>
-                  </div>
-
-                  <div class="option-button">
-                    <button type="button" class="general-button" @click="reset">
-                      Start Over
-                    </button>
-                  </div>
-                </DragDrop>
-              </main>
-            </div>
-          </div>
-        </div>
+        <PlantGame />
       </Section>
 
       <Section name="brainstorm">
