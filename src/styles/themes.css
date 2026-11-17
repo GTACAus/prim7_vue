@@ -54,6 +54,9 @@
   --on-marker: var(--exp-navy);
   --marker-2: var(--exp-cyan);
 
+  --shadow-small: 0 4px 0 var(--exp-cyan-soft);
+  --shadow-medium: 0 6px 0 var(--exp-cyan-soft);
+
   background-color: #05101f;
   color-scheme: dark;
 }
@@ -129,7 +132,6 @@
   --color-hover: var(--exp-navy);
   border-color: var(--exp-cyan-soft);
   border-top: 5px solid var(--exp-white);
-  box-shadow: 0 4px 0 var(--exp-cyan-soft);
 }
 
 /* lesson intro */

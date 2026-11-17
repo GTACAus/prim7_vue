@@ -570,7 +570,7 @@ defineExpose({ buildActive: calculated, reset });
                 v-for="card in AXIS_CARDS"
                 :key="card.name"
                 tag="button"
-                class="partb-axis-card"
+                class="axis-card"
                 :name="card.name"
               >
                 {{ card.text }}
@@ -871,6 +871,205 @@ defineExpose({ buildActive: calculated, reset });
   .drawing {
     animation: none;
     stroke-dashoffset: 0;
+  }
+}
+</style>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+.partb-table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.partb-table-actions .challenge-feedback {
+  flex: 1 1 320px;
+  margin: 0;
+}
+
+.partb-unit-check {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--soft-yellow);
+  border: 2px solid var(--charcoal);
+  border-radius: 14px;
+}
+
+.partb-unit-check p {
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+.partb-unit-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#partBGraphSvg .partb-bar-fill {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+#partBGraphSvg .partb-bar-fill.visible {
+  opacity: 1;
+}
+
+#partBGraphSvg .partb-bar-outline {
+  fill: none;
+  stroke: var(--charcoal);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+#partBGraphSvg .partb-value-label {
+  opacity: 0;
+  font-size: 12px;
+  font-weight: 800;
+  text-anchor: middle;
+  transition: opacity 0.25s ease;
+}
+
+#partBGraphSvg .partb-value-label.visible {
+  opacity: 1;
+}
+
+#partBGraphSvg .partb-zero-bar-marker {
+  stroke: var(--orange);
+  stroke-width: 7;
+  stroke-linecap: round;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#partBGraphSvg .partb-zero-bar-marker.visible {
+  opacity: 1;
+}
+
+#partBGraphSvg .partb-zero-bar-marker.fade-out {
+  opacity: 0;
+}
+
+#partBGraphSvg .partb-value-label.analysis-highlight {
+  fill: var(--purple);
+  font-size: 15px;
+}
+
+.partb-graph-check,
+.partb-analysis-panel {
+  margin-top: 18px;
+  padding: 18px;
+  background: white;
+  border: 3px solid var(--charcoal);
+  border-radius: 18px;
+  box-shadow: var(--shadow-small);
+}
+
+.partb-graph-check h3,
+.partb-analysis-panel h3 {
+  margin: 4px 0 8px;
+}
+
+.partb-graph-check > p,
+.partb-analysis-panel > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.partb-check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.partb-check-item {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 11px 12px;
+  background: var(--soft-green);
+  border: 2px solid var(--charcoal);
+  border-radius: 13px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.partb-check-item input[type="checkbox"] {
+  margin: 2px 0 0;
+}
+
+.partb-analysis-question[hidden],
+.partb-baseline-summary[hidden] {
+  display: none !important;
+}
+
+.partb-analysis-animal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.partb-baseline-summary {
+  margin-top: 16px;
+  padding: 18px;
+  background: linear-gradient(to bottom, var(--soft-green), var(--paper) 185%);
+  border: 3px solid var(--charcoal);
+  border-radius: 18px;
+}
+
+.partb-baseline-summary h3 {
+  margin: 4px 0 8px;
+}
+
+.partb-baseline-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.partb-baseline-fact {
+  padding: 12px;
+  background: white;
+  border: 2px solid var(--charcoal);
+  border-radius: 13px;
+  text-align: center;
+}
+
+.partb-baseline-fact strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--purple);
+}
+
+.partb-story-hook {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  background: var(--soft-yellow);
+  border: 2px solid var(--charcoal);
+  border-left: 8px solid var(--yellow);
+  border-radius: 14px;
+  line-height: 1.5;
+}
+
+#partBGraphSvg .partb-bar-fill.analysis-highlight {
+  stroke: var(--purple);
+  stroke-width: 5;
+  filter: drop-shadow(0 3px 0 rgba(48, 51, 47, 0.18));
+}
+
+@media (max-width: 699px) {
+  .partb-baseline-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>

@@ -446,3 +446,295 @@ defineExpose({ sectionClass });
   background: var(--soft-blue);
 }
 </style>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+.partd-data-card {
+  margin-bottom: 18px;
+}
+
+.partd-table-wrap {
+  width: 100%;
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.partd-data-table {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  table-layout: fixed;
+}
+
+.partd-data-table th:first-child,
+.partd-data-table td:first-child {
+  width: 48%;
+  text-align: left;
+  font-weight: 700;
+}
+
+.partd-data-table th:nth-child(2),
+.partd-data-table td:nth-child(2) {
+  background: rgba(192, 173, 255, 0.18);
+}
+
+.partd-data-table th:nth-child(3),
+.partd-data-table td:nth-child(3) {
+  background: rgba(215, 245, 233, 0.62);
+}
+
+.partd-builder-complete {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--soft-green);
+  border: 2px solid var(--charcoal);
+  border-left: 8px solid var(--green);
+  border-radius: 14px;
+  line-height: 1.5;
+}
+
+.partd-builder-complete[hidden] {
+  display: none !important;
+}
+
+.partd-graph-card {
+  padding: 18px;
+  overflow: hidden;
+  margin-top: 18px;
+}
+
+.partd-swatch.site1 {
+  background: var(--lavender);
+}
+
+.partd-swatch.site2 {
+  background: var(--mint);
+}
+
+.partd-analysis-panel {
+  margin-top: 18px;
+  background: linear-gradient(to bottom, white, var(--soft-blue) 220%);
+}
+
+.partd-analysis-panel[hidden],
+.partd-analysis-question[hidden],
+.partd-complete-card[hidden] {
+  display: none !important;
+}
+
+@media (min-width: 900px) {
+  /* Part D: full-width comparison table, then controls beside the graph. */
+  .partd-workbench {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.1fr);
+    gap: 18px;
+    align-items: start;
+  }
+  .partd-workbench > .partd-data-card {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-width: 0;
+    margin: 0;
+  }
+  .partd-workbench > .partd-builder-card {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    align-self: start;
+  }
+  .partd-workbench > .partd-graph-card {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    align-self: start;
+    padding: 20px 24px 24px;
+  }
+}
+
+@media (max-width: 899px) {
+  .partd-graph-card {
+    margin-top: 18px;
+  }
+}
+
+/* ==================================================
+   PART D - STOP AND CHECK RECAP (graph reproduction,
+   more/less questions, site image comparison)
+   ================================================== */
+
+.stop-and-check-graph {
+  width: min(760px, 100%);
+  margin: 0 auto 24px;
+}
+
+/*
+  partDRenderStopAndCheckGraph() clones #partDGraphSvg and strips its id
+  (so there's never a duplicate id in the page), but that means the
+  colour/opacity rules above that are scoped to "#partDGraphSvg ..." or
+  to "#bar-compare.partd-analysis-mode #partDGraphSvg ..." don't reach
+  the clone - without these, its bars fall back to the SVG default
+  (black) fill. This recap graph only ever shows the finished
+  comparison, so these just hard-code that end state rather than
+  reproducing every interactive mode.
+*/
+.stop-and-check-graph .partd-site1-bar,
+.stop-and-check-graph .partd-site2-bar {
+  stroke: var(--charcoal);
+  stroke-width: 3.5;
+  opacity: 1;
+}
+
+.stop-and-check-graph .partd-site1-bar {
+  fill: var(--lavender);
+}
+
+.stop-and-check-graph .partd-site2-bar {
+  fill: var(--mint);
+}
+
+.stop-and-check-graph .partd-value-label {
+  font-size: 12px;
+  font-weight: 800;
+  text-anchor: middle;
+  opacity: 1;
+}
+
+.more-less-question {
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.more-less-question-text {
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+
+.more-less-items {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+
+  margin-bottom: 4px;
+  padding: 10px;
+
+  background: white;
+  border: 2px solid var(--charcoal);
+  border-top: 6px solid var(--green);
+  box-shadow: 0 6px 0 var(--charcoal);
+  border-radius: 10px;
+}
+
+.more-less-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.circle-image-placeholder {
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+
+  border: 2px solid var(--charcoal);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.circle-image-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.more-less-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.more-less-button {
+  color: var(--charcoal);
+  background: var(--soft-green);
+  min-width: 110px;
+}
+
+.more-less-button:hover {
+  background: var(--soft-purple);
+}
+
+.more-less-button.selected-answer {
+  color: var(--paper);
+  background: var(--button-hover);
+  box-shadow: none;
+  transform: translateY(3px);
+}
+
+.more-less-button.selected-answer:hover {
+  cursor: default;
+}
+
+.more-less-site-images {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.more-less-site-card {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 400px;
+  text-align: center;
+}
+
+.more-less-site-card h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.more-less-site-photo {
+  overflow: hidden;
+
+  width: 100%;
+  height: 200px;
+
+  border: 2px solid var(--charcoal);
+  border-radius: 12px;
+}
+
+.more-less-site-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 500px) {
+  .more-less-site-photo img {
+    height: 100px;
+  }
+}
+
+@media (max-width: 500px) {
+  .more-less-items {
+    gap: 16px;
+  }
+  .circle-image-placeholder {
+    width: 76px;
+    height: 76px;
+  }
+}
+
+.more-less-protect-block {
+  margin-top: 22px;
+  text-align: center;
+}
+
+.more-less-protect-block .project-resource-button {
+  justify-content: center;
+}
+</style>

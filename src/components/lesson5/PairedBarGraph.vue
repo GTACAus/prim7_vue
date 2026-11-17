@@ -77,3 +77,31 @@ const difference = computed(() => {
     </g>
   </BarGraphFrame>
 </template>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+#partDGraphSvg .partd-difference-marker.visible {
+  opacity: 1;
+}
+
+#partDGraphSvg .partd-difference-line {
+  stroke: var(--orange);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+#partDGraphSvg .partd-difference-badge {
+  fill: var(--soft-orange);
+  stroke: var(--orange);
+  stroke-width: 2.5;
+}
+
+#partDGraphSvg .partd-difference-text {
+  fill: var(--charcoal);
+  font-size: 16px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+</style>

@@ -170,3 +170,114 @@ defineExpose({ values, checked, activeSet, isComplete, reset });
     <slot name="complete" v-if="isComplete" />
   </Activity>
 </template>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+/* ---------- Bar graph practice ---------- */
+.bar-builder-controls {
+  display: grid;
+  gap: 5px;
+  margin-top: 14px;
+}
+.bar-builder-row {
+  display: grid;
+  grid-template-rows: 0.6fr 1fr;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+  padding: 8px 8px;
+  background: var(--paper);
+  border: 2px solid var(--charcoal);
+  border-radius: 13px;
+}
+.bar-builder-row label {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  font-weight: 700;
+  font-size: 15px;
+}
+.bar-builder-row output {
+  grid-row: 2;
+  grid-column: 2;
+  width: 42px;
+  display: grid;
+  place-items: center;
+  min-height: 36px;
+  background: var(--soft-blue);
+  border: 2px solid var(--charcoal);
+  border-radius: 10px;
+  font-weight: 700;
+}
+.bar-builder-row input[type="range"] {
+  grid-row: 2;
+  grid-column: 1;
+  width: 100%;
+  accent-color: var(--purple);
+}
+.bar-builder-row.needs-fix {
+  background: var(--soft-orange);
+}
+.bar-builder-row.correct-bar {
+  background: var(--soft-green);
+}
+
+.partd-site-switcher {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+
+.partd-site-toggle {
+  min-height: 54px;
+  padding: 9px 12px;
+  background: white;
+  color: var(--text);
+  border: 2px solid var(--charcoal);
+  border-radius: 13px;
+  box-shadow: 0 3px 0 var(--charcoal);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+}
+
+.partd-site-toggle[data-partd-site="site1"] {
+  border-top: 7px solid var(--lavender);
+}
+
+.partd-site-toggle[data-partd-site="site2"] {
+  border-top: 7px solid var(--green);
+}
+
+.partd-site-toggle.selected {
+  transform: translateY(4px);
+  box-shadow: none;
+  background: color-mix(in srgb, var(--yellow) 50%, transparent);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.partd-site-toggle.site-complete::after {
+  content: " ✓";
+  color: var(--green);
+}
+
+.partd-site-toggle.needs-fix {
+  background: var(--soft-orange);
+}
+
+@media (max-width: 620px) {
+  .partd-site-switcher {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.lesson4-check-button {
+  display: block;
+  margin: 14px auto 0;
+}
+</style>

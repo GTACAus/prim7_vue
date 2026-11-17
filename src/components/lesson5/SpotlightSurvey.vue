@@ -424,3 +424,17 @@ defineExpose({ countsCorrect, reset });
     </template>
   </Activity>
 </template>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+.challenge-spotlight-game {
+  margin: 0 0 20px;
+  width: 100%;
+  /* height: 100%; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+}
+</style>

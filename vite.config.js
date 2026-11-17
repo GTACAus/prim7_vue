@@ -16,8 +16,9 @@ const PUBLIC_FOLDERS =
   them with the base path (does nothing locally, where base is "/").
 */
 function publicPathsWithBase() {
+  // (not after `import` / `from`: those are module imports like "../styles/x.css", not public files)
   const publicPath = new RegExp(
-    `(["'\`(])(?:\\.\\.)?/(${PUBLIC_FOLDERS})/`,
+    `(?<!\\b(?:import|from)\\s+)(["'\`(])(?:\\.\\.)?/(${PUBLIC_FOLDERS})/`,
     "g",
   );
   // Page links that do a full page load, e.g. location.href='/lesson3-2',

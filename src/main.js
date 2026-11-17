@@ -74,7 +74,6 @@ const routes = [
     meta: {
       stylesheets: [
         "/styles/drag_and_drop_base.css",
-        "/styles/lesson4_styles/lesson4.css",
         "/styles/lesson4_styles/spotlight-game.css",
       ],
     },
@@ -87,7 +86,6 @@ const routes = [
       backLabel: "Lesson 5",
       stylesheets: [
         "/styles/drag_and_drop_base.css",
-        "/styles/lesson4_styles/lesson4.css",
       ],
     },
     component: () => import("./views/Lesson6View.vue"),

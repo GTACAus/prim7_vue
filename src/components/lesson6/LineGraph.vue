@@ -18,7 +18,14 @@
   saved through <Activity :state>; the axes and the prediction check are
   activities that save themselves.
 */
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import Activity from "../activities/Activity.vue";
 import DragDrop from "../activities/DragDrop.vue";
 import DragItem from "../activities/DragItem.vue";
@@ -103,7 +110,9 @@ const axes = ref(null);
 const axesDone = computed(() => axes.value?.done ?? false);
 const placements = computed(() => axes.value?.getPlacements() ?? {});
 const axisReady = (axis) =>
-  Boolean(placements.value[axis + "-variable"] && placements.value[axis + "-unit"]);
+  Boolean(
+    placements.value[axis + "-variable"] && placements.value[axis + "-unit"],
+  );
 
 // what the axes held before the latest change (also right after a reload)
 let previousPlacements = {};
@@ -131,7 +140,11 @@ function onAxisChange(now) {
   if (Object.entries(answers).every(([slot, item]) => now[slot] === item)) {
     say("", "Both axis labels are complete.", g.axisDone);
   } else if (placed && now[placed]) {
-    say("success", cardText(now[placed]) + " is in the right place.", g.axisRight);
+    say(
+      "success",
+      cardText(now[placed]) + " is in the right place.",
+      g.axisRight,
+    );
   }
 }
 
@@ -145,7 +158,9 @@ const seriesIndex = computed(() => {
   return i === -1 ? series.length : i;
 });
 const complete = computed(() => seriesIndex.value === series.length);
-const current = computed(() => series[Math.min(seriesIndex.value, series.length - 1)]);
+const current = computed(
+  () => series[Math.min(seriesIndex.value, series.length - 1)],
+);
 const plotIndex = computed(() => plotted.value[seriesIndex.value] ?? 0);
 
 // waiting (axes not labelled) -> plot -> connect -> complete
@@ -181,7 +196,10 @@ const labels = computed(() => {
       g.initialBadge,
     ];
   const [step, hint, badge] =
-    messages.labels?.(phase.value, Math.min(seriesIndex.value, series.length - 1)) ?? [];
+    messages.labels?.(
+      phase.value,
+      Math.min(seriesIndex.value, series.length - 1),
+    ) ?? [];
   return [step, hint, badge ?? g.initialBadge];
 });
 
@@ -193,7 +211,9 @@ const plotPrompt = computed(() => {
 
 const connectPrompt = computed(() => {
   if (phase.value !== "connect") return null;
-  const custom = messages.connectPrompt?.(context({ i: current.value.points.length - 1 }));
+  const custom = messages.connectPrompt?.(
+    context({ i: current.value.points.length - 1 }),
+  );
   return custom
     ? { title: custom[0], text: custom[1] }
     : {
@@ -206,9 +226,12 @@ function rowClass(si, row) {
   const n = series[si].points.length;
   return {
     "partc-complete-row":
-      phase.value !== "waiting" && (row < plotted.value[si] || plotted.value[si] >= n),
+      phase.value !== "waiting" &&
+      (row < plotted.value[si] || plotted.value[si] >= n),
     "partc-current-row":
-      phase.value === "plot" && si === seriesIndex.value && row === plotIndex.value,
+      phase.value === "plot" &&
+      si === seriesIndex.value &&
+      row === plotIndex.value,
   };
 }
 
@@ -223,8 +246,16 @@ const sayMessage = (variant, [title, text]) => say(variant, title, text);
 const feedback = computed(() => {
   if (message.value) return message.value;
   if (phase.value === "waiting")
-    return { variant: "", title: g.startFeedback.title, text: g.startFeedback.text };
-  return { variant: "", title: "Both axis labels are complete.", text: g.axisDone };
+    return {
+      variant: "",
+      title: g.startFeedback.title,
+      text: g.startFeedback.text,
+    };
+  return {
+    variant: "",
+    title: "Both axis labels are complete.",
+    text: g.axisDone,
+  };
 });
 
 /* ---------- guides ---------- */
@@ -333,7 +364,9 @@ function chooseY(value) {
 }
 
 function placeFromGuides(event) {
-  if (event.target.closest?.(".partb-x-choice, .partb-y-choice, .linegraph-point"))
+  if (
+    event.target.closest?.(".partb-x-choice, .partb-y-choice, .linegraph-point")
+  )
     return;
   const p = svgPoint(event);
   if (!p) return;
@@ -492,9 +525,7 @@ defineExpose({ complete });
                   :class="{ calculated: calculated[ti] }"
                 >
                   <span>{{
-                    calculated[ti]
-                      ? formatNumber(series[ti].points[ri].y)
-                      : "—"
+                    calculated[ti] ? formatNumber(series[ti].points[ri].y) : "—"
                   }}</span>
                 </td>
               </tr>
@@ -549,7 +580,7 @@ defineExpose({ complete });
                 v-for="card in g.cards"
                 :key="card.name"
                 tag="button"
-                class="partb-axis-card"
+                class="axis-card"
                 :class="{ 'linegraph-unit-card': card.unit }"
                 :name="card.name"
               >
@@ -575,7 +606,8 @@ defineExpose({ complete });
             role="status"
             aria-live="polite"
           >
-            <strong>{{ feedback.title }}</strong>{{ feedback.text }}
+            <strong>{{ feedback.title }}</strong
+            >{{ feedback.text }}
           </div>
 
           <div v-else class="challenge-complete">
@@ -603,7 +635,11 @@ defineExpose({ complete });
             <span v-if="labels[2]" class="graph-badge">{{ labels[2] }}</span>
           </div>
 
-          <div v-if="multi" class="partd-legend" aria-label="Watering condition key">
+          <div
+            v-if="multi"
+            class="partd-legend"
+            aria-label="Watering condition key"
+          >
             <span
               v-for="s in series"
               :key="s.key"
@@ -614,7 +650,11 @@ defineExpose({ complete });
                   s.key === current.key,
               }"
             >
-              <span class="partd-swatch" :class="s.swatch" aria-hidden="true"></span>
+              <span
+                class="partd-swatch"
+                :class="s.swatch"
+                aria-hidden="true"
+              ></span>
               {{ s.label }}
             </span>
           </div>
@@ -663,8 +703,20 @@ defineExpose({ complete });
                       @click="chooseY(tick.value)"
                       @keydown="onKey($event, () => chooseY(tick.value))"
                     >
-                      <rect class="partb-y-hit" x="68" :y="tick.y - 14" width="48" height="28" rx="6" />
-                      <text class="tick-label" x="103" :y="tick.y + 4" text-anchor="end">
+                      <rect
+                        class="partb-y-hit"
+                        x="68"
+                        :y="tick.y - 14"
+                        width="48"
+                        height="28"
+                        rx="6"
+                      />
+                      <text
+                        class="tick-label"
+                        x="103"
+                        :y="tick.y + 4"
+                        text-anchor="end"
+                      >
                         {{ tick.value }}
                       </text>
                     </g>
@@ -699,8 +751,20 @@ defineExpose({ complete });
                     @click="chooseX(point.x)"
                     @keydown="onKey($event, () => chooseX(point.x))"
                   >
-                    <rect class="partb-x-hit" :x="point.px - 40" y="371" width="80" height="44" rx="6" />
-                    <text class="tick-label" :x="point.px" y="394" text-anchor="middle">
+                    <rect
+                      class="partb-x-hit"
+                      :x="point.px - 40"
+                      y="371"
+                      width="80"
+                      height="44"
+                      rx="6"
+                    />
+                    <text
+                      class="tick-label"
+                      :x="point.px"
+                      y="394"
+                      text-anchor="middle"
+                    >
                       {{ point.x }}
                     </text>
                   </g>
@@ -716,8 +780,20 @@ defineExpose({ complete });
                 </template>
               </g>
 
-              <line class="graph-axis" :x1="plot.left" :y1="plot.bottom" :x2="g.axisEnd.x" :y2="plot.bottom" />
-              <line class="graph-axis" :x1="plot.left" :y1="plot.bottom" :x2="plot.left" :y2="g.axisEnd.y" />
+              <line
+                class="graph-axis"
+                :x1="plot.left"
+                :y1="plot.bottom"
+                :x2="g.axisEnd.x"
+                :y2="plot.bottom"
+              />
+              <line
+                class="graph-axis"
+                :x1="plot.left"
+                :y1="plot.bottom"
+                :x2="plot.left"
+                :y2="g.axisEnd.y"
+              />
 
               <text
                 class="axis-label partb-final-axis-label"
@@ -788,8 +864,14 @@ defineExpose({ complete });
                     :cx="point.px"
                     :cy="point.py"
                     r="8"
-                    :tabindex="phase === 'connect' && si === seriesIndex ? 0 : null"
-                    :role="phase === 'connect' && si === seriesIndex ? 'button' : null"
+                    :tabindex="
+                      phase === 'connect' && si === seriesIndex ? 0 : null
+                    "
+                    :role="
+                      phase === 'connect' && si === seriesIndex
+                        ? 'button'
+                        : null
+                    "
                     :aria-label="
                       messages.aria({ ...context(), series: s, pt: point }) +
                       (phase === 'connect' && si === seriesIndex
@@ -860,3 +942,108 @@ defineExpose({ complete });
     />
   </Activity>
 </template>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+/* Keep the badge on the right without pushing the title off-centre */
+.graph-stage-heading .graph-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.graph-badge {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  background: var(--soft-yellow);
+  border: 2px solid var(--charcoal);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.challenge-complete {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--soft-green);
+  border: 2px solid var(--charcoal);
+  border-radius: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+/* Slots whose position is set inline (lesson4-2): -rot ones are centred on that point and turned to read upwards. */
+.axis-slot-rot {
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.partc-data-table tr.partc-current-row td {
+  background: var(--soft-yellow);
+  font-weight: 800;
+}
+
+.plant-tables-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.plant-condition-card {
+  min-width: 0;
+  margin: 0;
+}
+
+.plant-condition-card .partb-data-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.plant-condition-card .partb-data-table th,
+.plant-condition-card .partb-data-table td {
+  padding: 7px 5px;
+  font-size: 0.78rem;
+  line-height: 1.22;
+}
+
+.partd-swatch.plant-water100 {
+  background: var(--purple);
+}
+
+.partd-swatch.plant-water300 {
+  background: var(--green);
+}
+
+#lineGraphPlantsSvg .linegraph-point.plant-point-100 {
+  fill: var(--lavender);
+  stroke: var(--purple);
+}
+
+#lineGraphPlantsSvg .linegraph-point.plant-point-300 {
+  fill: var(--mint);
+  stroke: var(--green);
+}
+
+#lineGraphPlantsSvg .linegraph-point.plant-point-100.connected {
+  fill: var(--purple);
+  stroke: var(--purple);
+}
+
+#lineGraphPlantsSvg .linegraph-point.plant-point-300.connected {
+  fill: var(--green);
+  stroke: var(--green);
+}
+
+#lineGraphPlantsSvg .linegraph-point.connect-error {
+  fill: var(--soft-orange);
+  stroke: var(--orange);
+}
+
+@media (max-width: 899px) {
+  .plant-tables-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

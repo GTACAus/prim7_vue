@@ -190,7 +190,7 @@ defineExpose({ barsActive: computed(() => unitDone.value && !barsDone.value) });
             v-for="card in AXIS_CARDS"
             :key="card.name"
             tag="button"
-            class="partc-axis-card"
+            class="axis-card"
             :name="card.name"
           >
             {{ card.text }}
@@ -351,3 +351,262 @@ defineExpose({ barsActive: computed(() => unitDone.value && !barsDone.value) });
     <Button :is-reset="true" @click="emit('reset')" />
   </div>
 </template>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+.partc-data-card {
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.partc-table-wrap {
+  width: 100%;
+  margin-top: 14px;
+  overflow-x: auto;
+}
+
+.partc-average-cell {
+  background: var(--soft-purple) !important;
+  font-weight: 800;
+}
+
+.partc-build-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.82fr) minmax(420px, 1.4fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.partc-control-card,
+.partc-graph-card {
+  padding: 10px;
+}
+
+.partc-axis-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.partc-axis-bank[hidden] {
+  display: none !important;
+}
+
+#partCGraphSvg .partc-final-axis-label {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+#partCGraphSvg .partc-final-axis-label.visible {
+  opacity: 1;
+}
+
+#partCGraphSvg .partc-scaffold-layer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+#partCGraphSvg .partc-scaffold-layer.visible {
+  opacity: 1;
+}
+
+.partc-unit-check {
+  margin: 14px 0;
+  padding: 14px;
+  background: var(--soft-blue);
+  border: 2px solid var(--charcoal);
+  border-radius: 14px;
+}
+
+.partc-unit-check p {
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+.partc-unit-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.partc-slider-stage {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--soft-yellow);
+  border: 2px solid var(--charcoal);
+  border-radius: 15px;
+}
+
+.partc-slider-stage[hidden] {
+  display: none !important;
+}
+
+.partc-slider-stage h4 {
+  margin: 3px 0 5px;
+  font-size: 1.08rem;
+}
+#partCGraphSvg .partc-practice-bar {
+  stroke: var(--charcoal);
+  stroke-width: 2.5;
+  transition:
+    y 0.18s ease,
+    height 0.18s ease,
+    opacity 0.2s ease;
+}
+
+#partCGraphSvg .partc-practice-bar.preview {
+  opacity: 0.72;
+}
+
+#partCGraphSvg .partc-practice-bar.complete {
+  opacity: 1;
+}
+
+#partCGraphSvg .partc-value-label {
+  opacity: 0;
+  font-size: 13px;
+  font-weight: 800;
+  text-anchor: middle;
+  transition: opacity 0.25s ease;
+}
+
+#partCGraphSvg .partc-value-label.visible {
+  opacity: 1;
+}
+
+#partCGraphSvg .partc-category-label.complete {
+  fill: var(--green);
+  font-weight: 800;
+}
+
+#partCGraphSvg .partc-practice-bar.analysis-highlight {
+  stroke: var(--purple);
+  stroke-width: 6;
+  filter: drop-shadow(0 3px 0 rgba(48, 51, 47, 0.16));
+}
+
+.partc-analysis-panel,
+.partc-complete-card {
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.partc-analysis-question[hidden],
+.partc-complete-card[hidden] {
+  display: none !important;
+}
+
+/* Keep the Part C completion summary easy to scan. The generic
+   .partc-complete-card > p rule above has greater specificity than
+   the individual paragraph classes, so set the spacing with the
+   parent card rather than relying on paragraph margins. */
+.partc-complete-card {
+  display: grid;
+  gap: 16px;
+}
+
+.partc-complete-card h3 {
+  margin: 0;
+}
+
+.partc-complete-card .partc-result-statement,
+.partc-complete-card .partc-next-hook {
+  margin: 0;
+}
+
+.partc-result-statement {
+  padding: 16px 18px;
+  background: var(--soft-green);
+  border: 2px solid var(--charcoal);
+  border-left: 8px solid var(--green);
+  border-radius: 14px;
+  line-height: 1.55;
+}
+
+.partc-next-hook {
+  padding: 16px 18px;
+  background: var(--soft-yellow);
+  border: 2px solid var(--charcoal);
+  border-left: 8px solid var(--yellow);
+  border-radius: 14px;
+  line-height: 1.55;
+}
+
+@media (max-width: 899px) {
+  .partc-build-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .partc-unit-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #partCGraphSvg .partc-practice-bar,
+  #partCGraphSvg .partc-final-axis-label,
+  #partCGraphSvg .partc-scaffold-layer {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (min-width: 900px) {
+  /* Part C: full-width Site 2 table, then controls beside the graph. */
+  .partc-workbench {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.1fr);
+    gap: 18px;
+    align-items: start;
+  }
+  .partc-workbench > .partc-data-card {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-width: 0;
+    margin: 0;
+  }
+  .partc-workbench > .partc-build-grid {
+    display: contents;
+  }
+  .partc-workbench .partc-control-card {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    align-self: start;
+    order: initial;
+  }
+  .partc-workbench .partc-graph-card {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    align-self: start;
+    order: initial;
+    position: static;
+    padding: 20px 24px 24px;
+  }
+  .partc-workbench .partc-table-wrap {
+    overflow-x: visible;
+  }
+  .partc-workbench .partc-data-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+  .partc-workbench .partc-data-table th,
+  .partc-workbench .partc-data-table td {
+    padding: 7px 6px;
+    font-size: 0.76rem;
+    line-height: 1.22;
+    overflow-wrap: anywhere;
+  }
+  .partc-workbench .partc-data-table th:first-child,
+  .partc-workbench .partc-data-table td:first-child {
+    width: 36%;
+  }
+}
+</style>

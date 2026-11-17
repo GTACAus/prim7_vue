@@ -108,3 +108,22 @@ defineExpose({ isComplete, solved, reset });
     </div>
   </MultipleChoice>
 </template>
+
+<style>
+/* Moved from styles/lesson4_styles/lesson4.css. Not scoped: some rules style child components' content. */
+
+.challenge-question {
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+.challenge-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.partb-analysis-question .challenge-question {
+  margin-bottom: 10px;
+}
+</style>
