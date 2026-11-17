@@ -12,17 +12,17 @@ const cards = [
   {
     image: "../images/lesson3/Yeast.jpg",
     alt: "Dry yeast",
-    text: "Dry yeast is sold in packets. Yeast is a tiny living organism that you can only see under a microscope! Even though it is tiny, yeast is alive, and just like other living things, it needs food to survive. The yeast in these packets is dormant. To wake it up you need to give it water, sugar and the right temperature to make it active.",
+    text: "Dry yeast is sold in packets. Yeast is a tiny living thing that you can only see under a microscope! Even though it is tiny, yeast is alive, and just like other living things, it needs food to survive. The yeast in these packets is dormant. To wake it up you need to give it water, sugar, and the right temperature to make it active.",
   },
   {
     image: "../images/lesson3/Sugar Blocks.jpg",
     alt: "Sugar",
-    text: "Sugar is used by yeast as food to get energy so it can grow and reproduce.",
+    text: "Yeast use sugar as a food source, so it can grow and reproduce.",
   },
   {
     image: "../images/lesson3/Sourdough Starter.jpg",
     alt: "Sourdough starter",
-    text: "When you mix dry yeast and sugar in water it will start to become active. Active yeast produces and releases carbon dioxide gas. This gas can be seen as bubbles in the mixture. The gas bubbles rise to the surface and pop, so the gas escapes the mixture and enters the air around it.",
+    text: "When you mix dry yeast and sugar in water, it starts to become active. Active yeast produces and releases carbon dioxide gas. This gas can be seen as bubbles in the mixture. The gas bubbles rise to the top and they pop, so the gas escapes the mixture and enters the air above it.",
   },
   {
     image: "../images/lesson3/Sourdough Bread 2.jpg",

@@ -133,19 +133,21 @@ const sections = [
   },
   {
     id: "sort-variables-one",
-    title: "Practice reading a fair test question",
+    title:
+      "Practice reading a testable question and identifying variables for the fair test",
   },
   {
     id: "sort-variables-two",
-    title: "Try another testable question to practice identifying variables",
+    // No heading: Example 2 continues the Example 1 section above
+    label: "Sort variables: ball size",
   },
   {
     id: "choose-ball-pair",
-    title: "Select the picture showing a fair test",
+    title: "Focus on the independent variable",
   },
   {
     id: "design-question",
-    title: "Write your own fait test question",
+    title: "Write your own ball bounce fair test question",
   },
   {
     id: "sort-variables-three",
@@ -178,8 +180,7 @@ const sections = [
         :objective="objective"
         :criteria="criteria"
       >
-        Learn how scientists identify variables and plan an experiment that is
-        fair.
+        Learn how to plan a fair test and represent it in a diagram.
 
         <template #title
           >Planning a <strong>Fair Test</strong></template
@@ -235,10 +236,9 @@ const sections = [
           <template #intro>
             <div class="diagram-box diagram-activity">
               <p class="activity-instruction">
-                The image below shows a mind map for a ball bounce
-                <strong>fair test</strong>. To design a
-                <strong>fair test</strong> start by identifying all
-                <strong>variables</strong>.
+                The image below shows a mind map for planning a ball bounce
+                <strong>fair test</strong>. The
+                <strong>variables</strong> have been identified.
               </p>
               <p class="activity-instruction">
                 A <strong>variable</strong> is any factor that can vary. For
@@ -246,8 +246,8 @@ const sections = [
                 factors can affect the result of a <strong>fair test</strong>.
               </p>
               <p class="activity-instruction">
-                The <strong>variables</strong> have been identified. Use the
-                boxes to type in how each varies or can be different.
+                Use the boxes to type in how each varies or can be different.
+                Drop height has been done for you
               </p>
             </div>
           </template>
@@ -287,7 +287,7 @@ const sections = [
             <p class="intro-eyebrow">Measure</p>
             <h3>Dependent variable</h3>
             <p>
-              To observe the <strong>effect</strong> cause by the thing you
+              To observe the <strong>effect</strong> caused by the thing you
               change.
             </p>
           </article>
@@ -296,7 +296,7 @@ const sections = [
             <h3>Controlled variables</h3>
             <p>
               Be sure that the <strong>effect</strong> you measure can only be
-              <strong>caused</strong> by the thing you measure.
+              <strong>caused</strong> by the thing you change.
             </p>
           </article>
         </div>
@@ -308,14 +308,13 @@ const sections = [
           <template #content>
             In a <strong>fair test</strong>, why is it important to only change
             one <strong>variable</strong>? Why should you keep all other
-            <strong>variables</strong> the same?
+            <strong>variables</strong> the same? Click the button below to check
+            your answer.
           </template>
           <template #answer>
-            Only changing one <strong>variable</strong> allows you to know that
-            no other <strong>variable</strong> has affected the results of the
-            test. Any effect or result you measure in the
-            <strong>dependent variable</strong> is caused by the thing you
-            changed (the <strong>independent variable</strong>).
+            Only changing one <strong>variable</strong> and keeping all others
+            the same means that any effect you measure is caused by the thing
+            you changed.
           </template>
         </StopAndCheck>
       </Section>
@@ -325,7 +324,9 @@ const sections = [
       <Section name="sort-variables-one">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
-            Read the testable question for a ball bounce fair test.
+            Two examples of testable questions are shown below. For each
+            example, read the testable question, and then follow steps 1, 2, and
+            3 to identify the variables.
           </p>
           <ol class="ol-step-count">
             <li>
@@ -342,20 +343,13 @@ const sections = [
               make sure it is a <strong>fair test</strong>.
             </li>
           </ol>
-          <p class="activity-instruction">
-            In the following table, select the
-            <strong>independent variable</strong> and the
-            <strong>dependent variable</strong>. Then select the
-            <strong>Controlled Variable</strong> button and identify all parts
-            of the <strong>fair test</strong> experiment that must be kept the
-            same.
-          </p>
         </div>
         <VariableSort
           id="sortVariablesOneActivity"
           :options="sortVariablesOneActivityOptions"
         >
           <template #autofillTestableQuestion>
+            <strong>Example 1:</strong>
             How does changing the surface a ball bounces on affect the height it
             will bounce?
           </template>
@@ -365,17 +359,12 @@ const sections = [
            5. SORT VARIABLES - BALL SIZE
            ================================================== -->
       <Section name="sort-variables-two">
-        <div class="diagram-box diagram-activity">
-          <p class="activity-instruction">
-            Follow the steps to identify the <strong>variables</strong> in this
-            ball bounce <strong>fair test</strong>.
-          </p>
-        </div>
         <VariableSort
           id="sortVariablesTwoActivity"
           :options="sortVariablesTwoActivityOptions"
         >
           <template #autofillTestableQuestion>
+            <strong>Example 2:</strong>
             If I change the size of the ball, how will it affect the height of
             the first bounce?
           </template>
@@ -391,8 +380,9 @@ const sections = [
         </p>
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
-            Look at the four pictures below. Choose the picture showing the
-            balls that could be used in this <strong>fair test</strong>.
+            Read the testable question below, and look at the four pictures.
+            Select the picture to show how you would set up the independent
+            variable for this <strong>fair test</strong>.
           </p>
         </div>
         <BallPairChoice />
@@ -461,8 +451,9 @@ const sections = [
       <Section name="sort-variables-three">
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
-            What will you change? What will you measure? What will you keep the
-            same?
+            What will you change (<strong>Independent variable</strong>)?<br />
+            What will you measure (<strong>Dependent variable</strong>)?<br />
+            What will you keep the same (<strong>Controlled variables</strong>)?
           </p>
         </div>
         <VariableSort
@@ -487,16 +478,17 @@ const sections = [
             <li>
               Click on the <strong><i>Change</i></strong> button. Then select
               the <strong><i>independent variable</i></strong> - what you will
-              change. Then use the drop-down menu to make a choice from the
-              selections offered.
+              change. If you choose ball material, select which two materials to
+              compare.
             </li>
             <li>
               Click on the <strong><i>Measure</i></strong> button. Then select
-              the <strong>dependent variable</strong> - what you will measure.
+              the <strong>dependent variable</strong> - what you will measure,
+              then choose <strong>how</strong> to measure it.
             </li>
             <li>
-              Click on the <strong><i>Control</i></strong> button. Then select
-              all the <strong>variables</strong> you must keep the same.
+              Click on <strong><i>Keep the same</i></strong>. Choose a variable
+              to review the shared setting for both experiments.
             </li>
           </ol>
         </div>

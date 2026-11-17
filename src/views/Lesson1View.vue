@@ -8,6 +8,7 @@ import PredictionTests from "../components/lesson1/PredictionTests.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 import LessonIntro from "../components/LessonIntro.vue";
 import LessonCard from "../components/LessonCard.vue";
+import ThinkBox from "../components/ThinkBox.vue";
 
 import { openVideo } from "../composables/useModal.js";
 import { downloadLessonPDF } from "../composables/usePrintLesson.js";
@@ -99,6 +100,27 @@ const predictionTests = [
   },
 ];
 
+const stwGroups = [
+  {
+    key: "see",
+    title: "See",
+    prompt: "What do you notice?",
+    placeholder: "Type something you see",
+  },
+  {
+    key: "think",
+    title: "Think",
+    prompt: "What do you think is happening?",
+    placeholder: "Type what you think",
+  },
+  {
+    key: "wonder",
+    title: "Wonder",
+    prompt: "What questions do you have?",
+    placeholder: "Type what you wonder",
+  },
+];
+
 // Choices in the reasoned prediction builder
 const changeOptions = [
   "the angle of the ramp",
@@ -117,7 +139,8 @@ const sections = [
   },
   {
     id: "testable-question-intro",
-    title: "Make a Testable Question",
+    title:
+      "Learn how to identify a testable question that can be used in an experiment",
   },
   {
     id: "flashcards",
@@ -198,10 +221,15 @@ const sections = [
         <div class="image-box">
           <img src="../images/lesson1/l1-default.png" alt="Toy car example" />
         </div>
+        <ThinkBox :groups="stwGroups" />
       </Section>
       <!-- ---------- Explicit Teaching: What is a Testable Question? ---------- -->
       <Section name="testable-question-intro">
         <div class="diagram-box diagram-activity">
+          <p>
+            You came up with some questions in the see, think, wonder activity.
+            Now learn how to turn these into testable questions.
+          </p>
           <h3>What is a testable question?</h3>
           <p class="activity-instruction">
             It is answered by doing an experiment. You change one thing and

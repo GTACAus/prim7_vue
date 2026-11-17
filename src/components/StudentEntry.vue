@@ -261,7 +261,7 @@ defineExpose({ reset, focus: () => inputEl.value?.focus() });
   width: calc(var(--fit-ch, 12) * 1ch + 2.5em);
   max-width: var(--entry-max-width, min(100%, 80vw));
   padding: var(--padding, 10px);
-  border: var(--border, --border-medium);
+  border: var(--border, var(--border-medium));
   border-radius: var(--border-radius, var(--radius-small));
   background: var(--background, white);
   font-size: var(--entry-font-size, clamp(12px, 1.6vw, 18px));

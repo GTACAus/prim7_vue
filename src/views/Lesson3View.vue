@@ -15,11 +15,11 @@ import { openPDF, openVideo } from "../composables/useModal.js";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
-  "We are learning how to collect and organise <strong>data</strong> into a <strong>table</strong>.";
+  "We are learning how to collect <strong>data</strong> and put it in a <strong>table</strong>.";
 const criteria = [
-  "I can label a <strong>table</strong> with variables and <strong>units</strong> in the correct format.",
+  "I can label a <strong>table</strong> with variables and <strong>units</strong> in the correct way.",
   "I can collect <strong>data</strong> and enter it into a <strong>table</strong> with the correct <strong>units</strong>.",
-  "I can summarise the results of an experiment using averages.",
+  "I can work out the average result for an experiment.",
 ];
 
 // Terms shown in the vocabulary modal: { word: description }
@@ -41,7 +41,7 @@ const sections = [
   { id: "yeast-image-investigation", title: "Is Yeast Alive?" },
   {
     id: "yeast-variables",
-    title: "Identify Variables in the Yeast Fair Test Experiment",
+    title: "Identify all the variables in the Yeast Fair Test",
   },
   { id: "data-table-template", title: "How to make a scientific table" },
   { id: "yeast-labels", title: "Build and Complete the Yeast Data Table" },
@@ -68,6 +68,14 @@ const sortVariablesOneActivityOptions = {
       "size-of-flask",
       "type-of-balloon",
     ],
+  },
+  messages: {
+    dependentWrong:
+      "Try again. Which variable is observed or measured in this question?",
+    controlledWrong:
+      "Try again. That variable is not controlled in this fair test.",
+    controlledMore:
+      "Yes, that is a controlled variable. Choose another variable that must be kept the same.",
   },
 };
 
@@ -149,7 +157,7 @@ const labelsSection = ref(null);
                   >The independent variable and how you will change it</strong
                 >
                 <span>
-                  This goes in the left-hand column of the
+                  Put this in the left-hand column of the
                   <strong>table</strong>
                 </span>
               </div>
@@ -161,9 +169,13 @@ const labelsSection = ref(null);
               </div>
               <div>
                 <strong
-                  >The dependent variable and the measurements you make</strong
+                  >The dependent variable and the measurements you make for
+                  it</strong
                 >
-                <span>Put in the column to the right</span>
+                <span>
+                  Put this in the right-hand column of the
+                  <strong>table</strong>
+                </span>
               </div>
             </div>
 
@@ -173,7 +185,7 @@ const labelsSection = ref(null);
                 <strong>Repeat each test three times</strong>
                 <span>
                   Record each repeat as test 1, test 2, and test 3. This helps
-                  you to spot errors should they occur
+                  you to spot errors if they occur
                 </span>
               </div>
             </div>
@@ -208,7 +220,7 @@ const labelsSection = ref(null);
             yeast?
           </div>
           <p class="activity-instruction">
-            Then the student wrote a reasoned prediction:
+            Then the student came up with a reasoned prediction:
           </p>
           <div
             class="diagram-activity diagram-box reasoned-prediction-box floating-title"
@@ -221,20 +233,20 @@ const labelsSection = ref(null);
         <div class="yeast-balloon-image-box">
           <img
             src="../images/lesson3/balloon-experiment.png"
-            alt="Yeast Activity vs. Temperature Experiment"
+            alt="A fair test for the effect of temperature on yeast activity"
           />
         </div>
 
         <div class="diagram-box diagram-activity">
           <p class="activity-instruction">
-            Identify the variables in this yeast fair test.
+            Identify all the variables in the yeast Fair Test.
           </p>
 
           <div class="formula-card">
             <div class="formula-step">
               <div class="formula-step-number">1</div>
               <div>
-                <strong>Select the independent variable button.</strong>
+                <strong>Click on the independent variable button.</strong>
                 <span>Then choose the thing that is being changed.</span>
               </div>
             </div>
@@ -242,16 +254,16 @@ const labelsSection = ref(null);
             <div class="formula-step">
               <div class="formula-step-number">2</div>
               <div>
-                <strong>Select the dependent variable button.</strong>
-                <span>Then choose what is being measured.</span>
+                <strong>Click on the dependent variable button.</strong>
+                <span>Then choose the thing that is being measured.</span>
               </div>
             </div>
 
             <div class="formula-step">
               <div class="formula-step-number">3</div>
               <div>
-                <strong>Select the controlled variable button.</strong>
-                <span>Then choose all things you must keep the same.</span>
+                <strong>Click on the controlled variable button.</strong>
+                <span>Then choose all the things you must keep the same.</span>
               </div>
             </div>
           </div>
@@ -271,11 +283,7 @@ const labelsSection = ref(null);
 
         <StopAndCheck v-if="variableSort?.isComplete" name="measure-gas-check">
           <template #content>
-            <p>
-              Look at the image for the fair test experiment. It is Identify
-              Variables in the Yeast Fair Test Experiment. As yeast activity
-              increases, the amount of gas it produces increases.
-            </p>
+            <p>Look at the image for the fair test.</p>
             <p>How will they measure the amount of gas produced?</p>
           </template>
           <template #answer>

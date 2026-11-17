@@ -168,8 +168,8 @@ const feedback = computed(() => {
   if (!resultsCorrect.value)
     return {
       variant: "feedback-try-again",
-      title: "Check your measurements.",
-      text: "Make sure all your answers are correct before moving on.",
+      title: "Check your results.",
+      text: "Make sure all your measurements are correct before moving on.",
     };
   if (labelsDone.value)
     return {
@@ -220,14 +220,13 @@ const choices = [
       <div class="yeast-results-step-heading">
         <span>STEP 2</span>
         <div>
-          <p class="yeast-results-eyebrow">Record the results</p>
-          <h3>Watch each repeat test</h3>
+          <h3>Record the results</h3>
         </div>
       </div>
 
       <p class="yeast-results-instruction">
-        Watch each video and enter the balloon circumference measurements into
-        the correct column of your <strong>table</strong>.
+        Watch each video of the fair test. Enter the measured balloon
+        circumference into the correct column of your <strong>table</strong>.
       </p>
 
       <div class="yeast-results-video-grid">
@@ -262,13 +261,16 @@ const choices = [
               Test 2 and Test 3?
             </strong>
           </p>
-          <p>Think about why repeated results might sometimes be different.</p>
+          <p>
+            Think about why repeated fair tests might give different results.
+          </p>
         </template>
         <template #answer>
-          Some of the repeated results are different. At
-          <strong>37°C</strong>, Test 2 is lower than Tests 1 and 3. At
-          <strong>80°C</strong>, the results are very different. This could be
-          from a setup mistake or a measuring mistake.
+          Some of the results from the repeated fair tests are different. At
+          <strong>37°C</strong>, the result for Test 2 is lower than those for
+          Tests 1 and 3. At <strong>80°C</strong>, the results are very
+          different. This could be from mistakes made setting up the fair test
+          or measuring the result.
         </template>
       </StopAndCheck>
 
@@ -278,15 +280,15 @@ const choices = [
           <div>
             <p class="yeast-results-eyebrow">Calculate the average results</p>
             <h3>
-              Calculate the average results for the three tests of each
-              temperature in the yeast fair test experiment.
+              Calculate the average result for the three tests at each
+              temperature in the fair test.
             </h3>
           </div>
         </div>
 
         <p>
-          You can try working out the averages yourself or use the
-          <strong>calculate</strong> button in the <strong>table</strong> below.
+          You can try working out the averages yourself or click on the
+          "<strong>calculate</strong>" buttons in the <strong>table</strong>.
         </p>
 
         <div class="average-worked-example">
@@ -765,6 +767,8 @@ const choices = [
   --dd-reject: var(--orange);
   --dd-ghost-scale: 1.05;
   --dd-ghost-rotate: 0deg;
+
+  border-radius: 20px;
 }
 
 .drag-label {

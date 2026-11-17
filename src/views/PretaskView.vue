@@ -3,7 +3,7 @@
 import "../styles/pretask.css";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
-import ThinkBox from "../components/pretask/ThinkBox.vue";
+import ThinkBox from "../components/ThinkBox.vue";
 import PostitBrainstorm from "../components/pretask/PostitBrainstorm.vue";
 import FinalBrainstorm from "../components/pretask/FinalBrainstorm.vue";
 import PlantDetective from "../components/pretask/PlantDetective.vue";
