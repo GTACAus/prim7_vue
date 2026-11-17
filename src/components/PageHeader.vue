@@ -121,4 +121,22 @@ defineProps({
   --background: var(--card);
   --color: var(--text);
 }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 800px) {
+  .page-header {
+    max-width: none;
+    padding-left: 0;
+  }
+
+  .home-button,
+  .glossary-button,
+  .save-work-button,
+  .back-to-part1-button {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+}
 </style>

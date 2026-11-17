@@ -63,22 +63,12 @@ function switchGame(game) {
                 name="left-leaf"
                 answer="left-leaf"
               />
-              <DropSlot
-                class="slot slot-stem"
-                name="stem"
-                answer="stem"
-              />
-              <DropSlot
-                class="slot slot-roots"
-                name="roots"
-                answer="roots"
-              />
+              <DropSlot class="slot slot-stem" name="stem" answer="stem" />
+              <DropSlot class="slot slot-roots" name="roots" answer="roots" />
             </div>
 
             <div id="success-1" v-if="done">
-              <p class="success-text">
-                Beautiful! Your plant is complete!
-              </p>
+              <p class="success-text">Beautiful! Your plant is complete!</p>
               <span class="success-icon">🌻</span>
             </div>
 
@@ -114,24 +104,16 @@ function switchGame(game) {
             </div>
 
             <div class="option-button-container">
-              <div class="option-button">
-                <button
-                  type="button"
-                  class="general-button"
-                  @click="reset"
-                >
-                  Start Over
-                </button>
-              </div>
-              <div id="continue-button" class="option-button" v-if="done">
-                <button
-                  type="button"
-                  class="general-button"
-                  @click="switchGame('labels')"
-                >
-                  Continue ->
-                </button>
-              </div>
+              <Button class="option-button reset" @click="reset">
+                Start Over
+              </Button>
+              <Button
+                v-if="done"
+                class="option-button"
+                @click="switchGame('labels')"
+              >
+                Continue →
+              </Button>
             </div>
           </DragDrop>
         </main>
@@ -174,9 +156,7 @@ function switchGame(game) {
             </div>
 
             <div id="success-2" class="success-message" v-if="done">
-              <p class="success-text">
-                Well done! All labels are correct! 🎉
-              </p>
+              <p class="success-text">Well done! All labels are correct! 🎉</p>
               <span class="success-icon">🌻</span>
             </div>
 
@@ -187,11 +167,9 @@ function switchGame(game) {
               <DragItem class="part" name="roots">Roots</DragItem>
             </div>
 
-            <div class="option-button">
-              <button type="button" class="general-button" @click="reset">
-                Start Over
-              </button>
-            </div>
+            <Button class="option-button reset" @click="reset">
+              Start Over
+            </Button>
           </DragDrop>
         </main>
       </div>
@@ -218,19 +196,8 @@ function switchGame(game) {
   padding-bottom: 10px;
 }
 
-.option-button {
-  display: inline-block;
-  margin-right: 20px;
-  background: var(--green);
-  color: rgb(255, 255, 255);
-  font-weight: 600;
-  font-style: normal;
-  font-size: 16px;
-  border-radius: 999px;
-}
-
-.option-button[hidden] {
-  display: none;
+.reset {
+  background: var(--orange);
 }
 
 .plant-area {
@@ -299,17 +266,18 @@ function switchGame(game) {
   right: 110px;
 }
 
-.tab {
-  cursor: pointer;
+.option-button.tab {
   padding: 0.5rem 1.25rem;
-  border-radius: 999px;
-  font-weight: 600;
-  transition: all 0.2s;
+}
+
+.option-button.tab:not(.active) {
+  --background-hover: var(--soft-blue);
+  --color-hover: var(--text);
 }
 
 .tab-button-container {
   padding: 10px;
-  margin-bottom: 20px;
+  margin: 10px 10px 20px;
 
   background: var(--purple);
   border: 3px solid var(--line);
@@ -318,8 +286,7 @@ function switchGame(game) {
   box-shadow: 0 4px 0 var(--line);
 }
 
-.tab-button-container .option-button,
-.tab-button-container button {
+.tab-button-container .option-button {
   border: 2px solid var(--line) !important;
   border-radius: 12px !important;
 

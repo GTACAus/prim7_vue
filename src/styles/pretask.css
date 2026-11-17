@@ -326,3 +326,15 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 800px) {
+  .botanist-mission {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-icon {
+    width: 120px;
+    height: 120px;
+  }
+}

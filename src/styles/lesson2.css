@@ -1,8 +1,8 @@
 /* ==================================================
-       LESSON 2-SPECIFIC SKELETON STYLES
-       Keep shared styles in build_style.css.
-       These can be refined or moved later.
-       ================================================== */
+   LESSON 2 - planning a fair test (Lesson2View)
+   Imported first in Lesson2View.vue so it loads before the component styles,
+   like the old stylesheet did (VariableSort.vue's base rules come after these).
+   ================================================== */
 
 .fair-test-formula {
   display: grid;

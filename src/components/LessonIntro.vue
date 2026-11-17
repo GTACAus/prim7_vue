@@ -312,4 +312,19 @@ defineProps({
 
   z-index: inherit;
 }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 800px) {
+  .lesson-intro {
+    padding-top: 92px;
+  }
+
+  .worksheet-button {
+    position: relative;
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+}
 </style>

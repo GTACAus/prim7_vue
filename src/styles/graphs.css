@@ -11,7 +11,7 @@
    Page-specific components for pages/lesson4.html.
    The shared shell, lesson cards, buttons, modals, sections, navigation,
    stop-and-check, and responsive page frame remain in build_style.css and
-   overrides.css. The spotlight activity styles live in SpotlightSurvey.vue.
+   print.css. The spotlight activity styles live in SpotlightSurvey.vue.
    ================================================== */
 
 /* ---------- Shared graph foundations used on this page ---------- */

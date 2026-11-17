@@ -1,13 +1,9 @@
 /* ==================================================
-   LATE OVERRIDES
+   PRINT
 
-   These two layers used to sit at the end of
-   build_style.css and relied on being the last rules the
-   browser saw. Link this file AFTER every other
-   stylesheet on the page so they keep winning.
+   Printable student lesson: hides website controls, shows every
+   section, and starts each major activity on a new page.
    ================================================== */
-
-/* ---------- Printable student lesson ---------- */
 
 @media print {
   @page {
@@ -204,59 +200,5 @@
   a {
     color: inherit !important;
     text-decoration: none !important;
-  }
-}
-
-/* ---------- Mobile ---------- */
-
-@media (max-width: 800px) {
-  .section {
-    padding: 18px;
-    border-radius: 20px;
-  }
-
-  .lesson-intro {
-    padding-top: 92px;
-  }
-
-  .botanist-mission {
-    grid-template-columns: 1fr;
-  }
-
-  .mission-icon {
-    width: 120px;
-    height: 120px;
-  }
-
-  .page-header {
-    max-width: none;
-    padding-left: 0;
-
-    /* display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; */
-  }
-
-  .home-button,
-  .glossary-button,
-  .worksheet-button,
-  .save-work-button,
-  .back-to-part1-button {
-    margin: 0;
-    white-space: nowrap;
-  }
-
-  .worksheet-button,
-  .home-button,
-  .glossary-button,
-  .save-work-button,
-  .back-to-part1-button {
-    padding: 10px 14px;
-    font-size: 0.7rem;
-  }
-
-  .worksheet-button {
-    position: relative;
   }
 }

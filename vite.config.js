@@ -8,7 +8,7 @@ const base = process.env.BASE_PATH || "/";
 
 // Folders in public/ that pages reference as "/images/..." or "../images/...".
 const PUBLIC_FOLDERS =
-  "images|videos|worksheets|documents|downloads|scripts|styles";
+  "images|videos|worksheets|documents|downloads";
 
 /*
   Paths to files in public/ are written as "/images/x.png" or "../images/x.png"

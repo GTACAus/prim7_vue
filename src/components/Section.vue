@@ -201,4 +201,13 @@ defineExpose({ locked, completed, complete, reset, next, scrollTo });
 .section.completed .completed-note {
   display: block;
 }
+
+/* ---------- Smaller screens ---------- */
+/* Tablet / mobile rules for this component go here, last in the block (see src/styles/base.css). */
+@media (max-width: 800px) {
+  .section {
+    padding: 18px;
+    border-radius: 20px;
+  }
+}
 </style>

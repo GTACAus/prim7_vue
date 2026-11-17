@@ -162,6 +162,7 @@ defineExpose({ reset });
   box-sizing: border-box;
   width: 100%;
   max-width: none;
+  border: var(--border-small);
 }
 
 :is(.variable-overlay-entry, .variable-entry-card) .ir-answer {

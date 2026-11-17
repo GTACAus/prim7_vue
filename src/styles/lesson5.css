@@ -695,7 +695,7 @@
 /* ==================================================
    PART A - FAIR-TEST VARIABLE CALLBACK
    Mirrors Lesson 2's Change / Measure / Keep the same cards,
-   but is scoped to Lesson 4 so lesson2.css does not need to change.
+   but is scoped to Lesson 4 so Lesson2View's styles do not need to change.
    ================================================== */
 #bar-practice .variable-type-grid {
   display: grid;

@@ -1,3 +1,6 @@
+// Global styles first, so they come before every component style (like the old <link>s did).
+import "./styles/base.css";
+import "./styles/print.css";
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
@@ -16,7 +19,6 @@ const routes = [
     path: "/",
     meta: {
       header: false,
-      stylesheets: ["/styles/build_style.css"],
     },
     component: () => import("./views/HomeView.vue"),
   },
@@ -29,26 +31,14 @@ const routes = [
   },
   {
     path: "/lesson1",
-    meta: {
-      stylesheets: ["/styles/overrides.css"],
-    },
     component: () => import("./views/Lesson1View.vue"),
   },
   {
     path: "/lesson2",
-    meta: {
-      stylesheets: [
-        "/styles/lesson2_styles/lesson2.css",
-        "/styles/variable-activity.css",
-      ],
-    },
     component: () => import("./views/Lesson2View.vue"),
   },
   {
     path: "/lesson3",
-    meta: {
-      stylesheets: ["/styles/variable-activity.css"],
-    },
     component: () => import("./views/Lesson3View.vue"),
   },
   {

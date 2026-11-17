@@ -6,6 +6,7 @@
 */
 import { computed, ref } from "vue";
 import ButtonReveal from "./activities/ButtonReveal.vue";
+import Button from "./Button.vue";
 
 const reveal = ref(null);
 const pressed = computed(() => reveal.value?.pressed ?? false);
@@ -19,20 +20,16 @@ defineExpose({ pressed });
       <slot name="content" />
       <p>Click the button below to check your answer.</p>
     </div>
-
+    <img
+      src="../component_assets/stopandthinkicon.png"
+      alt="Stop and think icon"
+    />
     <div v-if="pressed" class="stop-and-check-answer">
       <slot name="answer" />
     </div>
-    <button
-      v-else
-      type="button"
-      class="stop-and-check-button general-button"
-      @click="press"
-    >
-      <p>Check Your Answer</p>
-      <p class="bounce-symbol">✅</p>
-    </button>
-
+    <Button v-else class="stop-and-check-button" symbol="✅" @click="press">
+      Check Your Answer
+    </Button>
   </ButtonReveal>
 </template>
 
@@ -46,11 +43,11 @@ defineExpose({ pressed });
 
   padding: 4px 12px;
 
-  background: var(--orange);
+  background: var(--blue);
   border: 2px solid var(--line);
   border-radius: 999px;
 
-  color: var(--paper);
+  color: var(--text);
 
   font-size: 0.72rem;
   font-weight: 700;
@@ -59,6 +56,7 @@ defineExpose({ pressed });
 
 .stop-and-check-answer {
   position: relative;
+  grid-column: 1 / -1;
   margin-top: 15px;
   background-color: var(--soft-green);
   border-radius: 16px;
@@ -95,8 +93,10 @@ defineExpose({ pressed });
   width: fit-content;
   margin: 0 auto;
   margin-top: 20px;
-  background: var(--yellow) !important;
-  color: var(--text) !important;
+  background: var(--mint);
+  color: var(--text);
+  font-weight: 600;
+  grid-column: 1 / -1;
 }
 
 .stop-and-check-button[hidden] {
@@ -107,12 +107,13 @@ defineExpose({ pressed });
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   margin: 30px 0 24px;
   padding: 16px 18px;
   border: 3px solid var(--charcoal);
-  border-top: 6px solid var(--orange);
-  background: var(--soft-orange);
+  border-top: 6px solid var(--blue);
+  background: var(--soft-blue);
   box-shadow: 0 4px 0 var(--charcoal);
   border-radius: 16px;
   font-weight: 500;
@@ -122,5 +123,18 @@ defineExpose({ pressed });
 
 .stop-and-check[hidden] {
   display: none;
+}
+
+.stop-and-check {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-template-rows: auto;
+}
+
+.stop-and-check img {
+  align-self: center;
+  justify-self: center;
+  width: 100%;
+  opacity: 0.2;
 }
 </style>

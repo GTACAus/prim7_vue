@@ -5,11 +5,6 @@
    Imported first by Lesson3View.vue and Lesson4View.vue.
    ================================================== */
 
-.lesson3-intro {
-  margin-bottom: 22px;
-  padding-top: 0;
-}
-
 .data-table-card {
   position: relative;
   display: flex;

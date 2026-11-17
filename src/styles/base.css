@@ -1,16 +1,23 @@
 /* ==================================================
-   SHARED SITE STYLES
-   
-   Design tokens, layout shell, and every component
-   reused across more than one page.
-   
-   Page-specific rules belong in the matching file:
-     pretask_styles/pretask.css
-     pretask_styles/plant_detective.css
-     lesson1_styles/lesson1_activities.css
-     lesson2_styles/lesson2.css
-     lesson3_styles/lesson3.css
-     reasoned_prediction_builder.css
+   BASE STYLES
+
+   Design tokens (:root), the reset, the page shell, and the few
+   components styled globally. Component-specific rules live in the
+   component (<style> in its .vue file); page-specific rules in
+   src/styles/<page>.css. Colour themes are in themes.css and
+   printing in print.css.
+
+   SMALLER SCREENS (tablet / mobile)
+   Put a component's small-screen rules in an @media block at the BOTTOM of
+   that component's own <style>. Source order then guarantees they win over
+   the component's base rules on every page. Use these breakpoints:
+
+     @media (max-width: 900px) { ... }   tablet
+     @media (max-width: 800px) { ... }   mobile
+     @media (max-width: 520px) { ... }   small phone
+
+   Examples: Section.vue, LessonIntro.vue, PageHeader.vue.
+   Do not add a separate "overrides" stylesheet.
    ================================================== */
 
 :root {
@@ -252,11 +259,6 @@ input[type="checkbox"]:active {
 */
 [data-activity-hidden][hidden] {
   display: none !important;
-}
-
-.activity-unavailable {
-  opacity: 0.55;
-  pointer-events: none;
 }
 
 .video-box,
@@ -518,11 +520,6 @@ input[type="checkbox"]:active {
 
 /* ---------- Wheel ---------- */
 
-.save-testable-question-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* ---------- Plant builder ---------- */
 
 .tab-button-container .active,
@@ -633,32 +630,6 @@ input[type="checkbox"]:active {
   100% {
     transform: translateY(-60px) rotate(360deg);
     opacity: 0;
-  }
-}
-
-/* ==================================================
-   FULL-WIDTH LEARNING OBJECTIVE CARD
-   Used where the objective sits above the intro grid
-   rather than beside another card.
-   ================================================== */
-
-.objectives-card-wide {
-  margin-bottom: 22px;
-}
-
-.objectives-card-wide .objective-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.objectives-card-wide .objective-list li {
-  margin-bottom: 0;
-}
-
-@media (max-width: 800px) {
-  .objectives-card-wide .objective-list {
-    grid-template-columns: 1fr;
   }
 }
 
