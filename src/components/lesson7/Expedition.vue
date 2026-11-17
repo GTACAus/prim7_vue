@@ -1903,7 +1903,7 @@ onBeforeUnmount(() => {
 
 <style>
 /* Drag-and-drop styles for this lesson (moved from styles/lesson5_styles/drag_and_drop.css;
-   the other lessons use styles/drag_and_drop_base.css). Kept before the block below so
+   the other lessons use DragDrop.vue). Kept before the block below so
    the cascade order is unchanged. */
 /* ==================================================
    GENERIC DRAG AND DROP ACTIVITY STYLES

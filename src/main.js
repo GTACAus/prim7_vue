@@ -24,9 +24,6 @@ const routes = [
     path: "/pretask",
     meta: {
       save: true,
-      stylesheets: [
-        "/styles/drag_and_drop_base.css",
-      ],
     },
     component: () => import("./views/PretaskView.vue"),
   },
@@ -50,10 +47,7 @@ const routes = [
   {
     path: "/lesson3",
     meta: {
-      stylesheets: [
-        "/styles/drag_and_drop_base.css",
-        "/styles/variable-activity.css",
-      ],
+      stylesheets: ["/styles/variable-activity.css"],
     },
     component: () => import("./views/Lesson3View.vue"),
   },
@@ -68,9 +62,6 @@ const routes = [
   {
     path: "/lesson5",
     meta: {
-      stylesheets: [
-        "/styles/drag_and_drop_base.css",
-      ],
     },
     component: () => import("./views/Lesson5View.vue"),
   },
@@ -79,9 +70,6 @@ const routes = [
     meta: {
       backHref: "/lesson5",
       backLabel: "Lesson 5",
-      stylesheets: [
-        "/styles/drag_and_drop_base.css",
-      ],
     },
     component: () => import("./views/Lesson6View.vue"),
   },
@@ -90,7 +78,6 @@ const routes = [
     meta: {
       theme: "dark",
       stylesheets: [
-        "/styles/lesson5_styles/drag_and_drop.css",
         "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap",
       ],
     },

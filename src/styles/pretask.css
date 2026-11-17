@@ -233,7 +233,7 @@
 }
 
 /* .slot / .label-slot set their own border and background, which outrank the
-   zero-specificity states in drag_and_drop_base.css; restate those states here
+   zero-specificity states in DragDrop.vue; restate those states here
    so the --dd-* variables above still apply. */
 .slot.dd-hover,
 .label-slot.dd-hover,
@@ -257,7 +257,7 @@
 
 /*
   The plant-building/labelling items are plant-shaped images and short
-  text chips, not the round icons drag_and_drop_base.css
+  text chips, not the round icons DragDrop.vue
   may assume - so size and shape them here instead.
 */
 /* The drag ghost is a clone on <body>, outside the activity roots, so the

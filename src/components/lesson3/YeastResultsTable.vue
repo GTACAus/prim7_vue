@@ -756,7 +756,7 @@ const choices = [
 }
 
 /* ---------- Draggable labels ----------
-   Behaviour (ghost, hover, reject) comes from styles/drag_and_drop_base.css;
+   Behaviour (ghost, hover, reject) comes from DragDrop.vue;
    only the look is set here. */
 
 #yeastActivity {
