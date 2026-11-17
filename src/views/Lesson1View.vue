@@ -7,6 +7,7 @@ import QuestionWheel from "../components/lesson1/QuestionWheel.vue";
 import PredictionTests from "../components/lesson1/PredictionTests.vue";
 import PredictionTable from "../components/activities/PredictionTable.vue";
 import LessonIntro from "../components/LessonIntro.vue";
+import LessonCard from "../components/LessonCard.vue";
 
 import { openVideo } from "../composables/useModal.js";
 import { downloadLessonPDF } from "../composables/usePrintLesson.js";
@@ -209,42 +210,52 @@ const sections = [
           </p>
         </div>
         <div class="intro-grid question-comparison-grid">
-          <div class="intro-card testable-card">
-            <p class="intro-eyebrow">Testable questions</p>
-            <ul>
-              <li>Can be answered by doing an <strong>experiment</strong>.</li>
-              <li>Explore the relationship between two things.</li>
-              <li>
-                One thing is changed and its effect on another thing is
-                <strong>measured</strong>.
-              </li>
-              <li>
-                Different scientists should reach a similar answer when
-                conducting the same <strong>experiment</strong>.
-              </li>
-            </ul>
-          </div>
-          <div class="intro-card untestable-card">
-            <p class="intro-eyebrow">Untestable questions</p>
-            <ul>
-              <li>
-                May be answered using personal opinions, values or beliefs.
-              </li>
-              <li>
-                Do not explore the effect of <strong>changing</strong> one
-                thing.
-              </li>
-              <li>
-                Cannot be answered using <strong>measurable</strong> evidence
-                from an <strong>experiment</strong>.
-              </li>
-              <li>
-                Are not by <strong>changing</strong> one thing and
-                <strong>measuring</strong> the effect on another thing.
-              </li>
-              <li>Different people may provide different answers.</li>
-            </ul>
-          </div>
+          <LessonCard class="testable-card">
+            <template #eyebrow>
+              <p>Testable questions</p>
+            </template>
+            <template #content>
+              <ul>
+                <li>
+                  Can be answered by doing an <strong>experiment</strong>.
+                </li>
+                <li>Explore the relationship between two things.</li>
+                <li>
+                  One thing is changed and its effect on another thing is
+                  <strong>measured</strong>.
+                </li>
+                <li>
+                  Different scientists should reach a similar answer when
+                  conducting the same <strong>experiment</strong>.
+                </li>
+              </ul>
+            </template>
+          </LessonCard>
+          <LessonCard class="untestable-card">
+            <template #eyebrow>
+              <p>Untestable questions</p>
+            </template>
+            <template #content>
+              <ul>
+                <li>
+                  May be answered using personal opinions, values or beliefs.
+                </li>
+                <li>
+                  Do not explore the effect of <strong>changing</strong> one
+                  thing.
+                </li>
+                <li>
+                  Cannot be answered using <strong>measurable</strong> evidence
+                  from an <strong>experiment</strong>.
+                </li>
+                <li>
+                  Are not by <strong>changing</strong> one thing and
+                  <strong>measuring</strong> the effect on another thing.
+                </li>
+                <li>Different people may provide different answers.</li>
+              </ul>
+            </template>
+          </LessonCard>
         </div>
         <div class="diagram-box diagram-activity question-example-intro">
           <p class="activity-instruction">
@@ -252,95 +263,111 @@ const sections = [
           </p>
         </div>
         <div class="intro-grid question-example-grid">
-          <div class="intro-card testable-card">
-            <p class="intro-eyebrow">Testable question</p>
-            <p class="example-question">
-              Does changing the angle of the ramp affect how far the car
-              travels?
-            </p>
-            <div class="question-check-list">
-              <div class="question-check-row">
-                <span class="question-check-icon correct">✓</span>
-                <div>
-                  <strong>Is something being changed?</strong>
-                  <p>Yes. The angle of the ramp is changed.</p>
+          <LessonCard class="testable-card">
+            <template #eyebrow>
+              <p>Testable question</p>
+            </template>
+            <template #content>
+              <p class="example-question">
+                Does changing the angle of the ramp affect how far the car
+                travels?
+              </p>
+              <div class="question-check-list">
+                <div class="question-check-row">
+                  <span class="question-check-icon correct">✓</span>
+                  <div>
+                    <strong>Is something being changed?</strong>
+                    <p>Yes. The angle of the ramp is changed.</p>
+                  </div>
+                </div>
+                <div class="question-check-row">
+                  <span class="question-check-icon correct">✓</span>
+                  <div>
+                    <strong>Can the effect be measured?</strong>
+                    <p>Yes. Measure the distance the car travels.</p>
+                  </div>
                 </div>
               </div>
-              <div class="question-check-row">
-                <span class="question-check-icon correct">✓</span>
-                <div>
-                  <strong>Can the effect be measured?</strong>
-                  <p>Yes. Measure the distance the car travels.</p>
+            </template>
+          </LessonCard>
+          <LessonCard class="untestable-card">
+            <template #eyebrow>
+              <p>Untestable question</p>
+            </template>
+            <template #content>
+              <p class="example-question">
+                Does changing the angle of the ramp affect how much fun the car
+                has?
+              </p>
+              <div class="question-check-list">
+                <div class="question-check-row">
+                  <span class="question-check-icon correct">✓</span>
+                  <div>
+                    <strong>Is something being changed?</strong>
+                    <p>Yes. The angle of the ramp is changed.</p>
+                  </div>
+                </div>
+                <div class="question-check-row">
+                  <span class="question-check-icon incorrect">×</span>
+                  <div>
+                    <strong>Can the effect be measured?</strong>
+                    <p>No. Fun is based on personal opinion.</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="intro-card untestable-card">
-            <p class="intro-eyebrow">Untestable question</p>
-            <p class="example-question">
-              Does changing the angle of the ramp affect how much fun the car
-              has?
-            </p>
-            <div class="question-check-list">
-              <div class="question-check-row">
-                <span class="question-check-icon correct">✓</span>
-                <div>
-                  <strong>Is something being changed?</strong>
-                  <p>Yes. The angle of the ramp is changed.</p>
+            </template>
+          </LessonCard>
+          <LessonCard class="testable-card">
+            <template #eyebrow>
+              <p>Testable question</p>
+            </template>
+            <template #content>
+              <p class="example-question">
+                What will changing the size of the car do to the distance the
+                car travels?
+              </p>
+              <div class="question-check-list">
+                <div class="question-check-row">
+                  <span class="question-check-icon correct">✓</span>
+                  <div>
+                    <strong>Is something being changed?</strong>
+                    <p>Yes. The size of the car is changed.</p>
+                  </div>
+                </div>
+                <div class="question-check-row">
+                  <span class="question-check-icon correct">✓</span>
+                  <div>
+                    <strong>Can the effect be measured?</strong>
+                    <p>Yes. Measure the distance the car travels.</p>
+                  </div>
                 </div>
               </div>
-              <div class="question-check-row">
-                <span class="question-check-icon incorrect">×</span>
-                <div>
-                  <strong>Can the effect be measured?</strong>
-                  <p>No. Fun is based on personal opinion.</p>
+            </template>
+          </LessonCard>
+          <LessonCard class="untestable-card">
+            <template #eyebrow>
+              <p>Untestable question</p>
+            </template>
+            <template #content>
+              <p class="example-question">How far does the red car travel?</p>
+              <div class="question-check-list">
+                <div class="question-check-row">
+                  <span class="question-check-icon incorrect">×</span>
+                  <div>
+                    <strong>Is something being changed?</strong>
+                    <p>No. Nothing is changed.</p>
+                  </div>
+                </div>
+                <div class="question-check-row">
+                  <span class="question-check-icon correct">✓</span>
+                  <div>
+                    <strong>Can the effect be measured?</strong>
+                    <p>Yes. The distance the car travels can be measured.</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="intro-card testable-card">
-            <p class="intro-eyebrow">Testable question</p>
-            <p class="example-question">
-              What will changing the size of the car do to the distance the car
-              travels?
-            </p>
-            <div class="question-check-list">
-              <div class="question-check-row">
-                <span class="question-check-icon correct">✓</span>
-                <div>
-                  <strong>Is something being changed?</strong>
-                  <p>Yes. The size of the car is changed.</p>
-                </div>
-              </div>
-              <div class="question-check-row">
-                <span class="question-check-icon correct">✓</span>
-                <div>
-                  <strong>Can the effect be measured?</strong>
-                  <p>Yes. Measure the distance the car travels.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="intro-card untestable-card">
-            <p class="intro-eyebrow">Untestable question</p>
-            <p class="example-question">How far does the red car travel?</p>
-            <div class="question-check-list">
-              <div class="question-check-row">
-                <span class="question-check-icon incorrect">×</span>
-                <div>
-                  <strong>Is something being changed?</strong>
-                  <p>No. Nothing is changed.</p>
-                </div>
-              </div>
-              <div class="question-check-row">
-                <span class="question-check-icon correct">✓</span>
-                <div>
-                  <strong>Can the effect be measured?</strong>
-                  <p>Yes. The distance the car travels can be measured.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </template>
+          </LessonCard>
         </div>
       </Section>
       <!-- ---------- Flashcards ---------- -->

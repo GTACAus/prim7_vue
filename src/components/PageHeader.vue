@@ -58,7 +58,7 @@ defineProps({
 }
 
 .home-button {
-  border-top: 5px solid var(--yellow);
+  border-top: 5px solid var(--marker);
   pointer-events: auto;
   --background-hover: var(--soft-yellow);
   --background-active: var(--yellow);
@@ -68,7 +68,7 @@ defineProps({
   pointer-events: auto;
   justify-self: end;
 
-  border-top: 5px solid var(--purple);
+  border-top: 5px solid var(--accent-text);
   --background-hover: var(--soft-purple);
   --background-active: var(--purple);
   --color-active: var(--paper);

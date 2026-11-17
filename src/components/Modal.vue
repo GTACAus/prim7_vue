@@ -381,7 +381,7 @@ defineExpose({ open: show, close });
 
 .modal-label {
   margin: 0 0 5px;
-  color: var(--button-hover);
+  color: var(--accent-text);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -398,10 +398,10 @@ defineExpose({ open: show, close });
 .vocab-card,
 .teacher-section-list button {
   padding: 16px;
-  background: #fff;
+  background: var(--surface);
   border: 2px solid var(--line);
   border-radius: 14px;
-  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.2);
+  box-shadow: 0 3px 0 var(--shadow-soft);
 }
 
 .vocab-card h3 {

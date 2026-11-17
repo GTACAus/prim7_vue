@@ -11,6 +11,7 @@ import SiteTwoBarGraph from "../components/lesson5/SiteTwoBarGraph.vue";
 import CompareSites from "../components/lesson5/CompareSites.vue";
 import { openPDF } from "../composables/useModal.js";
 import ContentBox from "../components/ContentBox.vue";
+import LessonCard from "../components/LessonCard.vue";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -209,24 +210,28 @@ const partD = ref(null);
               </span>
             </label>
           </div>
-          <div class="intro-card bar-example-image-card">
-            <div class="image-box">
-              <img
-                :src="IMG + 'blank_bar_graph.png'"
-                alt="Blank bar graph template showing the parts of a bar graph"
-              />
-            </div>
-          </div>
+          <LessonCard class="bar-example-image-card">
+            <template #content>
+              <div class="image-box">
+                <img
+                  :src="IMG + 'blank_bar_graph.png'"
+                  alt="Blank bar graph template showing the parts of a bar graph"
+                />
+              </div>
+            </template>
+          </LessonCard>
         </div>
 
-        <div class="intro-card bar-example-image-card">
-          <div v-for="n in 2" :key="n" class="image-box">
-            <img
-              :src="`${IMG}bar_graph_example_${n}.png`"
-              alt="Example of a completed bar graph"
-            />
-          </div>
-        </div>
+        <LessonCard class="bar-example-image-card">
+          <template #content>
+            <div v-for="n in 2" :key="n" class="image-box">
+              <img
+                :src="`${IMG}bar_graph_example_${n}.png`"
+                alt="Example of a completed bar graph"
+              />
+            </div>
+          </template>
+        </LessonCard>
       </Section>
 
       <!-- ==================================================

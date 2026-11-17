@@ -1,6 +1,6 @@
 <script setup>
 import Button from "./Button.vue";
-import ContentBox from "./ContentBox.vue";
+import LessonCard from "./LessonCard.vue";
 /*
   Lesson introduction: label, title, summary, worksheet download and an
   optional objectives / "think like a scientist" grid.
@@ -68,20 +68,28 @@ defineProps({
     <slot name="mission" />
 
     <div v-if="objective || $slots.observation" class="intro-grid">
-      <ContentBox v-if="objective" class="intro-card objectives-card">
-        <p class="intro-eyebrow">Learning objective</p>
-        <p class="learning-objective-text" v-html="objective"></p>
+      <LessonCard v-if="objective" class="objectives-card">
+        <template #eyebrow>
+          <p>Learning objective</p>
+        </template>
+        <template #content>
+          <p class="learning-objective-text" v-html="objective"></p>
 
-        <p class="success-heading">Success criteria</p>
-        <ol class="objective-list">
-          <li v-for="(item, i) in criteria" :key="i" v-html="item"></li>
-        </ol>
-      </ContentBox>
+          <p class="success-heading">Success criteria</p>
+          <ol class="objective-list">
+            <li v-for="(item, i) in criteria" :key="i" v-html="item"></li>
+          </ol>
+        </template>
+      </LessonCard>
 
-      <ContentBox v-if="$slots.observation" class="intro-card observation-card">
-        <p class="intro-eyebrow">Think like a scientist</p>
-        <slot name="observation" />
-      </ContentBox>
+      <LessonCard v-if="$slots.observation" class="observation-card">
+        <template #eyebrow>
+          <p>Think like a scientist</p>
+        </template>
+        <template #content>
+          <slot name="observation" />
+        </template>
+      </LessonCard>
     </div>
   </header>
 </template>
@@ -112,8 +120,8 @@ defineProps({
   margin-bottom: 12px;
   padding: 8px 16px;
 
-  background: var(--purple);
-  color: white;
+  background: var(--accent);
+  color: var(--on-accent);
 
   border: 2px solid var(--line);
   border-radius: 999px;
@@ -137,50 +145,10 @@ defineProps({
   line-height: 1.7;
 }
 
-.intro-card h2 {
-  margin: 0 0 9px;
-
-  color: var(--text);
-
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.intro-eyebrow {
-  margin: 0 0 7px !important;
-
-  color: var(--purple) !important;
-
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .intro-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
-}
-
-.intro-card {
-  position: relative;
-  background: var(--paper);
-}
-
-.intro-card::before {
-  content: "";
-  display: block;
-
-  width: 54%;
-  margin: 0 0 18px;
-
-  border-top: 3px dashed var(--mint);
-}
-
-.intro-card p {
-  color: var(--muted);
-  line-height: 1.6;
 }
 
 .objectives-card {
@@ -207,11 +175,11 @@ defineProps({
   margin-bottom: 12px;
   padding: 30px 12px 30px 50px;
 
-  background: white;
+  background: var(--surface);
   border: 2px solid var(--line);
   border-radius: 14px;
 
-  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.16);
+  box-shadow: 0 3px 0 var(--shadow-soft);
 
   color: var(--text);
   line-height: 1.45;
@@ -266,11 +234,11 @@ defineProps({
   width: 30px;
   height: 30px;
 
-  background: var(--yellow);
+  background: var(--marker);
   border: 2px solid var(--line);
   border-radius: 50%;
 
-  color: var(--text);
+  color: var(--on-marker);
   font-weight: 700;
 }
 
@@ -282,7 +250,7 @@ defineProps({
   border: 2px solid var(--line);
   border-radius: 14px;
 
-  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.18);
+  box-shadow: 0 3px 0 var(--shadow-soft);
 
   color: var(--text) !important;
   font-weight: 600;
@@ -336,11 +304,11 @@ defineProps({
 
 .worksheet-button {
   display: inline-block;
-  --background: var(--yellow);
-  --color: var(--text);
+  --background: var(--marker);
+  --color: var(--on-marker);
   --padding: 8px;
-  --background-hover: var(--mint);
-  --color-hover: var(--text);
+  --background-hover: var(--marker-2);
+  --color-hover: var(--on-marker);
 
   z-index: inherit;
 }

@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+import "./styles/themes.css";
 // classroom language filter: loads the word list and puts window.getValidStudentInput() etc.
 // in place for the plain scripts that still need them
 import "./composables/useClassroomLanguageFilter.js";
@@ -94,6 +95,7 @@ const routes = [
   {
     path: "/lesson7",
     meta: {
+      theme: "dark",
       stylesheets: [
         "/styles/lesson5_styles/drag_and_drop.css",
         "/styles/lesson5_styles/lesson5.css",
@@ -137,6 +139,9 @@ function loadStylesheet(href) {
 }
 
 router.beforeEach(async (to) => {
+  // colour theme for the page (see src/styles/themes.css)
+  if (to.meta.theme) document.documentElement.dataset.theme = to.meta.theme;
+  else delete document.documentElement.dataset.theme;
   await Promise.all((to.meta.stylesheets ?? []).map(loadStylesheet));
 });
 

@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import Page from "../components/Page.vue";
 import Section from "../components/Section.vue";
 import LessonIntro from "../components/LessonIntro.vue";
+import LessonCard from "../components/LessonCard.vue";
 import ContentBox from "../components/ContentBox.vue";
 import StopAndCheck from "../components/StopAndCheck.vue";
 import InvestigationQuestion from "../components/activities/InvestigationQuestion.vue";
@@ -84,97 +85,113 @@ const predictionActivity = ref(null);
         Practice what you have learned by doing a ball bounce experiment
 
         <template #mission>
-          <ContentBox class="intro-card objectives-card practice-plan-card">
-            <p class="intro-eyebrow">Put it into practice</p>
-            <h2>
-              Practice what you have learned by doing a ball-bounce experiment
-            </h2>
-            <div class="practice-plan">
-              <div
-                v-for="(step, i) in practiceSteps"
-                :key="step"
-                class="lesson4-step-heading practice-plan-step"
-              >
-                <span>STEP {{ i + 1 }}</span>
-                <h3>{{ step }}</h3>
+          <LessonCard class="objectives-card practice-plan-card">
+            <template #eyebrow>
+              <p>Put it into practice</p>
+            </template>
+            <template #content>
+              <h2>
+                Practice what you have learned by doing a ball-bounce experiment
+              </h2>
+              <div class="practice-plan">
+                <div
+                  v-for="(step, i) in practiceSteps"
+                  :key="step"
+                  class="lesson4-step-heading practice-plan-step"
+                >
+                  <span>STEP {{ i + 1 }}</span>
+                  <h3>{{ step }}</h3>
+                </div>
               </div>
-            </div>
-          </ContentBox>
+            </template>
+          </LessonCard>
 
           <div class="intro-grid">
-            <ContentBox class="intro-card observation-card">
-              <p class="intro-eyebrow">Think like a scientist</p>
-              <h2>The Fair-Test Formula</h2>
-              <p>
-                A <strong>fair test</strong> experiment helps us to find out if
-                changing one thing causes a measureable effect in another thing.
-              </p>
-              <div class="formula-card">
-                <div class="formula-step">
-                  <div class="formula-step-number">1</div>
-                  <div>
-                    <strong>Change one factor</strong>
-                    <span>Choose the independent variable.</span>
+            <LessonCard class="observation-card">
+              <template #eyebrow>
+                <p>Think like a scientist</p>
+              </template>
+              <template #content>
+                <h2>The Fair-Test Formula</h2>
+                <p>
+                  A <strong>fair test</strong> experiment helps us to find out
+                  if changing one thing causes a measureable effect in another
+                  thing.
+                </p>
+                <div class="formula-card">
+                  <div class="formula-step">
+                    <div class="formula-step-number">1</div>
+                    <div>
+                      <strong>Change one factor</strong>
+                      <span>Choose the independent variable.</span>
+                    </div>
+                  </div>
+                  <div class="formula-step">
+                    <div class="formula-step-number">2</div>
+                    <div>
+                      <strong>Measure the effect this causes</strong>
+                      <span>Measure the dependent variable.</span>
+                    </div>
+                  </div>
+                  <div class="formula-step">
+                    <div class="formula-step-number">3</div>
+                    <div>
+                      <strong>Keep everything else the same</strong>
+                      <span>Control all other variables.</span>
+                    </div>
                   </div>
                 </div>
-                <div class="formula-step">
-                  <div class="formula-step-number">2</div>
-                  <div>
-                    <strong>Measure the effect this causes</strong>
-                    <span>Measure the dependent variable.</span>
-                  </div>
-                </div>
-                <div class="formula-step">
-                  <div class="formula-step-number">3</div>
-                  <div>
-                    <strong>Keep everything else the same</strong>
-                    <span>Control all other variables.</span>
-                  </div>
-                </div>
-              </div>
-            </ContentBox>
+              </template>
+            </LessonCard>
 
-            <ContentBox class="intro-card observation-card">
-              <p class="intro-eyebrow">Think like a scientist</p>
-              <h2>Scientific Table Formula</h2>
-              <p>
-                When scientists carry out fair tests, they use tables to record
-                <strong>data</strong>. This helps them to see patterns, trends,
-                and relationships in the <strong>data</strong>.
-              </p>
-              <div class="formula-card">
-                <div class="formula-step">
-                  <div class="formula-step-number">1</div>
-                  <div>
-                    <strong
-                      >The independent variable and how you will change
-                      it</strong
-                    >
-                    <span>This goes in the left-hand column of the table</span>
+            <LessonCard class="observation-card">
+              <template #eyebrow>
+                <p>Think like a scientist</p>
+              </template>
+              <template #content>
+                <h2>Scientific Table Formula</h2>
+                <p>
+                  When scientists carry out fair tests, they use tables to
+                  record
+                  <strong>data</strong>. This helps them to see patterns,
+                  trends, and relationships in the <strong>data</strong>.
+                </p>
+                <div class="formula-card">
+                  <div class="formula-step">
+                    <div class="formula-step-number">1</div>
+                    <div>
+                      <strong
+                        >The independent variable and how you will change
+                        it</strong
+                      >
+                      <span
+                        >This goes in the left-hand column of the table</span
+                      >
+                    </div>
+                  </div>
+                  <div class="formula-step">
+                    <div class="formula-step-number">2</div>
+                    <div>
+                      <strong
+                        >The dependent variable and the measurements you
+                        make</strong
+                      >
+                      <span>Put in the column to the right</span>
+                    </div>
+                  </div>
+                  <div class="formula-step">
+                    <div class="formula-step-number">3</div>
+                    <div>
+                      <strong>Repeat each test three times</strong>
+                      <span>
+                        Record each repeat as test 1, test 2, and test 3. This
+                        helps you to spot errors should they occur
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div class="formula-step">
-                  <div class="formula-step-number">2</div>
-                  <div>
-                    <strong
-                      >The dependent variable and the measurements you
-                      make</strong
-                    >
-                    <span>Put in the column to the right</span>
-                  </div>
-                </div>
-                <div class="formula-step">
-                  <div class="formula-step-number">3</div>
-                  <div>
-                    <strong>Repeat each test three times</strong>
-                    <span>
-                      Record each repeat as test 1, test 2, and test 3. This
-                      helps you to spot errors should they occur
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </ContentBox>
+              </template>
+            </LessonCard>
           </div>
         </template>
       </LessonIntro>
