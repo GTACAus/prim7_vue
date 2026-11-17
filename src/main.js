@@ -98,7 +98,6 @@ const routes = [
       theme: "dark",
       stylesheets: [
         "/styles/lesson5_styles/drag_and_drop.css",
-        "/styles/lesson5_styles/lesson5.css",
         "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap",
       ],
     },

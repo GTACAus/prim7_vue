@@ -56,3 +56,104 @@ defineProps({
     </div>
   </div>
 </template>
+
+<style>
+/* Lesson 7 (Expedition Log). Colours come from the "dark" theme in
+   src/styles/themes.css (--exp-* variables). Not scoped: rules reach into
+   slotted / child content. */
+
+.mission-window {
+  --border-colour: var(--mission-border);
+
+  width: min(920px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 3px solid var(--mission-border);
+  border-radius: 20px;
+  background: var(--mission-bg);
+  color: var(--mission-text);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
+  animation: border-pulse 3s ease-in-out infinite;
+}
+
+.mission-window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 13px;
+  background: var(--mission-bg-alt);
+  border-bottom: 3px solid var(--mission-border);
+}
+
+.mission-window-bar strong {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.window-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.window-dots span {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--mission-border);
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.window-dots span:nth-child(2) {
+  background: var(--yellow);
+}
+.window-dots span:nth-child(3) {
+  background: var(--orange);
+}
+
+.mission-window-body {
+  padding: 24px;
+}
+
+.mission-window h3 {
+  margin: 0 0 7px;
+  color: var(--mission-text);
+  font-size: clamp(1.55rem, 3vw, 2.3rem);
+}
+
+.variable-feedback {
+  display: none;
+  gap: 5px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 3px solid var(--charcoal);
+  border-radius: 14px;
+  line-height: 1.45;
+  animation: pop-fade-in 0.5s ease;
+}
+
+.variable-feedback {
+  color: var(--charcoal);
+}
+
+.ball-pair-feedback-title {
+  font-weight: 800;
+}
+
+.ball-pair-feedback-text {
+  color: var(--muted);
+}
+
+.mission-stage {
+  display: none;
+}
+
+.stage-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+</style>

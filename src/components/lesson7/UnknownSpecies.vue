@@ -27,7 +27,7 @@ const props = defineProps({
 const emit = defineEmits(["find-another"]);
 
 const SONAR_SWEEP_SECONDS = 5;
-const SWIM_AWAY_SECONDS = 1; // --swim-away-duration in lesson5.css
+const SWIM_AWAY_SECONDS = 1; // --swim-away-duration in the styles below
 const TRACKING_MS = 1150;
 const CAPTURE_MS = 900;
 
@@ -340,3 +340,454 @@ defineExpose({ clearTimers });
     </div>
   </div>
 </template>
+
+<style>
+/* Lesson 7 (Expedition Log). Colours come from the "dark" theme in
+   src/styles/themes.css (--exp-* variables). Not scoped: rules reach into
+   slotted / child content. */
+
+/* ---------- Mission 5: unknown-species finale ---------- */
+
+.m5-phase[hidden] {
+  display: none !important;
+}
+
+.m5-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 3px solid var(--mission-border);
+  border-radius: 20px;
+  background: var(--mission-bg-alt);
+  box-shadow: 0 5px 0 var(--mission-shadow);
+}
+
+.m5-status-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border: 2px solid var(--charcoal);
+  border-radius: 12px;
+  background: var(--soft-blue);
+  color: var(--charcoal);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.m5-status-light {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(0, 199, 122, 0.14);
+  vertical-align: -1px;
+}
+
+.sonar-layout {
+  display: grid;
+  grid-template-columns: minmax(350px, 1.15fr) minmax(230px, 0.85fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.sonar-radar {
+  position: relative;
+  width: min(520px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 4px solid var(--exp-cyan);
+  border-radius: 50%;
+  background:
+    linear-gradient(rgba(57, 211, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 211, 255, 0.08) 1px, transparent 1px),
+    radial-gradient(circle, rgba(57, 211, 255, 0.14) 0 2px, transparent 3px),
+    radial-gradient(circle at center, #073f52 0%, #04273a 48%, #021421 100%);
+  background-size:
+    36px 36px,
+    36px 36px,
+    100% 100%,
+    100% 100%;
+  box-shadow:
+    inset 0 0 40px rgba(57, 211, 255, 0.2),
+    0 0 0 5px rgba(57, 211, 255, 0.08);
+}
+
+.sonar-radar::before,
+.sonar-radar::after {
+  content: "";
+  position: absolute;
+  inset: 16.66%;
+  border: 1px solid rgba(117, 221, 232, 0.38);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sonar-radar::after {
+  inset: 33.33%;
+}
+
+.sonar-crosshair-x,
+.sonar-crosshair-y {
+  position: absolute;
+  z-index: 1;
+  background: rgba(117, 221, 232, 0.26);
+  pointer-events: none;
+}
+
+.sonar-crosshair-x {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+}
+
+.sonar-crosshair-y {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+}
+
+.sonar-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 314deg,
+    rgba(69, 244, 211, 0.03) 318deg,
+    rgba(69, 244, 211, 0.36) 352deg,
+    rgba(117, 221, 232, 0.75) 359deg,
+    transparent 360deg
+  );
+  animation: sonar-sweep 3.4s linear infinite;
+  pointer-events: none;
+}
+
+.sonar-centre {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 10px;
+  height: 10px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--exp-cyan);
+  box-shadow: 0 0 16px var(--exp-cyan);
+  pointer-events: none;
+}
+
+.sonar-contact {
+  position: absolute;
+  left: var(--contact-x);
+  top: var(--contact-y);
+  z-index: 5;
+  width: 28px;
+  height: 28px;
+  translate: -50% -50%;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sonar-contact::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--soft-yellow);
+  box-shadow:
+    0 0 8px var(--yellow),
+    0 0 18px rgba(255, 205, 29, 0.85);
+  animation: sonar-contact-pulse 1.7s ease-in-out infinite;
+  animation-delay: var(--contact-delay, 0s);
+}
+
+.sonar-contact::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(255, 240, 168, 0.5);
+  border-radius: 50%;
+  animation: sonar-ring-pulse 1.7s ease-out infinite;
+  animation-delay: var(--contact-delay, 0s);
+}
+
+.sonar-contact:hover::before,
+.sonar-contact:focus-visible::before {
+  inset: 5px;
+  background: white;
+}
+
+.sonar-instructions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px;
+  border: 3px solid var(--charcoal);
+  border-radius: 18px;
+  background: var(--soft-blue);
+  color: var(--charcoal);
+}
+
+.sonar-instructions h4 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+
+.sonar-instructions p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.sonar-legend {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px dashed rgba(48, 51, 47, 0.26);
+  color: var(--charcoal);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+/* Sonar sweep + contact reveal */
+.sonar-sweep,
+.sonar-contact::before,
+.sonar-contact::after {
+  animation: none;
+}
+
+.sonar-contact::before,
+.sonar-contact::after {
+  opacity: 0;
+}
+
+/* Restarted together by JS so contacts stay synchronised with the sweep */
+.sonar-radar.sonar-active .sonar-sweep {
+  animation: sonar-sweep 5s linear infinite;
+}
+
+.sonar-radar.sonar-active .sonar-contact::before {
+  animation: sonar-contact-hit 5s linear infinite;
+  animation-delay: var(--contact-reveal-delay, 0s);
+}
+
+.sonar-radar.sonar-active .sonar-contact::after {
+  animation: sonar-ring-hit 5s linear infinite;
+  animation-delay: var(--contact-reveal-delay, 0s);
+}
+
+.tracking-card {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 16px;
+  text-align: center;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(57, 211, 255, 0.16),
+      transparent 14rem
+    ),
+    #031827;
+  color: white;
+}
+
+.tracking-spinner {
+  width: 92px;
+  height: 92px;
+  border: 8px solid rgba(117, 221, 232, 0.16);
+  border-top-color: var(--exp-cyan);
+  border-radius: 50%;
+  animation: mission5-spin 0.85s linear infinite;
+}
+
+.tracking-card h4,
+.tracking-card p {
+  margin: 0;
+}
+
+.tracking-card p {
+  color: var(--exp-muted);
+}
+
+.creature-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.75fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.creature-feed {
+  position: relative;
+  min-height: 390px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 4px solid var(--exp-cyan);
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 50% 36%,
+      rgba(57, 211, 255, 0.18),
+      transparent 12rem
+    ),
+    linear-gradient(180deg, #082d48, #020b14);
+  box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.38);
+}
+
+.creature-feed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 5px,
+    rgba(255, 255, 255, 0.025) 6px
+  );
+}
+
+.creature-feed img {
+  --swim-away-duration: 1s;
+
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 390px;
+  object-fit: contain;
+  padding: 14px;
+  filter: saturate(0.92) contrast(1.04);
+  animation: creature-feed-in 0.55s ease-out;
+}
+
+.live-badge,
+.image-captured-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  padding: 7px 10px;
+  border: 2px solid white;
+  border-radius: 999px;
+  background: rgba(0, 199, 122, 0.88);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.image-captured-badge {
+  background: rgba(255, 109, 58, 0.94);
+}
+
+.camera-side-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  border: 3px solid var(--mission-border);
+  border-radius: 18px;
+  background: var(--mission-bg-alt);
+  color: var(--mission-text);
+}
+
+/* Observation GIF swims off to the left when the 10 second window ends */
+.creature-feed img.swim-away {
+  animation: creature-swim-away var(--swim-away-duration) ease-in forwards;
+}
+
+.creature-feed img.gone {
+  visibility: hidden;
+}
+
+.camera-side-card h4 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+}
+
+.camera-side-card p {
+  margin: 0 0 14px;
+  color: var(--mission-muted);
+  line-height: 1.55;
+}
+
+.capture-button {
+  width: 100%;
+  --background-colour: var(--blue);
+  color: var(--charcoal) !important;
+  font-size: 1rem;
+}
+
+.capture-button::before {
+  content: "📷";
+}
+
+.drawing-mission-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(260px, 0.82fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.drawing-instructions-card {
+  padding: 20px;
+  border: 3px solid var(--charcoal);
+  border-radius: 18px;
+  background: var(--soft-yellow);
+  color: var(--charcoal);
+}
+
+.drawing-instructions-card h4 {
+  margin: 0 0 8px;
+  font-size: 1.22rem;
+}
+
+.drawing-instructions-card p {
+  margin: 0 0 12px;
+  color: var(--charcoal);
+  line-height: 1.55;
+}
+
+.drawing-finish-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 13px 14px;
+  border: 2px solid var(--mission-border);
+  border-radius: 14px;
+  background: var(--mission-bg-alt);
+  color: var(--mission-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (max-width: 1280px) {
+  .creature-feed img {
+    height: 330px;
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 1100px) {
+  .sonar-layout {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
