@@ -554,3 +554,60 @@ defineExpose({ reset });
   }
 }
 </style>
+
+<style>
+/* Moved from styles/lesson3_styles/lesson3.css. Not scoped: some rules style child components' content. */
+
+.custom-table-note {
+  margin: 0 0 7px !important;
+  padding: 0 12px;
+  align-self: flex-end;
+
+  color: var(--charcoal);
+  background-color: var(--soft-orange);
+  border: 2px solid var(--orange);
+  border-left: 7px solid var(--orange);
+  border-radius: 10px;
+
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/*
+  A full sentence inside the note box. The label above it
+  is short enough to read in capitals; this is not, so it
+  keeps normal sentence case.
+*/
+.custom-table-note-detail {
+  margin-top: 4px;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ---------- Student heading / label text fields ---------- */
+
+.table-text-input {
+  min-height: 46px;
+  padding: 9px 11px;
+
+  font-weight: 600;
+}
+
+.table-text-input::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+/* Dependent-variable heading */
+.table-heading-input {
+  max-width: 430px;
+  margin-inline: auto;
+
+  background: var(--paper);
+}
+</style>

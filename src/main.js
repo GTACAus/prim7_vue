@@ -54,7 +54,6 @@ const routes = [
     meta: {
       stylesheets: [
         "/styles/drag_and_drop_base.css",
-        "/styles/lesson3_styles/lesson3.css",
         "/styles/variable-activity.css",
       ],
     },
@@ -65,7 +64,6 @@ const routes = [
     meta: {
       backHref: "/lesson3",
       backLabel: "Lesson 3",
-      stylesheets: ["/styles/lesson3_styles/lesson3.css"],
     },
     component: () => import("./views/Lesson4View.vue"),
   },
@@ -74,7 +72,6 @@ const routes = [
     meta: {
       stylesheets: [
         "/styles/drag_and_drop_base.css",
-        "/styles/lesson4_styles/spotlight-game.css",
       ],
     },
     component: () => import("./views/Lesson5View.vue"),

@@ -569,3 +569,436 @@ const choices = [
   pointer-events: auto;
 }
 </style>
+
+<style>
+/* Moved from styles/lesson3_styles/lesson3.css. Not scoped: some rules style child components' content. */
+
+#yeast-labels .average-heading {
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
+}
+
+/* ==================================================
+   LESSON 3 - DRAG AND DROP TABLE ACTIVITY
+   ================================================== */
+
+/* ---------- Step 2: watch repeat tests ---------- */
+
+.yeast-results-step {
+  display: none;
+
+  margin: 0 0 10px;
+  padding: 20px 22px;
+
+  background: var(--soft-blue);
+
+  border: 2px solid var(--charcoal);
+  border-radius: 18px;
+}
+
+/* step 2 is shown once the labels are placed: see YeastResultsTable.vue */
+.yeast-results-step--initial {
+  display: block;
+}
+
+.yeast-results-step-heading {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  margin-bottom: 8px;
+}
+
+.yeast-results-step-heading > span {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  padding: 8px 15px;
+
+  background: var(--blue);
+
+  border: 2px solid var(--charcoal);
+  border-radius: 999px;
+
+  font-weight: 700;
+}
+
+.yeast-results-eyebrow {
+  margin: 0 0 2px;
+
+  color: var(--purple);
+
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.yeast-results-step h3 {
+  margin: 0;
+}
+
+.yeast-results-instruction {
+  margin: 0 0 16px 48px;
+
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.yeast-results-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 12px;
+
+  margin-left: 48px;
+}
+
+.yeast-results-video-grid .watch-video-button {
+  justify-content: center;
+}
+
+@media (max-width: 700px) {
+  .yeast-results-video-grid {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+  .yeast-results-instruction {
+    margin-left: 0;
+  }
+}
+
+#yeastActivity {
+  display: grid;
+  grid-template-columns: clamp(10rem, 15vw, 15rem) 1fr;
+  grid-template-rows: auto auto auto auto;
+  gap: 10px;
+}
+
+#yeastLabelBank {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.yeast-table-card {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+#yeastLabelFeedback {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+#labelsCompleteAfterContainer {
+  display: flex;
+  gap: 10px;
+  grid-column: 1 / -1;
+  grid-row: 4;
+}
+
+#yeastLabelsStopAndCheck {
+  flex: 1;
+}
+
+#repeat-tests-average-intro[hidden] {
+  display: none;
+}
+
+#repeat-tests-average-intro {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+
+  margin: 10px 0 10px;
+  padding: 20px 22px;
+
+  background: var(--soft-blue);
+
+  border: 2px solid var(--charcoal);
+  border-radius: 18px;
+}
+
+#repeat-tests-average-intro h3 {
+  margin: 0;
+}
+
+/* ---------- Label bank ---------- */
+
+#yeast-labels .table-label-bank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  grid-row: 1;
+
+  gap: 12px;
+
+  min-height: 0;
+  height: 100%;
+  margin: 0 0 22px;
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  background: linear-gradient(
+    to bottom,
+    var(--paper) 0%,
+    var(--paper) 55%,
+    var(--soft-blue) 160%
+  );
+
+  border: 3px solid var(--line);
+  border-radius: 20px;
+
+  box-shadow: var(--shadow-small);
+}
+
+/* ---------- Draggable labels ----------
+   Behaviour (ghost, hover, reject) comes from styles/drag_and_drop_base.css;
+   only the look is set here. */
+
+#yeastActivity {
+  --dd-accent: var(--purple);
+  --dd-slot-hover-bg: var(--soft-purple);
+  --dd-reject: var(--orange);
+  --dd-ghost-scale: 1.05;
+  --dd-ghost-rotate: 0deg;
+}
+
+.drag-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 48px;
+  padding: 10px 18px;
+
+  background: var(--paper);
+  color: var(--text);
+
+  border: 2px solid var(--line);
+  border-top: 5px solid var(--blue);
+  border-radius: 14px;
+
+  box-shadow: 0 3px 0 rgba(48, 51, 47, 0.16);
+
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+#yeast-labels .drag-label:hover {
+  background: var(--soft-blue);
+}
+
+/* ---------- Drop zones ---------- */
+
+#yeast-labels .label-drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 54px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+
+  background: rgba(255, 255, 255, 0.38);
+  color: var(--charcoal);
+
+  border: 2px dashed var(--charcoal);
+  border-radius: 6px;
+
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  font-weight: 600;
+  line-height: 1.25;
+
+  text-transform: none;
+
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+/* ---------- Dependent-variable drop area ---------- */
+
+#yeast-labels .drop-heading {
+  padding: 10px 14px;
+}
+
+#yeast-labels .dependent-heading .label-drop-zone {
+  min-height: 48px;
+
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+
+  border-color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---------- Completion feedback ---------- */
+
+#yeast-labels .table-activity-feedback {
+  margin-top: 20px;
+  padding: 16px 18px;
+  text-align: center;
+}
+
+#yeast-labels .table-activity-feedback strong {
+  margin-bottom: 4px;
+  font-size: 1.05rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  #yeastActivity {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+  #yeastLabelBank,
+  .yeast-table-card,
+  #yeastLabelFeedback,
+  .lesson3-reset-container,
+  #labelsCompleteAfterContainer {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  #yeast-labels .table-label-bank {
+    padding: 14px;
+    gap: 9px;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  #yeast-labels .drag-label {
+    padding: 9px 13px;
+  }
+}
+
+/* ---------- Success ---------- */
+
+.table-activity-feedback.feedback-success {
+  background: var(--soft-green);
+  border-color: var(--green);
+}
+
+.average-worked-example {
+  margin-top: 20px;
+  padding: 20px 22px;
+
+  background: var(--paper);
+
+  border: 2px solid var(--charcoal);
+  border-left: 8px solid var(--blue);
+  border-radius: 16px;
+}
+
+.average-example-label {
+  margin: 0 0 12px;
+
+  color: var(--purple);
+
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.average-worked-example > p:not(.average-example-label) {
+  margin: 0 0 12px;
+}
+
+.average-example-steps {
+  padding: 16px 18px;
+
+  background: white;
+
+  border: 2px solid var(--charcoal);
+  border-radius: 12px;
+}
+
+.average-example-steps p {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.average-example-steps p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Upper-primary fraction notation ---------- */
+
+.average-example-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 18px;
+}
+
+.average-equation {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  min-height: 54px;
+
+  font-size: 1.05rem;
+}
+
+.average-equation-left {
+  min-width: 92px;
+
+  text-align: right;
+}
+
+.math-fraction {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  min-width: 220px;
+
+  text-align: center;
+  vertical-align: middle;
+}
+
+.math-numerator {
+  padding: 0 10px 5px;
+
+  border-bottom: 2px solid var(--charcoal);
+}
+
+.math-denominator {
+  padding: 5px 10px 0;
+}
+
+.average-equation-result {
+  font-size: 1.15rem;
+}
+
+.average-equation-result strong {
+  padding: 6px 12px;
+
+  background: var(--soft-green);
+
+  border-radius: 8px;
+}
+
+@media (max-width: 520px) {
+  .average-equation {
+    font-size: 0.95rem;
+  }
+  .average-equation-left {
+    min-width: 72px;
+  }
+  .math-fraction {
+    min-width: 180px;
+  }
+}
+</style>
