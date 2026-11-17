@@ -5,8 +5,7 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
 import "./styles/themes.css";
-// classroom language filter: loads the word list and puts window.getValidStudentInput() etc.
-// in place for the plain scripts that still need them
+// classroom language filter: start loading the word list straight away
 import "./composables/useClassroomLanguageFilter.js";
 
 // Each page is a view. Links between pages are plain absolute paths (e.g. /lesson4)

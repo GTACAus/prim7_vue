@@ -4,7 +4,7 @@
   removable answer") that together make one activity: See / Think / Wonder
   columns, a sticky-note brainstorm, short written answers, numeric table cells.
 
-    <InputResponse id="myActivity" data-tr-min-total="4" @change="...">
+    <InputResponse ref="results" data-tr-min-total="4" @change="...">
       <ResponseBox group-key="see" :min="1" ... />
       <ResponseBox group-key="think" :min="1" ... />
     </InputResponse>
@@ -13,40 +13,27 @@
   <StudentEntry>, which does the typing, the language filter and the delete
   buttons.
 
-  Completeness (data-activity-complete, which a section's Next button watches):
+  Complete (for the section's Next button) when:
     - data-tr-min-total="N" on the root: N answers across every group, or
-    - each group needs its own min answers; if no group sets one the activity
-      is always complete.
-    - a group with a right answer must also hold a correct answer.
+    - each group has its own min answers; if no group sets one the activity
+      is always complete,
+    - and every group with a right answer holds a correct answer.
 
-  Page scripts reach it as getActivity(id), same as every activity:
-    getAnswers() -> { groupKey: [answers...] }     getAnswer(key) -> first answer or null
-    restore(map)  reset()  isCorrect()
-    options.onChange(answers) and the "ir:change" event fire whenever answers change.
+  @change(answers) fires whenever answers change: { groupKey: [answers...] }.
+  Exposes getAnswers(), getAnswer(key), reset(), isCorrect() and complete.
+  The answers are saved through <Activity :state>.
 */
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  reactive,
-  ref,
-  useAttrs,
-  watch,
-} from "vue";
+import { computed, onMounted, provide, reactive, ref, useAttrs, watch } from "vue";
 import Activity from "./Activity.vue";
-import { ActivityBase } from "./legacyActivity.js";
-import ResponseBox from "./ResponseBox.vue";
 
-const props = defineProps({
+defineProps({
   tag: { type: String, default: "div" },
-  options: { type: Object, default: () => ({}) },
 });
 
+const emit = defineEmits(["change"]);
+
 const attrs = useAttrs();
-const root = ref(null);
 const groups = reactive([]);
-let activity = null;
 let ready = false;
 
 // Saved through <Activity :state> when inside a <Section>: { groupKey: [answers] }.
@@ -111,10 +98,10 @@ function getAnswers() {
   return result;
 }
 
-function restore(saved) {
-  saved = saved || {};
+function restore(answers) {
+  answers = answers || {};
   groups.forEach((group) => {
-    group.answers = [...((group.key && saved[group.key]) || [])];
+    group.answers = [...((group.key && answers[group.key]) || [])];
   });
 }
 
@@ -122,48 +109,25 @@ function reset() {
   groups.forEach((group) => group.clear());
 }
 
-watch(complete, (isComplete) => activity?.setComplete(isComplete));
-
 // answers changed (typed, deleted, restored or reset)
 watch(
   () => groups.map((group) => group.answers.join("\u0001")).join("\u0002"),
   () => {
     if (!ready) return;
-
     const answers = getAnswers();
     savedAnswers.value = answers;
-    if (typeof activity.options.onChange === "function")
-      activity.options.onChange(answers);
-    root.value?.$el.dispatchEvent(
-      new CustomEvent("ir:change", { detail: { answers }, bubbles: true }),
-    );
+    emit("change", answers);
   },
 );
 
 onMounted(() => {
   if (pendingRestore) restore(pendingRestore);
-
-  activity = new ActivityBase(root.value?.$el, { ...props.options });
-
-  Object.assign(activity, {
-    getAnswers,
-    getAnswer: (key) => getAnswers()[key]?.[0] ?? null,
-    restore,
-    reset,
-    isCorrect: () => allCorrect.value,
-  });
-
-  activity.setComplete(complete.value);
   ready = true;
 });
 
-onBeforeUnmount(() => {
-  activity = null;
-});
-
 defineExpose({
-  getActivity: () => activity,
   getAnswers,
+  getAnswer: (key) => getAnswers()[key]?.[0] ?? null,
   reset,
   isCorrect: () => allCorrect.value,
   complete,
@@ -173,7 +137,6 @@ defineExpose({
 <template>
   <Activity
     :tag="tag"
-    ref="root"
     :complete="complete"
     :state="saved"
     @restore="pendingRestore = $event.answers"

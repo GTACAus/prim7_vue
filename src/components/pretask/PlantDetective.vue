@@ -142,7 +142,6 @@ function choose(action) {
 }
 
 startGame();
-document.title = "Plant Needs Game";
 
 onBeforeUnmount(() => {
   clearTimeout(nextTimer);

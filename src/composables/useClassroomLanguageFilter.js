@@ -9,9 +9,7 @@
   ready    true once the list has loaded (answers are refused until then)
   loading  true while it is loading (disable inputs, set aria-busy)
 
-  The plain scripts that still exist (activity classes, lesson 3B/4/5 code) call
-  the same filter through window.getValidStudentInput() and friends, which are
-  installed at the bottom of this file.
+  Importing this file starts loading the list straight away (main.js does).
 */
 import { ref } from 'vue'
 
@@ -72,9 +70,6 @@ async function load() {
       .filter(Boolean)
 
     ready.value = true
-
-    // saved answers wait on this (lesson_progress.js)
-    document.dispatchEvent(new Event('language-filter-ready'))
   } catch (error) {
     ready.value = false
     console.error('Classroom language filter failed to load:', error)
@@ -122,56 +117,8 @@ function showBlockedLanguageFeedback(input) {
 export function useClassroomLanguageFilter() {
   if (!loadPromise) loadPromise = load()
 
-  return { ready, loading, containsProfanity, showBlockedLanguageFeedback, getValidStudentInput }
+  return { ready, loading, containsProfanity, showBlockedLanguageFeedback }
 }
-
-/* ---------- for the plain scripts that are not components yet ---------- */
 
 useClassroomLanguageFilter() // start loading as soon as this file is imported
 
-/* Read and validate a text input / textarea: the cleaned text, or null when it is
-   empty, blocked, or the list has not loaded yet. */
-function getValidStudentInput(input) {
-  if (!input) return null
-
-  if (!input.matches('input[type="text"], textarea')) {
-    console.warn('getValidStudentInput received an unsupported element:', input)
-    return null
-  }
-
-  if (!ready.value) {
-    console.warn('Student input was checked before the language filter finished loading.')
-    input.focus()
-    return null
-  }
-
-  const value = input.value.trim()
-
-  if (value === '') {
-    input.focus()
-    return null
-  }
-
-  if (containsProfanity(value)) {
-    showBlockedLanguageFeedback(input)
-    return null
-  }
-
-  return value
-}
-
-/* Text for a live preview: an empty string when empty, blocked or not loaded. */
-function getSafeStudentPreviewValue(input) {
-  const value = input ? input.value.trim() : ''
-
-  if (value === '' || !ready.value || containsProfanity(value)) return ''
-
-  return value
-}
-
-Object.assign(window, {
-  containsProfanity,
-  showBlockedLanguageFeedback,
-  getValidStudentInput,
-  getSafeStudentPreviewValue,
-})

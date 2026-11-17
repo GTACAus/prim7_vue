@@ -4,7 +4,7 @@
   Items are dragged from a tray into drop slots. The layout around them is
   entirely up to the page: <DropSlot>s and <DragItem>s can sit anywhere inside.
 
-    <DragDrop id="myActivity" strict v-slot="{ done, trayEmpty }" @change="...">
+    <DragDrop strict v-slot="{ done, trayEmpty, reset }" @change="...">
       <p>The <DropSlot name="a" answer="beaker" /> holds the water.</p>
       <DropSlot name="b" answer="flask jug">Drop label</DropSlot>   <!-- content shows while empty -->
 
@@ -15,7 +15,7 @@
       </div>
 
       <p v-if="done">Well done!</p>
-      <button data-reset-trigger>Start over</button>
+      <button type="button" @click="reset">Start over</button>
     </DragDrop>
 
   State lives here: which item is in which slot (placements). A <DragItem>
@@ -38,16 +38,15 @@
   answer is correct. The placements are saved through <Activity :state>.
 
   Slot props: { done, filled, correct, trayEmpty, placements, reset }.
-  Events: change(placements), incorrect({ item, slot }). A "dd:change" DOM event
-  also fires on the root for the plain save scripts (lesson_progress.js).
-  getActivity(id) adds getPlacements() / setPlacements(map) / isCorrect().
+  Events: change(placements), incorrect({ item, slot }).
+  Exposes getPlacements(), setPlacements(map), isCorrect(), reset() and done.
 
   Interaction: drag with mouse/touch/pen, or click/tap an item then a slot, or
   keyboard (Enter/Space to pick up and drop, Delete/Backspace sends a placed
   item back, Escape cancels). Dropping on an occupied slot swaps; dropping
   anywhere else returns the item to the tray.
 */
-import { computed, nextTick, provide, reactive, ref } from 'vue'
+import { computed, provide, reactive, ref } from 'vue'
 import Activity from './Activity.vue'
 
 const props = defineProps({
@@ -128,15 +127,7 @@ const trayEmpty = computed(() =>
 /* ---------- placing ---------- */
 
 function changed() {
-  const snapshot = { ...placements }
-  emit('change', snapshot)
-
-  // after the re-render, so plain scripts reading getActivity(id).isComplete() see the new state
-  nextTick(() =>
-    activity.value?.$el.dispatchEvent(
-      new CustomEvent('dd:change', { detail: { placements: snapshot }, bubbles: true })
-    )
-  )
+  emit('change', { ...placements })
 }
 
 function rejects(slot, item, from) {

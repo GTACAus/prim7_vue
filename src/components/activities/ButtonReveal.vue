@@ -23,11 +23,10 @@
   - reveals="#otherId, .some-class": elements anywhere on the page, for content
     that can't sit inside the slot, shown on press and hidden again on reset.
   - @press fires on every press, to do anything else the page needs.
-  - reset (a [data-reset-trigger] inside it, a section-wide reset button, its
-    depends-on activity being reset, or reset() through a template ref) un-presses it.
+  - reset (the slot's reset, a section-wide reset button, or reset() through a
+    template ref) un-presses it.
   - id, class and data-* attributes fall through to the root element
-    (tag="section" etc. changes the element; default is div). With an id, plain
-    page scripts reach it as getActivity(id).
+    (tag="section" etc. changes the element; default is div).
 */
 import { ref, watch } from "vue";
 import Activity from "./Activity.vue";
