@@ -6,6 +6,9 @@ defineProps({
 
 <template>
   <component :is="tag" class="content-box">
+    <div class="intro-eyebrow">
+      <slot name="eyebrow" />
+    </div>
     <slot />
   </component>
 </template>
@@ -22,5 +25,15 @@ defineProps({
   box-shadow: var(--shadow-medium);
 
   animation: pop-fade-in 0.5s ease;
+}
+.intro-eyebrow {
+  margin: 0 0 7px;
+
+  color: var(--accent-text);
+
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 </style>

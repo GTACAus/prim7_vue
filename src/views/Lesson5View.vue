@@ -213,28 +213,24 @@ const partD = ref(null);
               </span>
             </label>
           </div>
-          <LessonCard class="bar-example-image-card">
-            <template #content>
-              <div class="image-box">
-                <img
-                  :src="IMG + 'blank_bar_graph.png'"
-                  alt="Blank bar graph template showing the parts of a bar graph"
-                />
-              </div>
-            </template>
-          </LessonCard>
-        </div>
-
-        <LessonCard class="bar-example-image-card">
-          <template #content>
-            <div v-for="n in 2" :key="n" class="image-box">
+          <div class="bar-example-image-card">
+            <div class="image-box">
               <img
-                :src="`${IMG}bar_graph_example_${n}.png`"
-                alt="Example of a completed bar graph"
+                :src="IMG + 'blank_bar_graph.png'"
+                alt="Blank bar graph template showing the parts of a bar graph"
               />
             </div>
-          </template>
-        </LessonCard>
+          </div>
+        </div>
+
+        <div class="bar-example-image-card">
+          <div v-for="n in 2" :key="n" class="image-box">
+            <img
+              :src="`${IMG}bar_graph_example_${n}.png`"
+              alt="Example of a completed bar graph"
+            />
+          </div>
+        </div>
       </Section>
 
       <!-- ==================================================
@@ -254,7 +250,7 @@ const partD = ref(null);
               </div>
             </div>
 
-            <p class="diagram-activity project-mission-copy">
+            <ContentBox>
               Your mission: You work for Parks Victoria as a ranger in the
               Toolangi State Forest. You are working with an environmental group
               called <i>Friends of the Leadbeater's Possum</i>.
@@ -263,7 +259,7 @@ const partD = ref(null);
                 living in two forest areas: Site 1 and Site 2</strong
               >. A survey the year before recorded a family of Leadbeater's
               Possums living at each site.
-            </p>
+            </ContentBox>
 
             <div class="project-species-layout">
               <div class="project-species-copy">
@@ -382,22 +378,22 @@ const partD = ref(null);
               class="variable-type-grid"
               aria-label="Variables in the Site 1 and Site 2 fair test"
             >
-              <article class="variable-type-card independent">
-                <p class="intro-eyebrow">Change</p>
+              <ContentBox class="variable-type-card independent">
+                <template #eyebrow>Change</template>
                 <h3>Independent variable</h3>
                 <p>
                   Compare numbers of 5 different animals at Site 1 and Site 2.
                 </p>
-              </article>
+              </ContentBox>
 
-              <article class="variable-type-card dependent">
-                <p class="intro-eyebrow">Measure</p>
+              <ContentBox class="variable-type-card dependent">
+                <template #eyebrow>Measure</template>
                 <h3>Dependent variable</h3>
                 <p>Measure the number of each animal.</p>
-              </article>
+              </ContentBox>
 
-              <article class="variable-type-card controlled">
-                <p class="intro-eyebrow">Keep the same</p>
+              <ContentBox class="variable-type-card controlled">
+                <template #eyebrow>Keep the same</template>
                 <h3>Controlled variables</h3>
                 <ul>
                   <li>
@@ -418,15 +414,15 @@ const partD = ref(null);
                     count at each site.
                   </li>
                 </ul>
-              </article>
+              </ContentBox>
             </div>
 
-            <div class="diagram-activity lesson4-spaced-block">
+            <ContentBox>
               <p>
                 You start by training your team to recognise these 5 animals at
                 night:
               </p>
-            </div>
+            </ContentBox>
 
             <div
               class="project-animal-grid"

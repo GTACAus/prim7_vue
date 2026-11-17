@@ -438,11 +438,6 @@
   background: var(--soft-orange);
 }
 
-.project-mission-copy {
-  margin: 10px 0 14px;
-  line-height: 1.55;
-}
-
 .project-site-card {
   display: flex;
   flex-direction: column;
