@@ -58,7 +58,6 @@ defineExpose({ pressed });
   position: relative;
   grid-column: 1 / -1;
   margin-top: 15px;
-  margin-right: 20%;
   background-color: var(--soft-green);
   border-radius: 16px;
   padding: 10px 15px;
@@ -98,6 +97,9 @@ defineExpose({ pressed });
   color: var(--text);
   font-weight: 600;
   grid-column: 1 / -1;
+
+  --background-active: var(--mint);
+  --color-active: var(--text);
 }
 
 .stop-and-check-button[hidden] {
@@ -133,12 +135,7 @@ defineExpose({ pressed });
 }
 
 .stop-and-check img {
-  position: absolute;
   align-self: center;
-  right: 0;
-  top: 0;
-  max-width: 100%;
-  max-height: 100%;
-  opacity: 0.2;
+  width: clamp(150px, 20vw, 200px);
 }
 </style>
