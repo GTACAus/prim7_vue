@@ -715,10 +715,9 @@ onBeforeUnmount(() => {
 <template>
   <main class="page">
     <header class="lesson-heading">
-      <h1 id="hero">
-        <span>Science Inquiry Lab</span>
-        <span>starts here</span>
-      </h1>
+      <div id="hero">
+        <img src="../images/index/title.png" alt="Science Inquiry Lab" />
+      </div>
     </header>
 
     <section class="carousel" aria-label="Choose a lesson">
@@ -754,9 +753,12 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-body {
+:global(body) {
   min-height: 100vh;
-  background: radial-gradient(ellipse at 50% 48%, #fffdf4 0, var(--cream) 68%);
+  /* background: radial-gradient(ellipse at 50% 48%, #fffdf4 0, var(--cream) 68%); */
+  background-image: url("../images/index/background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .page {
   box-sizing: border-box;
@@ -775,9 +777,9 @@ body {
   align-self: center;
 }
 #hero {
-  display: inline-flex;
-  flex-direction: column;
+  display: flex;
   align-items: center;
+  justify-content: center;
   margin: 0;
   padding: 0;
   border: 0;
@@ -785,19 +787,12 @@ body {
   box-shadow: none;
   user-select: none;
 }
-#hero span:first-child {
-  color: var(--text);
-  font-size: clamp(3rem, 4vw, 5rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
+
+#hero img {
+  width: 40%;
+  transform: rotate(90deg);
 }
-#hero span:last-child {
-  color: var(--purple);
-  font-size: clamp(1rem, 1.5vw, 2rem);
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
+
 .carousel {
   position: relative;
   display: grid;
