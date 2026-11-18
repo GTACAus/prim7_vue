@@ -56,9 +56,7 @@ const TESTS = 3;
 // one array of answers per box (StudentEntry v-model); max one answer each
 const entries = reactive({
   iv: [],
-  ivUnits: [],
   dv: [],
-  dvUnits: [],
   avgHard: [],
   avgSoft: [],
 });
@@ -190,10 +188,18 @@ defineExpose({ reset });
 
     <div class="data-table-card bounce-table-card">
       <div class="custom-table-note">
-        <p>Number boxes only accept numbers.</p>
+        <p>How to fill in the table</p>
         <p class="custom-table-note-detail">
-          The variables in this experiment have no units, so you can leave the
-          units boxes empty.
+          1. Type the <strong>independent variable</strong> (what is being
+          changed) in the left box.
+        </p>
+        <p class="custom-table-note-detail">
+          2. Type the <strong>dependent variable</strong> (what is being
+          measured) in the top box.
+        </p>
+        <p class="custom-table-note-detail">
+          3. Write what you changed in each row. Then type the results from
+          each test. The number boxes only take numbers.
         </p>
       </div>
 
@@ -215,15 +221,9 @@ defineExpose({ reset });
                     input-class="table-text-input axis-text-input"
                     list-class="table-result-list"
                   />
-                  <StudentEntry
-                    v-model:answers="entries.ivUnits"
-                    :max="1"
-                    :maxlength="15"
-                    placeholder="Units"
-                    aria-label="Independent variable units"
-                    input-class="table-text-input table-units-input"
-                    list-class="table-result-list"
-                  />
+                  <span class="no-units-box" aria-label="Units: no units required"
+                    >(No units)</span
+                  >
                 </div>
               </th>
 
@@ -238,15 +238,9 @@ defineExpose({ reset });
                     input-class="table-text-input table-heading-input"
                     list-class="table-result-list"
                   />
-                  <StudentEntry
-                    v-model:answers="entries.dvUnits"
-                    :max="1"
-                    :maxlength="15"
-                    placeholder="Units"
-                    aria-label="Dependent variable units"
-                    input-class="table-text-input table-units-input"
-                    list-class="table-result-list"
-                  />
+                  <span class="no-units-box" aria-label="Units: no units required"
+                    >(No units)</span
+                  >
                 </div>
               </th>
             </tr>
@@ -494,6 +488,51 @@ defineExpose({ reset });
 .bounce-table-card .independent-value :deep(.table-text-input),
 .bounce-table-card :deep(.axis-text-input) {
   min-height: 52px;
+}
+
+/* units box: fixed text, nothing to type (these variables have no units) */
+.no-units-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 9px 11px;
+  box-sizing: border-box;
+
+  background: var(--paper);
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+
+  color: var(--muted);
+  font-weight: 600;
+  cursor: default;
+  user-select: none;
+}
+
+/* dependent variable: smaller units box to the side of the heading box */
+.bounce-dependent .table-heading-fields {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bounce-dependent .table-heading-fields > :first-child {
+  flex: 0 1 430px;
+  min-width: 0;
+  margin-inline: 0;
+}
+
+.bounce-dependent .no-units-box {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.bounce-table-card .custom-table-note {
+  background-color: var(--paper);
 }
 
 .bounce-table-card .reset-button-container {

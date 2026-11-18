@@ -208,7 +208,6 @@ defineProps({
   --scale-amount: 0.82;
   z-index: 1;
   cursor: pointer;
-  opacity: 0.62;
 
   transform: translate(-50%, -50%) scale(var(--scale-amount))
     rotateY(var(--rotate-amount));

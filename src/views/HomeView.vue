@@ -758,7 +758,7 @@ onBeforeUnmount(() => {
   /* background: radial-gradient(ellipse at 50% 48%, #fffdf4 0, var(--cream) 68%); */
   background-image: url("../images/index/background.png");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size:;
 }
 .page {
   box-sizing: border-box;

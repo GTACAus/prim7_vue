@@ -40,11 +40,12 @@ const sections = [
   },
 ];
 
-// The intro's three practice steps
-const practiceSteps = [
-  "Plan a fair test",
-  "Collect results into a table",
-  "Use the results to check your prediction",
+// The intro's objectives card
+const objective = "Practice planning a fair test and record results in a table";
+const criteria = [
+  "I can identify variables in a fair test",
+  "I can write a testable question and a reasoned prediction",
+  "I can record results in a table. Then, I can use the results to check my prediction",
 ];
 
 // The student's testable question fills in the prediction table's
@@ -87,24 +88,17 @@ const predictionActivity = ref(null);
         Practice what you have learned by doing a ball bounce experiment
 
         <template #mission>
-          <LessonCard class="objectives-card practice-plan-card">
+          <LessonCard class="objectives-card">
             <template #eyebrow>
-              <p>Put it into practice</p>
+              <p>Learning intention</p>
             </template>
             <template #content>
-              <h2>
-                Practice what you have learned by doing a ball-bounce experiment
-              </h2>
-              <div class="practice-plan">
-                <div
-                  v-for="(step, i) in practiceSteps"
-                  :key="step"
-                  class="lesson4-step-heading practice-plan-step"
-                >
-                  <span>STEP {{ i + 1 }}</span>
-                  <h3>{{ step }}</h3>
-                </div>
-              </div>
+              <p class="learning-objective-text">{{ objective }}</p>
+
+              <p class="success-heading">Success criteria</p>
+              <ol class="objective-list">
+                <li v-for="item in criteria" :key="item">{{ item }}</li>
+              </ol>
             </template>
           </LessonCard>
 
@@ -257,16 +251,11 @@ const predictionActivity = ref(null);
                 <h3>Create your testable question</h3>
               </div>
             </div>
-            <p class="lesson4-step-instruction">
-              Choose a question structure, then enter the
-              <strong>independent variable</strong> and
-              <strong>dependent variable</strong> for your ball-bounce
-              experiment.
-            </p>
             <InvestigationQuestion
               ref="questionActivity"
               name="ball-bounce-question"
               input-type="text"
+              :steps="true"
               @change="question = $event"
             />
             <PredictionTable
@@ -275,6 +264,8 @@ const predictionActivity = ref(null);
               name="ball-bounce-prediction"
               class="pop-in"
               :context="predictionContext"
+              change-label="What is being changed?"
+              measure-label="What is being measured?"
             >
               <template #before>
                 <div
@@ -418,25 +409,6 @@ const predictionActivity = ref(null);
   text-transform: uppercase;
 }
 
-.practice-plan {
-  display: grid;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.practice-plan-step {
-  margin-bottom: 0;
-  padding: 14px 16px;
-
-  background: var(--soft-blue);
-  border: 2px solid var(--charcoal);
-  border-radius: 16px;
-}
-
-.practice-plan-step h3 {
-  margin: 0;
-}
-
 /* ---------- Step cards ---------- */
 
 .lesson4-step-card {
@@ -463,6 +435,20 @@ const predictionActivity = ref(null);
 
 .lesson4-step-card.tests-card {
   border-top: 8px solid var(--mint);
+}
+
+/* tells students the question blanks are for them to fill in */
+.question-fill-instruction {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+
+  background: var(--soft-yellow);
+  border: 2px solid var(--charcoal);
+  border-radius: 12px;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 /* separates the stages inside one card */

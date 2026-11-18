@@ -10,6 +10,9 @@ const props = defineProps({
   measureOptions: { type: Array, default: null },
   showReset: { type: Boolean, default: false },
   context: { type: Object, default: null },
+  // column headings above the change / measure cells
+  changeLabel: { type: String, default: "Change this" },
+  measureLabel: { type: String, default: "Measure this" },
 });
 const emit = defineEmits(["update:context"]);
 const defaults = {
@@ -209,10 +212,10 @@ defineExpose({ reset, setContext, isComplete });
             <span class="cell-sublabel"></span>
           </div>
           <div class="prediction-organiser-cell">
-            <span class="cell-sublabel">Change this</span>
+            <span class="cell-sublabel">{{ changeLabel }}</span>
           </div>
           <div class="prediction-organiser-cell">
-            <span class="cell-sublabel">Measure this</span>
+            <span class="cell-sublabel">{{ measureLabel }}</span>
           </div>
         </div>
 
