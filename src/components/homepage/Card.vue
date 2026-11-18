@@ -259,10 +259,6 @@ defineProps({
     font-size: 0.85rem;
     line-height: 1.25;
   }
-  .lesson-card.is-previous,
-  .lesson-card.is-next {
-    /* width: min(54vw, 250px); */
-  }
   .lesson-card.is-previous {
     left: 20%;
   }

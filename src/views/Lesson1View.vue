@@ -1072,6 +1072,10 @@ ol li::marker {
     grid-template-columns: 1fr;
   }
 
+  .flashcards-learning-grid .testable-card {
+    grid-row: 1;
+  }
+
   #observe-experiment .image-box,
   #observe-experiment .lesson1-stw-box {
     min-height: 0;

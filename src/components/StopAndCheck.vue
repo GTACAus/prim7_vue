@@ -58,6 +58,7 @@ defineExpose({ pressed });
   position: relative;
   grid-column: 1 / -1;
   margin-top: 15px;
+  margin-right: 20%;
   background-color: var(--soft-green);
   border-radius: 16px;
   padding: 10px 15px;
@@ -128,13 +129,15 @@ defineExpose({ pressed });
 .stop-and-check {
   display: grid;
   grid-template-columns: 4fr 1fr;
-  grid-template-rows: auto;
+  grid-template-rows: 1fr;
 }
 
 .stop-and-check img {
+  position: absolute;
   align-self: center;
-  justify-self: center;
-  width: 100%;
+  justify-self: flex-end;
+  max-width: 100%;
+  max-height: 100%;
   opacity: 0.2;
 }
 </style>
