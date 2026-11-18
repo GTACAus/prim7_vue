@@ -196,7 +196,7 @@ const predictionActivity = ref(null);
     <template #sections>
       <ContentBox id="lesson4Sections">
         <h2 id="lesson4Heading">
-          Complete a Scientific Table for the Ball-Bounce Experiment
+          Practice planning a fair test
         </h2>
         <!-- ==================================================
              1. SETUP AND VARIABLES
@@ -206,13 +206,12 @@ const predictionActivity = ref(null);
             <div class="lesson4-step-heading">
               <span>1</span>
               <div>
-                <p class="lesson4-step-eyebrow">Experiment setup</p>
-                <h3>Look at the ball-bounce experiment</h3>
+                <h3>Look at the diagram showing a ball bounce fair test</h3>
               </div>
             </div>
             <p class="lesson4-step-instruction">
               A table tennis ball is dropped from the same height onto two
-              different surfaces. The number of bounces is counted before the
+              different surfaces. The number of bounces is counted until the
               ball stops.
             </p>
             <div class="ball-bounce-setup-image">
@@ -229,8 +228,7 @@ const predictionActivity = ref(null);
             <div class="lesson4-step-heading">
               <span>2</span>
               <div>
-                <p class="lesson4-step-eyebrow">Variables</p>
-                <h3>Identify the variables in the fair test</h3>
+                <h3>Identify the variables in the ball bounce fair test</h3>
               </div>
             </div>
             <p class="lesson4-step-instruction">
@@ -247,10 +245,15 @@ const predictionActivity = ref(null);
             <div class="lesson4-step-heading">
               <span>3</span>
               <div>
-                <p class="lesson4-step-eyebrow">Testable question</p>
-                <h3>Create your testable question</h3>
+                <h3>Write a testable question for this ball bounce experiment</h3>
               </div>
             </div>
+            <p class="lesson4-step-instruction">
+              Click on one of the four sentence structures, then enter the
+              <strong>independent variable</strong> (what is being changed) and
+              <strong>dependent variable</strong> (what is being measured) for
+              your ball-bounce experiment.
+            </p>
             <InvestigationQuestion
               ref="questionActivity"
               name="ball-bounce-question"
@@ -273,13 +276,11 @@ const predictionActivity = ref(null);
                 >
                   <span>4</span>
                   <div>
-                    <p class="lesson4-step-eyebrow">Reasoned prediction</p>
-                    <h3>Make your reasoned prediction</h3>
+                    <h3>Make a reasoned prediction</h3>
                   </div>
                 </div>
                 <p class="lesson4-step-instruction">
-                  Use your testable question to predict what you think will
-                  happen and explain why.
+                  Use this graphic organiser to make a reasoned prediction.
                 </p>
               </template>
             </PredictionTable>
@@ -289,10 +290,11 @@ const predictionActivity = ref(null);
             >
               <div class="repeat-tests-card">
                 <div class="repeat-tests-explanation">
-                  <h3>Why repeat each test 3 times?</h3>
+                  <h3>Why do we repeat a fair test 3 times?</h3>
                   <p>
-                    In a fair test experiment, we repeat each test
-                    <strong>3 times</strong> using the same conditions.
+                    In a fair test, we repeat each test
+                    <strong>3 times</strong> for the soft surface and for the hard
+                    surface.
                   </p>
                   <p>We do this to:</p>
                   <ul>
@@ -303,11 +305,10 @@ const predictionActivity = ref(null);
                   </ul>
                 </div>
                 <div class="repeat-tests-example">
-                  <p class="repeat-tests-label">Example</p>
-                  <h3>Three table tennis-ball bounce tests</h3>
+                  <h3>The student repeated the fair test 3 times.</h3>
                   <p>
-                    Look at the results from three repeats of the same table
-                    tennis-ball test.
+                    Look at the results for three repeats on the soft surface.
+                    Can you spot any mistakes or strange results?
                   </p>
                   <img
                     class="repeat-tests-image"
@@ -319,8 +320,7 @@ const predictionActivity = ref(null);
               <StopAndCheck name="why-repeat-check">
                 <template #content>
                   <p>
-                    Look at the diagram above. A fair test was repeated 3 times
-                    to see how high a table tennis ball bounces on grass.
+                    Look at the diagram above.
                   </p>
                   <p>
                     <strong
@@ -334,11 +334,10 @@ const predictionActivity = ref(null);
                   </p>
                 </template>
                 <template #answer>
-                  Repeating a test helps us check whether the results are
-                  consistent and makes it easier to spot mistakes or unusual
-                  results. If we only used one result, that result might be
-                  unusual or affected by an error, so our conclusion could be
-                  misleading.
+                  Repeating a test helps us to spot mistakes or strange results.
+                  <br />
+                  If we used the first result, it is not accurate. It hit
+                  something hard that made it bounce more.
                 </template>
               </StopAndCheck>
             </div>
@@ -352,8 +351,7 @@ const predictionActivity = ref(null);
             <div class="lesson4-step-heading observation-heading">
               <span>5</span>
               <div>
-                <p class="lesson4-step-eyebrow">Observe the experiment</p>
-                <h3>Watch the ball-bounce tests</h3>
+                <h3>Record results for the ball bounce fair test</h3>
               </div>
             </div>
             <p class="lesson4-step-instruction">

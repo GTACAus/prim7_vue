@@ -67,7 +67,7 @@ const glossary = {
 
 // Sections of the page. Order defines the unlock chain.
 const sections = [
-  { id: "bar-data-preamble", title: "Using bar graphs to view fair test data" },
+  // { id: "bar-data-preamble", title: "Using bar graphs to view fair test data" },
   {
     id: "bar-practice",
     title: "Part A: Help save Leadbeater's possum",

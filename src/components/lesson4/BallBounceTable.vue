@@ -21,6 +21,7 @@ import PredictionCheck from "../activities/PredictionCheck.vue";
 import StudentEntry from "../StudentEntry.vue";
 import Button from "../Button.vue";
 import LessonEndCard from "../LessonEndCard.vue";
+import { openVideo } from "../../composables/useModal.js";
 
 /* ---------- videos ---------- */
 
@@ -159,9 +160,9 @@ defineExpose({ reset });
         <Button
           class="watch-video-button"
           symbol="▶"
-          @click="watchVideo(video)"
+          @click="openVideo(video.src, video.title)"
         >
-          <p>Watch</p>
+          Watch
         </Button>
       </div>
     </div>
@@ -198,8 +199,8 @@ defineExpose({ reset });
           measured) in the top box.
         </p>
         <p class="custom-table-note-detail">
-          3. Write what you changed in each row. Then type the results from
-          each test. The number boxes only take numbers.
+          3. Write what you changed in each row. Then type the results from each
+          test. The number boxes only take numbers.
         </p>
       </div>
 
@@ -221,7 +222,9 @@ defineExpose({ reset });
                     input-class="table-text-input axis-text-input"
                     list-class="table-result-list"
                   />
-                  <span class="no-units-box" aria-label="Units: no units required"
+                  <span
+                    class="no-units-box"
+                    aria-label="Units: no units required"
                     >(No units)</span
                   >
                 </div>
@@ -238,7 +241,9 @@ defineExpose({ reset });
                     input-class="table-text-input table-heading-input"
                     list-class="table-result-list"
                   />
-                  <span class="no-units-box" aria-label="Units: no units required"
+                  <span
+                    class="no-units-box"
+                    aria-label="Units: no units required"
                     >(No units)</span
                   >
                 </div>

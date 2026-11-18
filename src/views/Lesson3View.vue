@@ -307,14 +307,14 @@ const labelsSection = ref(null);
                 symbol="▶"
                 @click="openVideo(key.video, key.videoTitle)"
               >
-                <p>Watch Video</p>
+                Watch Video
               </Button>
               <Button
                 v-if="key.pdf"
                 class="watch-video-button"
                 @click="openPDF(key.pdf, key.pdfTitle)"
               >
-                <p>{{ key.pdfTitle }}</p>
+                {{ key.pdfTitle }}
               </Button>
             </div>
           </div>

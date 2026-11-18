@@ -238,7 +238,7 @@ const choices = [
           symbol="▶"
           @click="watchVideo(video)"
         >
-          <p>Test {{ video.test }}{{ watched[video.test] ? " ✓" : "" }}</p>
+          Test {{ video.test }}{{ watched[video.test] ? " ✓" : "" }}
         </Button>
       </div>
     </div>
