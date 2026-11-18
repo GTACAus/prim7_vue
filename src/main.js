@@ -50,8 +50,7 @@ const routes = [
   },
   {
     path: "/lesson5",
-    meta: {
-    },
+    meta: {},
     component: () => import("./views/Lesson5View.vue"),
   },
   {

@@ -99,6 +99,7 @@ function resetQuestionAndPrediction() {
 }
 import LessonIntro from "../components/LessonIntro.vue";
 import Button from "../components/Button.vue";
+import ContentBox from "../components/ContentBox.vue";
 
 // Learning objective and success criteria shown in the lesson intro
 const objective =
@@ -235,7 +236,7 @@ const sections = [
           image-alt="Bouncing ball investigation showing possible variables"
         >
           <template #intro>
-            <div class="diagram-box diagram-activity">
+            <ContentBox>
               <p class="activity-instruction">
                 The image below shows a mind map for planning a ball bounce
                 <strong>fair test</strong>. The <strong>variables</strong> have
@@ -250,16 +251,16 @@ const sections = [
                 Use the boxes to type in how each varies or can be different.
                 Drop height has been done for you
               </p>
-            </div>
+            </ContentBox>
           </template>
           <template #between>
-            <div class="diagram-box diagram-activity">
+            <ContentBox>
               <p class="activity-instruction">
                 Now record the <strong>variables</strong> for the ball bounce
                 <strong>fair test</strong> in a table. Use the mind map above to
                 help you do this.
               </p>
-            </div>
+            </ContentBox>
           </template>
         </DiscoverVariables>
       </Section>
@@ -267,39 +268,39 @@ const sections = [
           3. VARIABLE TYPES
           ================================================== -->
       <Section name="variable-types">
-        <div class="diagram-box diagram-activity">
+        <ContentBox>
           <p class="activity-instruction">
             In a <strong>fair test</strong>, you change one
             <strong>variable</strong> and measure the effect this causes on
             another <strong>variable</strong>. You keep all other
             <strong>variables</strong> the same.
           </p>
-        </div>
+        </ContentBox>
         <div class="variable-type-grid">
-          <article class="variable-type-card independent">
-            <p class="intro-eyebrow">Change</p>
+          <ContentBox class="variable-type-card independent">
+            <template #eyebrow>Change</template>
             <h3>Independent variable</h3>
             <p>
               Does this <strong>cause</strong> an effect on another
               <strong>variable</strong>?
             </p>
-          </article>
-          <article class="variable-type-card dependent">
-            <p class="intro-eyebrow">Measure</p>
+          </ContentBox>
+          <ContentBox class="variable-type-card dependent">
+            <template #eyebrow>Measure</template>
             <h3>Dependent variable</h3>
             <p>
               To observe the <strong>effect</strong> caused by the thing you
               change.
             </p>
-          </article>
-          <article class="variable-type-card controlled">
-            <p class="intro-eyebrow">Keep the same</p>
+          </ContentBox>
+          <ContentBox class="variable-type-card controlled">
+            <template #eyebrow>Keep the same</template>
             <h3>Controlled variables</h3>
             <p>
               Be sure that the <strong>effect</strong> you measure can only be
               <strong>caused</strong> by the thing you change.
             </p>
-          </article>
+          </ContentBox>
         </div>
         <div class="fair-test-rule">
           We write a testable question to show what is changed and what is

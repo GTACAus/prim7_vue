@@ -138,6 +138,7 @@
 :root[data-theme="dark"] .intro-card {
   border: 3px solid var(--line);
   box-shadow: var(--exp-shadow);
+  background: var(--exp-navy);
 }
 
 :root[data-theme="dark"] .intro-card::before {
@@ -160,6 +161,11 @@
 :root[data-theme="dark"] .formula-step {
   background: var(--exp-teal);
   box-shadow: none;
+}
+
+/* Content box */
+:root[data-theme="dark"] .content-box {
+  background: var(--exp-navy);
 }
 
 /* modals */
