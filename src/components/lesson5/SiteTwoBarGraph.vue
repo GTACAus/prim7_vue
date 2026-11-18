@@ -138,10 +138,9 @@ defineExpose({ barsActive: computed(() => unitDone.value && !barsDone.value) });
     <div class="partc-data-card">
       <span class="challenge-step-label">Survey Results for Site 2</span>
       <p>
-        The survey was conducted over three nights. The average results are
-        shown in Table 2. The averages have already been calculated for this
-        activity. Use the <strong>Average</strong> column when you build each
-        bar.
+        You counted the number of animals at <strong>Site 2</strong> over three
+        nights. The average results are shown in Table 2. Use the
+        <strong>Average</strong> column when you build each bar.
       </p>
 
       <div class="partc-table-wrap">
@@ -323,12 +322,9 @@ defineExpose({ barsActive: computed(() => unitDone.value && !barsDone.value) });
       }"
       @answer="onAnalysisAnswer"
     >
-      <span class="challenge-step-label">Step 4 · Analyse your graph</span>
-      <h3>What does the Site 2 survey show?</h3>
-      <p>
-        Use the graph you constructed. The relevant bars will highlight as you
-        answer.
-      </p>
+      <span class="challenge-step-label"
+        >Step 4 · Analyse your graph for Site 2</span
+      >
     </AnalysisQuestions>
 
     <div v-if="analysisDone" class="partc-complete-card pop-in">
@@ -341,8 +337,10 @@ defineExpose({ barsActive: computed(() => unitDone.value && !barsDone.value) });
       </p>
       <p class="partc-next-hook">
         <strong>You have now graphed Site 1 and Site 2.</strong><br />
-        Next, you can place the two datasets together on a bar graph. This will
-        make it easier to compare data from the two sites.
+        Next, you can place the dar for <strong>site 1</strong> and
+        <strong>site 2</strong> on one bar graph.
+        <br />
+        This will make it easier to compare data from the two sites.
       </p>
     </div>
   </div>

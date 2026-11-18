@@ -783,12 +783,7 @@ defineExpose({ buildActive: calculated, reset });
           list-class="partb-check-grid"
           item-class="partb-check-item"
         >
-          <span class="challenge-step-label">Before you analyse</span>
           <h3>Quick bar-graph check</h3>
-          <p>
-            The graph was built using the same construction rules for every
-            category.
-          </p>
 
           <template #item="{ item }">
             <span v-html="item.label"></span>

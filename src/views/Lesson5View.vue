@@ -143,10 +143,6 @@ const partD = ref(null);
         :objective="objective"
         :criteria="criteria"
       >
-        Bar graphs help scientists turn fair-test data into a visual comparison,
-        making <strong>patterns</strong> and
-        <strong>differences between categories</strong> easier to see.
-
         <template #actions>
           <Button
             class="project-resource-button bar-data-resource-button"
@@ -252,15 +248,14 @@ const partD = ref(null);
 
             <div class="project-species-layout">
               <div class="project-species-copy">
-                <p class="project-species-lead">
-                  Leadbeater's Possums live in forests in Victoria, Australia.
-                  They are listed as <strong>critically endangered</strong>. We
-                  are looking at ways to help them. To do this we need to learn
-                  more about where they live and what they need to survive.
-                </p>
-
-                <div class="project-learn-block">
-                  <h4>Learn more about Leadbeater's Possum</h4>
+                <div class="project-species-lead">
+                  <p>
+                    Leadbeater's Possums live in forests in Victoria, Australia.
+                    They are listed as <strong>critically endangered</strong>.
+                    We are looking at ways to help them. To do this we need to
+                    learn more about where they live and what they need to
+                    survive.
+                  </p>
                   <p>Open the flyer to learn about these possums.</p>
                   <Button
                     class="project-resource-button"
@@ -274,6 +269,19 @@ const partD = ref(null);
                   >
                     Open Leadbeater's Flyer
                   </Button>
+                  <ContentBox>
+                    <strong>Your mission:</strong> You work for Parks Victoria
+                    as a ranger in the Toolangi State Forest. You plan a fair
+                    test.
+                    <strong
+                      >You want to compare two forest areas — Site 1 and Site 2.
+                      You decide to count the numbers of 5 different animals
+                      living at each site.</strong
+                    >
+                    <br />
+                    Interesting fact: The year before a count was done. A family
+                    of Leadbeater's possums was seen at each site.
+                  </ContentBox>
                 </div>
               </div>
 
@@ -290,18 +298,6 @@ const partD = ref(null);
                 <small>Species that Project Possum wants to protect</small>
               </aside>
             </div>
-            <ContentBox>
-              <strong>Your mission:</strong> You work for Parks Victoria as a
-              ranger in the Toolangi State Forest. You plan a fair test.
-              <strong
-                >You want to compare two forest areas — Site 1 and Site 2. You
-                decide to count the numbers of 5 different animals living at
-                each site.</strong
-              >
-              <br />
-              Interesting fact: The year before a count was done. A family of
-              Leadbeater's possums was seen at each site.
-            </ContentBox>
           </article>
 
           <article class="project-step-card">
@@ -364,9 +360,7 @@ const partD = ref(null);
           <article class="project-step-card">
             <div class="project-step-heading">
               <span class="project-step-number">3</span>
-              <div>
-                <h3>The fair test plan</h3>
-              </div>
+              <h3>The fair test plan</h3>
             </div>
 
             <div
@@ -434,8 +428,9 @@ const partD = ref(null);
             </div>
 
             <div class="project-survey-tip">
-              <strong>Remember:</strong> Zero is still data. If you do not
-              observe one of the target animals, record <strong>0</strong>.
+              <strong>Remember:</strong> When counting animals, zero is still
+              data. If you do not observe one of the target animals, record
+              <strong>0</strong>.
             </div>
           </article>
         </div>
@@ -477,8 +472,8 @@ const partD = ref(null);
           <template #answer>
             You can easily see differences between the numbers of each animal
             when the counters are laid out in a flat line. This looks like a
-            <strong>bar graph</strong>. It is useful for comparing categories or
-            groups.
+            <strong>bar graph</strong>. It is useful for comparing the numbers
+            of each group of animals counted.
           </template>
         </StopAndCheck>
 
@@ -510,11 +505,11 @@ const partD = ref(null);
         <div class="partc-story-card partc-site2-story">
           <div class="partc-site2-story-copy">
             <p>
-              You counted the number of each animal at <strong>Site 2</strong>.
-              An example of what you found on night one is shown in the picture.
-              You counted on 3 different nights. The results are shown in the
-              table below. Use the average results to draw a bar graph for Site
-              2.
+              You counted the number of each animal at
+              <strong>Site 2</strong>.
+            </p>
+            <p>
+              An example of what you found on night 1 is shown in the picture.
             </p>
           </div>
         </div>
