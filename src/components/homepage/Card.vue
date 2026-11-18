@@ -100,16 +100,17 @@ defineProps({
   right: 14px;
   z-index: 1;
   padding: 4px 12px;
-  background: var(--green);
-  box-shadow: var(--shadow-small);
+  background: var(--soft-green);
   border: 2px solid var(--charcoal);
   border-radius: 99px;
-  color: var(--paper);
+  color: var(--text);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.04em;
 
-  transition: transform 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .lesson-card .lesson-complete::before {
   content: "✓ ";
@@ -140,7 +141,8 @@ defineProps({
   background: color-mix(in srgb, var(--accent) 20%, white 80%);
 }
 .lesson-card.is-current:not(.unavailable):hover .lesson-complete {
-  transform: scale(1.1) translate(-5px, 5px);
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: var(--shadow-medium);
 }
 .lesson-card.is-current img {
   opacity: 0.1;
