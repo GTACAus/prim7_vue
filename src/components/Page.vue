@@ -12,6 +12,7 @@ import {
 } from "vue";
 import Button from "./Button.vue";
 import Modal from "./Modal.vue";
+import { useHomeStore } from "../stores/home.js";
 
 const props = defineProps({
   lessonId: { type: String, required: true },
@@ -128,6 +129,17 @@ function restoreSection(sectionId) {
 }
 
 watch(progress, save, { deep: true });
+
+// Tell the home store when every section of this lesson is finished (or no longer is, after a reset).
+const home = useHomeStore();
+const lessonComplete = computed(
+  () =>
+    sections.value.length > 0 &&
+    sections.value.every((s) => progress.completed.includes(s.id)),
+);
+watch(lessonComplete, (done) => home.setLessonComplete(props.lessonId, done), {
+  immediate: true,
+});
 
 const mountedSections = new Map();
 const modalRef = ref(null);

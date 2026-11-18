@@ -7,6 +7,7 @@ defineProps({
   // overview under the title: what the lesson is about and its experiment
   description: { type: String, default: "" },
   experiment: { type: String, default: "" },
+  lessonComplete: { type: Boolean, default: false },
 });
 </script>
 
@@ -18,6 +19,7 @@ defineProps({
     :data-stage="stage"
   >
     <img v-if="img" :src="img" alt="" />
+    <span v-if="lessonComplete" class="lesson-complete">Complete</span>
     <span class="lesson-number"><slot name="number" /></span>
     <span class="lesson-subtitle"><slot name="subtitle" /></span>
     <div
@@ -92,6 +94,26 @@ defineProps({
 .lesson-card span {
   position: relative;
 }
+.lesson-card .lesson-complete {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+  padding: 4px 12px;
+  background: var(--green);
+  box-shadow: var(--shadow-small);
+  border: 2px solid var(--charcoal);
+  border-radius: 99px;
+  color: var(--paper);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+
+  transition: transform 0.2s ease;
+}
+.lesson-card .lesson-complete::before {
+  content: "✓ ";
+}
 .lesson-number {
   color: var(--purple);
   font-size: clamp(1.3rem, 2.4vw, 2rem);
@@ -116,6 +138,9 @@ defineProps({
 }
 .lesson-card.is-current:not(.unavailable):hover {
   background: color-mix(in srgb, var(--accent) 20%, white 80%);
+}
+.lesson-card.is-current:not(.unavailable):hover .lesson-complete {
+  transform: scale(1.1) translate(-5px, 5px);
 }
 .lesson-card.is-current img {
   opacity: 0.1;

@@ -2,6 +2,7 @@
 import {
   computed,
   inject,
+  onMounted,
   onUnmounted,
   provide,
   reactive,
@@ -85,6 +86,15 @@ function next() {
   if (!showNext.value) return;
   page?.completeSection(sectionId.value);
 }
+// The last section has no Next button, so it counts as completed as soon as
+// its activities are done. That is what marks the whole lesson complete.
+// Checked after mount so the activities have registered and restored first.
+function completeIfLast() {
+  if (sectionLast.value && !locked.value && !completed.value && complete.value)
+    page?.completeSection(sectionId.value);
+}
+onMounted(completeIfLast);
+watch([complete, locked], completeIfLast);
 function scrollTo() {
   // element is the <ContentBox> component, so scroll its root element
   element.value?.$el?.scrollIntoView({ behavior: "smooth", block: "start" });

@@ -36,6 +36,7 @@ import RustDiagram from "./RustDiagram.vue";
 import UnknownSpecies from "./UnknownSpecies.vue";
 import FieldGuide from "./FieldGuide.vue";
 import LessonEndCard from "../LessonEndCard.vue";
+import { useHomeStore } from "../../stores/home.js";
 import { openGlossary, openModal } from "../../composables/useModal.js";
 import {
   FROGFISH_LABELS,
@@ -91,6 +92,15 @@ watch(
     }
   },
   { deep: true },
+);
+
+// Tell the home page when every mission is finished (or no longer is, after a reset).
+const home = useHomeStore();
+watch(
+  () =>
+    missionConfig.every((_, i) => state.completedMissions[i] === true),
+  (done) => home.setLessonComplete("lesson7", done),
+  { immediate: true },
 );
 
 const mission = computed(() => missionConfig[state.currentMissionIndex]);

@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount } from "vue";
 import Card from "../components/homepage/Card.vue";
+import { useHomeStore } from "../stores/home.js";
 
 const lessons = [
   {
@@ -76,7 +77,11 @@ const lessons = [
   },
 ];
 
-const state = ref(0);
+const home = useHomeStore();
+
+function isLessonComplete(lessonNumber) {
+  return home.completeLessons.includes(`lesson${lessonNumber}`);
+}
 
 let teardown = null;
 
@@ -437,44 +442,15 @@ onMounted(() => {
     });
   }
 
-  // Several saves in one tick (e.g. a reset) are written once.
-  let writeQueued = false;
-  const storageKey = "prim7:home";
-  function saveState() {
-    if (writeQueued) return;
-    writeQueued = true;
-    queueMicrotask(() => {
-      writeQueued = false;
-      try {
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({ currentLesson: state.value }),
-        );
-      } catch (error) {
-        console.warn("Could not save home page progress:", error);
-      }
-    });
-  }
-
-  function loadState() {
-    try {
-      return JSON.parse(localStorage.getItem(storageKey)) ?? {};
-    } catch (error) {
-      console.warn("Could not restore home page progress:", error);
-      return {};
-    }
-  }
-
-  const loadedLesson = loadState().currentLesson;
-  showLesson(loadedLesson);
+  // The current lesson lives in the home store, which saves itself.
+  showLesson(home.currentLesson);
 
   function showLesson(index, animate = false) {
     // Reset any active tilt before changing lessons
     resetTilt();
 
     currentIndex = Math.max(0, Math.min(index, cards.length - 1));
-    state.value = currentIndex;
-    saveState();
+    home.currentLesson = currentIndex;
 
     cards.forEach((card, cardIndex) => {
       const offset = cardIndex - currentIndex;
@@ -761,6 +737,7 @@ onBeforeUnmount(() => {
           :accent="lesson.accent"
           :description="lesson.description"
           :experiment="lesson.experiment"
+          :lesson-complete="isLessonComplete(number + 1)"
         >
           <template #number>Lesson {{ number + 1 }}</template>
           <template #subtitle>{{ lesson.subtitle }}</template>

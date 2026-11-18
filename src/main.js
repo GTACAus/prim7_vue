@@ -2,6 +2,7 @@
 import "./styles/base.css";
 import "./styles/print.css";
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
 import "./styles/themes.css";
@@ -112,4 +113,4 @@ router.beforeEach(async (to) => {
   await Promise.all((to.meta.stylesheets ?? []).map(loadStylesheet));
 });
 
-createApp(App).use(router).mount("#app");
+createApp(App).use(createPinia()).use(router).mount("#app");
