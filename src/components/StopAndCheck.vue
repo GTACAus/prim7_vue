@@ -135,7 +135,8 @@ defineExpose({ pressed });
 .stop-and-check img {
   position: absolute;
   align-self: center;
-  justify-self: flex-end;
+  right: 0;
+  top: 0;
   max-width: 100%;
   max-height: 100%;
   opacity: 0.2;

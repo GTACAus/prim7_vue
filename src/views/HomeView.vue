@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onBeforeUnmount } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
 import Card from "../components/homepage/Card.vue";
 
 const lessons = [
@@ -75,6 +75,8 @@ const lessons = [
     experiment: "Reaction Time Experiment",
   },
 ];
+
+const state = ref(0);
 
 let teardown = null;
 
@@ -435,11 +437,44 @@ onMounted(() => {
     });
   }
 
+  // Several saves in one tick (e.g. a reset) are written once.
+  let writeQueued = false;
+  const storageKey = "prim7:home";
+  function saveState() {
+    if (writeQueued) return;
+    writeQueued = true;
+    queueMicrotask(() => {
+      writeQueued = false;
+      try {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ currentLesson: state.value }),
+        );
+      } catch (error) {
+        console.warn("Could not save home page progress:", error);
+      }
+    });
+  }
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey)) ?? {};
+    } catch (error) {
+      console.warn("Could not restore home page progress:", error);
+      return {};
+    }
+  }
+
+  const loadedLesson = loadState().currentLesson;
+  showLesson(loadedLesson);
+
   function showLesson(index, animate = false) {
     // Reset any active tilt before changing lessons
     resetTilt();
 
     currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+    state.value = currentIndex;
+    saveState();
 
     cards.forEach((card, cardIndex) => {
       const offset = cardIndex - currentIndex;
@@ -645,7 +680,6 @@ onMounted(() => {
     addCardEventListener(card, "click", (event) => {
       if (index !== currentIndex || card.classList.contains("unavailable")) {
         event.preventDefault();
-
         showLesson(index, true);
       }
     });
