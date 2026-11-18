@@ -228,17 +228,40 @@ defineProps({
     min-height: clamp(250px, 40vh, 360px);
   }
   .lesson-subtitle {
-    font-size: clamp(0.8rem, 1vw, 1rem);
+    margin: auto 0 0;
+    font-size: clamp(1rem, 1vw, 1.2rem);
+  }
+  .lesson-card {
+    min-height: 440px;
+    padding: 18px 14px;
+  }
+  /* Overview flows under the title instead of overlapping it */
+  .overview {
+    position: static;
+    width: 100%;
+    margin: auto 0 0;
+    padding: 10px;
+  }
+  .overview .description-content {
+    min-height: 0;
+    font-size: 0.95rem;
   }
   .overview .experiment {
     flex-direction: column;
   }
   .overview .experiment-heading {
-    font-size: clamp(1rem, 5vw, 1.4rem);
+    margin-bottom: 0;
+    font-size: 0.9rem;
+  }
+  .overview .experiment-content {
+    padding: 6px 10px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    line-height: 1.25;
   }
   .lesson-card.is-previous,
   .lesson-card.is-next {
-    width: min(54vw, 250px);
+    /* width: min(54vw, 250px); */
   }
   .lesson-card.is-previous {
     left: 20%;

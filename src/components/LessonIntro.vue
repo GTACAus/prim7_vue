@@ -319,6 +319,10 @@ defineProps({
     padding-top: 92px;
   }
 
+  .intro-grid {
+    grid-template-columns: 1fr;
+  }
+
   .worksheet-button {
     position: relative;
     margin: 0;

@@ -248,7 +248,7 @@ defineExpose({ reset });
 .pile-container {
   position: relative;
   width: 8rem;
-  height: 12rem;
+  aspect-ratio: 2 / 3;
   border-radius: 0.5rem;
   border: 2px dashed;
   padding: 0.5rem;
@@ -264,8 +264,8 @@ defineExpose({ reset });
 }
 
 .right-pile {
-  border-color: var(--orange);
-  background: var(--soft-orange);
+  border-color: var(--yellow);
+  background: var(--soft-yellow);
 }
 
 .left-count {
@@ -289,12 +289,25 @@ defineExpose({ reset });
   flex: 1;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .btn-row {
-    flex-direction: column;
+    /* flex-direction: column; */
   }
 
-  .layout {
+  .left-count,
+  .right-count {
+    display: none;
+  }
+
+  .pile-section,
+  .pile-container {
+    width: 12rem;
+    aspect-ratio: 3 / 2;
+    justify-content: flex-start;
+  }
+
+  .pile-section {
+    flex: 0;
   }
 
   .center-section {

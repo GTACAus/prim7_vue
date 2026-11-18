@@ -482,7 +482,7 @@ onMounted(() => {
   let swipeClickCard = null;
   let swipeClickTimeout = 0;
 
-  const SWIPE_THRESHOLD = 300;
+  const SWIPE_THRESHOLD = 100;
 
   function updateSwipePreview(deltaX) {
     const trackWidth = carouselTrack.clientWidth;
@@ -931,12 +931,20 @@ body {
   }
   .carousel {
     grid-template-columns: 40px minmax(0, 1fr) 40px;
-    grid-template-rows: min(54vh, 400px) auto;
+    grid-template-rows: 500px auto;
     min-height: 340px;
     margin: 1rem auto;
   }
   .carousel-track {
-    height: min(54vh, 400px);
+    height: 500px;
+  }
+  /* Grid mode: cards size to their content */
+  .carousel-track.is-grid {
+    height: auto;
+  }
+  .carousel-track.is-grid .lesson-card {
+    aspect-ratio: auto;
+    min-height: 0;
   }
   .carousel-control {
     width: 40px;
