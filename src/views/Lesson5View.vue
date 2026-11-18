@@ -42,12 +42,12 @@ const graphSteps = [
     title: "Draw a bar for each category",
     points: [
       "The height of the bar shows the y-axis value for each group or category.",
-      "Keep every bar the same width.",
+      "Keep all bars the same width.",
     ],
   },
   {
     title: "Give your graph a title",
-    points: ["The title explains what your fair test is investigating."],
+    points: ["The title shows what your fair test is investigating."],
   },
 ];
 
@@ -67,18 +67,18 @@ const glossary = {
 
 // Sections of the page. Order defines the unlock chain.
 const sections = [
-  { id: "bar-data-preamble", title: "Visualising Fair Test Data" },
+  { id: "bar-data-preamble", title: "Using bar graphs to view fair test data" },
   {
     id: "bar-practice",
-    title: "Part A: A Fair Test to Compare Two Forest Sites",
+    title: "Part A: Help save Leadbeater's possum",
   },
   {
     id: "bar-construction",
-    title: "Part B: Record Data for Site 1 in a Bar Graph",
+    title: "Part B: Draw a bar graph to view Site 1 results",
   },
   {
     id: "bar-follow-up",
-    title: "Part C : Record Data for Site 2 in a Bar Graph",
+    title: "Part C : Draw a bar graph to view Site 2 results",
   },
   {
     id: "bar-compare",
@@ -93,12 +93,12 @@ const graphChecklist = [
     text: "Explains what the fair test is investigating.",
   },
   {
-    title: "An x-axis label and units",
+    title: "An x-axis label and the groups or categories compared",
     text: "Shows the categories or groups being compared.",
   },
   {
     title: "A y-axis label and units",
-    text: "Shows what was measured or counted.",
+    text: "Shows what was measured or counted and the units used.",
   },
 ];
 
@@ -158,7 +158,7 @@ const partD = ref(null);
         </template>
 
         <template #observation>
-          <h2>Constructing a bar graph</h2>
+          <h2>Drawing a bar graph</h2>
           <div class="formula-card">
             <div
               v-for="(step, i) in graphSteps"
@@ -185,9 +185,13 @@ const partD = ref(null);
       <Section name="bar-data-preamble">
         <ContentBox>
           <p>
-            Scientists use a <strong>bar graph</strong> when they want to
-            visualise <strong>discrete data</strong> or
-            <strong>categorical data</strong>.
+            Look at the template for a bar graph below. This shows you what a
+            <strong>bar graph</strong> looks like. It is useful for comparing
+            groups or categories.
+          </p>
+          <p>
+            Now look at the two examples of bar graphs below. Each shows the
+            results of a fair test.
           </p>
         </ContentBox>
 
@@ -196,11 +200,7 @@ const partD = ref(null);
             class="bar-example-checklist"
             aria-label="What to look for in the example bar graphs"
           >
-            <h5>Look at the following 3 bar graphs</h5>
-            <p>
-              Each shows the results of a fair test. As you look, check that
-              each graph has:
-            </p>
+            <h5>Check that each bar graph has the following parts:</h5>
             <label
               v-for="item in graphChecklist"
               :key="item.title"
@@ -250,32 +250,18 @@ const partD = ref(null);
               </div>
             </div>
 
-            <ContentBox>
-              Your mission: You work for Parks Victoria as a ranger in the
-              Toolangi State Forest. You are working with an environmental group
-              called <i>Friends of the Leadbeater's Possum</i>.
-              <strong
-                >You will set up a fair test to carry out a survey of 5 animals
-                living in two forest areas: Site 1 and Site 2</strong
-              >. A survey the year before recorded a family of Leadbeater's
-              Possums living at each site.
-            </ContentBox>
-
             <div class="project-species-layout">
               <div class="project-species-copy">
                 <p class="project-species-lead">
                   Leadbeater's Possums live in forests in Victoria, Australia.
-                  They are listed as <strong>critically endangered</strong>.
-                  Conservation groups are trying to help them to survive. To do
-                  this they investigate where and how they live.
+                  They are listed as <strong>critically endangered</strong>. We
+                  are looking at ways to help them. To do this we need to learn
+                  more about where they live and what they need to survive.
                 </p>
 
                 <div class="project-learn-block">
                   <h4>Learn more about Leadbeater's Possum</h4>
-                  <p>
-                    Open the Leadbeater's possum flyer to find out more about
-                    where they live and how they behave.
-                  </p>
+                  <p>Open the flyer to learn about these possums.</p>
                   <Button
                     class="project-resource-button"
                     symbol="📄"
@@ -304,6 +290,18 @@ const partD = ref(null);
                 <small>Species that Project Possum wants to protect</small>
               </aside>
             </div>
+            <ContentBox>
+              <strong>Your mission:</strong> You work for Parks Victoria as a
+              ranger in the Toolangi State Forest. You plan a fair test.
+              <strong
+                >You want to compare two forest areas — Site 1 and Site 2. You
+                decide to count the numbers of 5 different animals living at
+                each site.</strong
+              >
+              <br />
+              Interesting fact: The year before a count was done. A family of
+              Leadbeater's possums was seen at each site.
+            </ContentBox>
           </article>
 
           <article class="project-step-card">
@@ -324,7 +322,7 @@ const partD = ref(null);
             >
               <div class="project-site-card current">
                 <div class="project-site-copy">
-                  <h4>Site 1</h4>
+                  <h4>Site 1: Thick Understory</h4>
                 </div>
                 <div class="project-site-image">
                   <img :src="IMG + 'site_1_day.png'" alt="Site 1" />
@@ -335,7 +333,7 @@ const partD = ref(null);
 
               <div class="project-site-card future">
                 <div class="project-site-copy">
-                  <h4>Site 2</h4>
+                  <h4>Site 2: Thin Understory</h4>
                 </div>
                 <div class="project-site-image">
                   <img :src="IMG + 'site_2_day.png'" alt="Site 2" />
@@ -347,20 +345,17 @@ const partD = ref(null);
               <div class="project-question-card">
                 <h4>Testable question</h4>
                 <p>
-                  <strong
-                    >Does a change in the understory affect the number of
-                    Leadbeater’s possums in the forest?</strong
-                  >
+                  Does a <strong>change in the understory</strong> affect the
+                  <strong>number of Leadbeater's possums</strong> in the forest?
                 </p>
               </div>
 
               <div class="project-question-card">
                 <h4>Reasoned prediction</h4>
                 <p>
-                  <strong
-                    >When there is more understory the number of Leadbeaters
-                    possums will increase.</strong
-                  >
+                  When there is <strong>more understory</strong> the
+                  <strong>number of Leadbeaters possums</strong> will
+                  <strong>increase.</strong>
                 </p>
               </div>
             </div>
@@ -370,7 +365,7 @@ const partD = ref(null);
             <div class="project-step-heading">
               <span class="project-step-number">3</span>
               <div>
-                <h3>Plan Your Fair Test</h3>
+                <h3>The fair test plan</h3>
               </div>
             </div>
 
@@ -381,15 +376,13 @@ const partD = ref(null);
               <ContentBox class="variable-type-card independent">
                 <template #eyebrow>Change</template>
                 <h3>Independent variable</h3>
-                <p>
-                  Compare numbers of 5 different animals at Site 1 and Site 2.
-                </p>
+                <p>Compare forest Site 1 and Site 2.</p>
               </ContentBox>
 
               <ContentBox class="variable-type-card dependent">
                 <template #eyebrow>Measure</template>
                 <h3>Dependent variable</h3>
-                <p>Measure the number of each animal.</p>
+                <p>Count the number of each animal.</p>
               </ContentBox>
 
               <ContentBox class="variable-type-card controlled">
@@ -451,12 +444,22 @@ const partD = ref(null);
           <div class="project-spotlight-intro">
             <span class="project-step-number">4</span>
             <div>
-              <h3>Spotlighting activity - Survey Site 1</h3>
-              <p>
-                Wait until night, then use the spotlight to find animals. Click
-                on animals as you see them. Use the "Check my count" button to
-                see if you have counted all the animals. If not, keep searching.
-              </p>
+              <h3>
+                Spotlighting activity - Count the number of animals at site 1
+              </h3>
+              <div>
+                <ul>
+                  <li>Click on the “Wait until night” button.</li>
+                  <li>
+                    Move the spotlight and click to select animals as you find
+                    them.
+                  </li>
+                  <li>
+                    Use the "Check my count" button. Have you found all the
+                    animals? If not, keep searching.
+                  </li>
+                </ul>
+              </div>
             </div>
             <span class="project-site-one-badge">Site 1</span>
           </div>
@@ -506,12 +509,12 @@ const partD = ref(null);
       >
         <div class="partc-story-card partc-site2-story">
           <div class="partc-site2-story-copy">
-            <h3>Now investigate the second forest site</h3>
             <p>
-              Your ranger team has surveyed <strong>Site 2</strong> over three
-              nights. You do not need to repeat the spotlighting activity here —
-              the survey results have already been collected for you. Use the
-              data below to build a bar graph for Site 2.
+              You counted the number of each animal at <strong>Site 2</strong>.
+              An example of what you found on night one is shown in the picture.
+              You counted on 3 different nights. The results are shown in the
+              table below. Use the average results to draw a bar graph for Site
+              2.
             </p>
           </div>
         </div>
@@ -539,17 +542,10 @@ const partD = ref(null);
       >
         <div class="partd-intro-card">
           <div>
-            <h3>Put Both Sites on One Graph</h3>
             <p>
-              In a fair test, it is best to put all of your data onto one
-              <strong>graph</strong>. This is so you can easily see if the
-              change you made caused any differences in results.
+              It is easier to compare site 1 and 2 if results are on one
+              <strong>graph</strong>. This helps you to look for differences.
             </p>
-            <div class="partd-compare-callout">
-              Place the data for site 1 and for site 2 on the same
-              <strong>bar graph</strong>. Each animal will have a pair of bars
-              side by side that you can compare easily.
-            </div>
           </div>
         </div>
 

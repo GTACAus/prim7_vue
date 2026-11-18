@@ -128,6 +128,16 @@ const FINAL_VALUES = {
 /* ---------- the steps ---------- */
 
 const sliders = ref(null);
+const checkMessage = ref("");
+function onCheck({ allCorrect, firstWrong }) {
+  if (allCorrect) {
+    checkMessage.value = "";
+    return;
+  }
+  const site = firstWrong?.set === "site2" ? "Site 2" : "Site 1";
+  const animal = SLIDER_ROWS[firstWrong?.index ?? 0]?.label ?? "an animal";
+  checkMessage.value = `Not quite. Check the ${site} bar for ${animal}. Compare its height with the average in the table, then press "Check both sites" again.`;
+}
 const analysis = ref(null);
 const prediction = ref(null);
 const stopCheck = ref(null);
@@ -201,7 +211,7 @@ defineExpose({ sectionClass });
   <div class="lesson4-workbench partd-workbench">
     <div class="partd-data-card">
       <p>
-        Put the average results for site 1 and for site 2 in the same table.
+        The average results for site 1 and site 2 are shown in the table below.
       </p>
 
       <div class="partd-table-wrap">
@@ -210,7 +220,7 @@ defineExpose({ sectionClass });
           aria-label="Comparison of average animal counts at Site 1 and Site 2"
         >
           <caption>
-            Table 3. Comparison of average animal counts at Site 1 and Site 2
+            Table 3. Comparing number of animals at Site 1 and Site 2
           </caption>
           <thead>
             <tr>
@@ -247,10 +257,14 @@ defineExpose({ sectionClass });
       controls-class="partd-builder-controls"
       check-label="Check both sites"
       hide-when-complete
+      @check="onCheck"
     >
       <template #header>
         <h3>Build the bars for each animal in both sites</h3>
       </template>
+      <div v-if="checkMessage && !barsDone" class="challenge-feedback try-again" role="status">
+        {{ checkMessage }}
+      </div>
       <template #complete>
         <div class="partd-builder-complete">
           <strong>Both sites are on the graph.</strong><br />

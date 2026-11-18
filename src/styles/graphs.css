@@ -978,6 +978,7 @@
 
 .project-species-layout {
   display: grid;
+  margin-bottom: 10px;
   grid-template-columns: minmax(0, 1.45fr) minmax(230px, 0.55fr);
   gap: 18px;
   align-items: stretch;

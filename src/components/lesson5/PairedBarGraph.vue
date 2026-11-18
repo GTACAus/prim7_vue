@@ -44,7 +44,7 @@ const difference = computed(() => {
     aria-label="Paired bar graph comparing average animal counts at Site 1 and Site 2"
     :items="BOTH_SITES"
     x-label="Type of animal"
-    y-label="Number of animals (animals per hectare)"
+    y-label="Number of animals (per hectare)"
   >
     <template v-for="site in ['site1', 'site2']" :key="site">
       <rect

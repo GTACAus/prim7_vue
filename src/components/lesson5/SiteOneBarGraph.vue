@@ -194,7 +194,7 @@ function onUnitAnswer({ correct }) {
   say(
     "success",
     "The unit is ‘animals per hectare’.",
-    " ‘Type of animal’ is a category and ‘Number of animals’ is a count measured over a fixed area. Now construct the bars.",
+    " Remember each site was the size of the MCG, which is one hectare. So the number of animals counted is how many you found per hectare. Now draw the bars: click one of the animal names on the x-axis to start.",
   );
 }
 
@@ -504,10 +504,10 @@ defineExpose({ buildActive: calculated, reset });
           >Step 1 · Get the average values</span
         >
         <p>
-          Your team repeated the survey of animals at <strong>Site 1</strong>
+          Your team counted the number of animals at <strong>Site 1</strong>
           on three different nights: Night 1, Night 2 and Night 3. Use the
-          button to calculate the average for each animal, then use those
-          average values to build your bar graph.
+          button to calculate the average for each animal. Use these average
+          values to draw your bar graph.
         </p>
 
         <div class="partb-table-wrap">
@@ -636,7 +636,7 @@ defineExpose({ buildActive: calculated, reset });
               :items="SITE_1"
               x-label="Type of animal"
               y-label="Number of animals"
-              :y-unit="unitDone ? ' (animals per hectare)' : ''"
+              :y-unit="unitDone ? ' (per hectare)' : ''"
               label-class="partb-final-axis-label"
               :labels-visible="unitDone"
               choices="partb"
@@ -1070,6 +1070,12 @@ defineExpose({ buildActive: calculated, reset });
 @media (max-width: 699px) {
   .partb-baseline-facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .partb-unit-buttons {
+    grid-template-columns: 1fr;
   }
 }
 </style>
