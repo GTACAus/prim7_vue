@@ -95,7 +95,7 @@
 @media (max-width: 650px) {
   .variable-grid,
   .variable-type-grid {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
   }
 
   .formula-step {
