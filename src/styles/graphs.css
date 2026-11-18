@@ -1236,15 +1236,6 @@
   #bar-construction.partb-build-active .partb-data-table td:first-child {
     width: 36%;
   }
-  #bar-construction.partb-build-active .partb-table-actions {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-    align-items: stretch;
-  }
-  #bar-construction.partb-build-active .partb-table-actions > .general-button {
-    justify-self: center;
-  }
 }
 
 @media (max-width: 899px) {
